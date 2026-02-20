@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://bo7a0o02dfy61"]
+
+[ext_resource type="Texture2D" uid="uid://cc2ievfcyitj0" path="res://Graphic/Top1.2.0.png" id="1_13qgv"]
+[ext_resource type="Script" uid="uid://c51s4b4na5btf" path="res://camera_2d.gd" id="2_u5pr3"]
+[ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village.tscn" id="3_ocn0r"]
+
+[node name="Board" type="Node2D" unique_id=1598262314]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=374990783]
+zoom = Vector2(0.33, 0.33)
+script = ExtResource("2_u5pr3")
+map_path = NodePath("../Map")
+
+[node name="Map" type="Sprite2D" parent="." unique_id=1727819468]
+texture = ExtResource("1_13qgv")
+centered = false
+
+[node name="Area2D" parent="." unique_id=167798052 instance=ExtResource("3_ocn0r")]
+position = Vector2(789, 653)
+faction = 1
+soldiers = 20

@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://djgorxnh2gemb"]
+
+[ext_resource type="Script" uid="uid://xerce68opmqe" path="res://Village.gd" id="1_hx6cv"]
+[ext_resource type="Texture2D" uid="uid://b2w0voc5i01pc" path="res://Graphic/SettlmentPrototypeVillage.png" id="1_mrgdo"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
+radius = 63.07139
+
+[node name="Area2D" type="Area2D" unique_id=167798052]
+script = ExtResource("1_hx6cv")
+
+[node name="Circle" type="Sprite2D" parent="." unique_id=1562593096]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_mrgdo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
+visible = false
+position = Vector2(-1, 7)
+shape = SubResource("CircleShape2D_hx6cv")
+
+[node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 60
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -1,0 +1,44 @@
+extends Area2D
+class_name Settlement
+
+@export var settlement_id: String = ""  # optional, useful later
+
+@export var faction: Faction.Type = Faction.Type.NEUTRAL : set = set_faction
+@export var soldiers: int = 0 : set = set_soldiers
+
+# Connections: store references to other settlements.
+# We'll fill this in manually in the editor at first (simple + reliable).
+@export var neighbors: Array[Settlement] = []
+
+@onready var soldier_label: Label = $SoldierLabel
+
+func _ready() -> void:
+	_refresh_visuals()
+
+func set_faction(value: Faction.Type) -> void:
+	faction = value
+	_refresh_visuals()
+
+func set_soldiers(value: int) -> void:
+	soldiers = max(0, value)
+	# Rule: ownership follows soldiers. If 0 => neutral (for now).
+	if soldiers == 0:
+		faction = Faction.Type.NEUTRAL
+	_refresh_visuals()
+
+func set_garrison(new_faction: Faction.Type, amount: int) -> void:
+	# "Only one faction’s soldiers can be here" enforced here.
+	if amount <= 0:
+		soldiers = 0
+		faction = Faction.Type.NEUTRAL
+	else:
+		faction = new_faction
+		soldiers = amount
+	_refresh_visuals()
+
+func _refresh_visuals() -> void:
+	if soldier_label == null:
+		return
+
+	soldier_label.text = str(soldiers)
+	soldier_label.add_theme_color_override("font_color", Faction.color_for(faction))

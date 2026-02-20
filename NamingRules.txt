@@ -1,0 +1,12 @@
+PascalCave (every word captialzed. no space)
+	used for classes and script files
+	node names in scene tree
+	file names
+
+snake_case
+	used for functions and and built-in functions (like func spawn_enemy)
+	variables (var move_speed = 200)
+	signals
+
+UPPER_SNAKE_CASE
+	Constants
