@@ -15,7 +15,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
-Turn="*uid://7ihom0dpcm3m"
+TurnState="*uid://7ihom0dpcm3m"
 
 [physics]
 
