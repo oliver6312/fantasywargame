@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village.tscn" id="3_ocn0r"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://connection_drawer.gd" id="4_3fmbn"]
 [ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI.gd" id="5_p1wqh"]
+[ext_resource type="Script" uid="uid://cqv0tts3e8xlb" path="res://BoardController.gd" id="6_trxdi"]
 
 [node name="Board" type="Node2D" unique_id=1598262314]
 
@@ -20,14 +21,16 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("4_3fmbn")
 
-[node name="Area2D2" parent="." unique_id=167798052 instance=ExtResource("3_ocn0r")]
+[node name="ElfVillage" parent="." unique_id=167798052 instance=ExtResource("3_ocn0r")]
 position = Vector2(773, 660)
+faction = 2
+soldiers = 10
 
-[node name="Area2D" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
+[node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)
-faction = 3
+faction = 1
 soldiers = 25
-neighbors = [NodePath("../Area2D2")]
+neighbors = [NodePath("../ElfVillage")]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1700058816]
 script = ExtResource("5_p1wqh")
@@ -45,3 +48,25 @@ offset_bottom = 23.0
 layout_mode = 0
 offset_right = 8.0
 offset_bottom = 8.0
+
+[node name="MoveDialog" type="AcceptDialog" parent="UI" unique_id=252060055]
+oversampling_override = 1.0
+title = "Move Soldiers"
+position = Vector2i(0, 36)
+ok_button_text = "Send"
+
+[node name="AmountEdit" type="LineEdit" parent="UI/MoveDialog" unique_id=1058604618]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 92.0
+offset_bottom = 51.0
+
+[node name="PromptLabel" type="Label" parent="UI/MoveDialog" unique_id=217121385]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 92.0
+offset_bottom = 51.0
+
+[node name="BoardController" type="Node2D" parent="." unique_id=426453066]
+script = ExtResource("6_trxdi")
+ui_path = NodePath("../UI")

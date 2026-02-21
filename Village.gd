@@ -1,6 +1,8 @@
 extends Area2D
 class_name Settlement
 
+signal clicked(settlement: Settlement)
+
 @export var settlement_id: String = ""  # optional, useful later
 
 @export var faction: Faction.Type = Faction.Type.NEUTRAL : set = set_faction
@@ -17,6 +19,11 @@ func _ready() -> void:
 	_make_neighbors_two_way()
 	_refresh_visuals()
 	_validate_neighbors()
+
+func _input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		emit_signal("clicked", self)
+		print("settlement clicked")
 
 func _make_neighbors_two_way() -> void:
 	# Ensure neighbor list has no nulls or self references
