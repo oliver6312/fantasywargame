@@ -1,5 +1,7 @@
 extends Node
 
+@onready var deselect_button: Button = %DeselectButton
+
 @export_node_path("CanvasLayer") var ui_path
 @onready var ui: CanvasLayer = get_node(ui_path)
 
@@ -17,6 +19,31 @@ func _ready() -> void:
 
 	move_dialog.confirmed.connect(_on_move_confirmed)
 	move_dialog.canceled.connect(_on_move_canceled)
+	deselect_button.pressed.connect(_on_deselect_pressed)
+	_show_deselect_button(false)
+
+func _on_deselect_pressed() -> void:
+	_deselect()
+
+func _show_deselect_button(show: bool) -> void:
+	deselect_button.visible = show
+
+func _clear_all_highlights() -> void:
+	for s in get_tree().get_nodes_in_group("settlements"):
+		s.set_selected(false)
+		s.set_available(false)
+
+func _apply_selection_visuals() -> void:
+	_clear_all_highlights()
+
+	if selected == null:
+		return
+
+	selected.set_selected(true)
+
+	for n in selected.neighbors:
+		if n != null:
+			n.set_available(true)
 
 func _on_settlement_clicked(s: Settlement) -> void:
 	# First click selects
@@ -51,8 +78,15 @@ func _on_settlement_clicked(s: Settlement) -> void:
 
 func _select(s: Settlement) -> void:
 	selected = s
-	# Optional: add highlight later
+	_apply_selection_visuals()
 	print("Selected: %s (%s soldiers)" % [selected.name, selected.soldiers])
+	_show_deselect_button(true)
+
+func _deselect() -> void:
+	selected = null
+	pending_target = null
+	_clear_all_highlights()
+	_show_deselect_button(false)
 
 func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	var max_send := source.soldiers
@@ -107,3 +141,4 @@ func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
 	else:
 		# Attacker wins: flip faction and survivors = abs(result)
 		target.set_garrison(source.faction, -result)
+	_deselect()

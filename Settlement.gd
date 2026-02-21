@@ -3,6 +3,9 @@ class_name Settlement
 
 signal clicked(settlement: Settlement)
 
+@onready var selection_circle: Sprite2D = $SelectionCircle
+@onready var available_circle: Sprite2D = $AvailableCircle
+
 @export var settlement_id: String = ""  # optional, useful later
 
 @export var faction: Faction.Type = Faction.Type.NEUTRAL : set = set_faction
@@ -19,11 +22,20 @@ func _ready() -> void:
 	_make_neighbors_two_way()
 	_refresh_visuals()
 	_validate_neighbors()
+	selection_circle.visible = false
+	available_circle.visible = false
+
+func set_selected(is_selected: bool) -> void:
+	selection_circle.visible = is_selected
+
+func set_available(is_available: bool) -> void:
+	available_circle.visible = is_available
 
 func _input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		emit_signal("clicked", self)
 		print("settlement clicked")
+		$SelectionCircle.show()
 
 func _make_neighbors_two_way() -> void:
 	# Ensure neighbor list has no nulls or self references

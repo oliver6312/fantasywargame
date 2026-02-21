@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://xerce68opmqe" path="res://Settlement.gd" id="1_hx6cv"]
 [ext_resource type="Texture2D" uid="uid://b2w0voc5i01pc" path="res://Graphic/SettlmentPrototypeVillage.png" id="1_mrgdo"]
+[ext_resource type="Texture2D" uid="uid://dihtqsnypaq7h" path="res://Graphic/SelectionCircle.png" id="2_5erx4"]
+[ext_resource type="Texture2D" uid="uid://pm3t1dv4oh4e" path="res://Graphic/AvailableCircle.png" id="2_u8w44"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
@@ -9,12 +11,22 @@ radius = 42.0119
 [node name="Area2D" type="Area2D" unique_id=167798052]
 script = ExtResource("1_hx6cv")
 
+[node name="AvailableCircle" type="Sprite2D" parent="." unique_id=1837975081]
+visible = false
+scale = Vector2(0.33, 0.33)
+texture = ExtResource("2_u8w44")
+
+[node name="SelectionCircle" type="Sprite2D" parent="." unique_id=1041018242]
+visible = false
+scale = Vector2(0.33, 0.33)
+texture = ExtResource("2_5erx4")
+
 [node name="Circle" type="Sprite2D" parent="." unique_id=1562593096]
+position = Vector2(-3.0517578e-05, -4.999996)
 scale = Vector2(0.33, 0.33)
 texture = ExtResource("1_mrgdo")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
-position = Vector2(0, 5)
 shape = SubResource("CircleShape2D_hx6cv")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
