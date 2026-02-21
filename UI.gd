@@ -1,7 +1,9 @@
 extends CanvasLayer
 
-@onready var turn_label: Label = $Panel/TurnLabel
-@onready var next_turn_button: Button = $Panel/NextTurnButton
+
+@onready var turn_label: Label = $TurnLabel
+@onready var next_turn_button: Button = $NextTurnButton
+
 
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
