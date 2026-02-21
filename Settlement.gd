@@ -40,19 +40,11 @@ func set_faction(value: Faction.Type) -> void:
 
 func set_soldiers(value: int) -> void:
 	soldiers = max(0, value)
-	# Rule: ownership follows soldiers. If 0 => neutral (for now).
-	if soldiers == 0:
-		faction = Faction.Type.NEUTRAL
 	_refresh_visuals()
 
 func set_garrison(new_faction: Faction.Type, amount: int) -> void:
-	# "Only one faction’s soldiers can be here" enforced here.
-	if amount <= 0:
-		soldiers = 0
-		faction = Faction.Type.NEUTRAL
-	else:
-		faction = new_faction
-		soldiers = amount
+	soldiers = max(0, amount)
+	faction = new_faction
 	_refresh_visuals()
 
 func _refresh_visuals() -> void:

@@ -103,8 +103,7 @@ func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
 		target.set_soldiers(result)
 		# faction unchanged
 	elif result == 0:
-		# Exact tie -> empty neutral
-		target.set_garrison(Faction.Type.NEUTRAL, 0)
+		target.set_soldiers(0) # keep faction as-is
 	else:
 		# Attacker wins: flip faction and survivors = abs(result)
 		target.set_garrison(source.faction, -result)
