@@ -10,6 +10,7 @@
 [node name="Board" type="Node2D" unique_id=1598262314]
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=374990783]
+offset = Vector2(1754, 1240)
 zoom = Vector2(0.33, 0.33)
 script = ExtResource("2_u5pr3")
 map_path = NodePath("../Map")
@@ -34,30 +35,79 @@ neighbors = [NodePath("../OrcTown")]
 
 [node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)
+settlement_name = "OrcTown"
 faction = 1
 soldiers = 25
 neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
 
 [node name="FarawayLand" parent="." unique_id=1631699824 instance=ExtResource("3_ocn0r")]
 position = Vector2(1598, 1084)
+settlement_name = "Faraway Land"
 soldiers = 2
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1700058816]
 script = ExtResource("5_p1wqh")
 
-[node name="TurnLabel" type="Label" parent="UI" unique_id=1394440047]
-offset_left = 1074.0
-offset_right = 1152.0
-offset_bottom = 58.0
+[node name="RightPanel" type="Panel" parent="UI" unique_id=1583113425]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -128.0
+grow_horizontal = 0
+grow_vertical = 2
 
-[node name="NextTurnButton" type="Button" parent="UI" unique_id=1301133620]
-offset_left = 1067.0
-offset_top = 613.0
-offset_right = 1153.0
-offset_bottom = 649.5
+[node name="HBoxContainerBottom" type="HBoxContainer" parent="UI/RightPanel" unique_id=1899213850]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -43.0
+offset_top = -66.0
+offset_right = 43.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/RightPanel/HBoxContainerBottom" unique_id=365943337]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="DeselectButton" type="Button" parent="UI/RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=644768333]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Deselect"
+
+[node name="NextTurnButton" type="Button" parent="UI/RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=1301133620]
+layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Next Turn"
+
+[node name="HBoxContainerTop" type="HBoxContainer" parent="UI/RightPanel" unique_id=46593698]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/RightPanel/HBoxContainerTop" unique_id=207060401]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TurnLabel" type="Label" parent="UI/RightPanel/HBoxContainerTop/VBoxContainer" unique_id=1394440047]
+layout_mode = 2
+
+[node name="LeftPanel" type="Panel" parent="UI" unique_id=1841395645]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 128.0
+grow_vertical = 2
 
 [node name="MoveDialog" type="AcceptDialog" parent="UI" unique_id=252060055]
 oversampling_override = 1.0
@@ -77,14 +127,7 @@ offset_top = 8.0
 offset_right = 92.0
 offset_bottom = 51.0
 
-[node name="DeselectButton" type="Button" parent="UI" unique_id=644768333]
-unique_name_in_owner = true
-offset_left = 1069.0
-offset_top = 555.0
-offset_right = 1153.0
-offset_bottom = 597.0
-text = "Deselect"
-
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
+visible = false
 script = ExtResource("6_trxdi")
 ui_path = NodePath("../UI")

@@ -8,6 +8,9 @@ signal clicked(settlement: Settlement)
 
 @export var settlement_id: String = ""  # optional, useful later
 
+@export var settlement_name: String = ""
+@onready var name_label: Label = $NameLabel
+
 @export var faction: Faction.Type = Faction.Type.NEUTRAL : set = set_faction
 @export var soldiers: int = 0 : set = set_soldiers
 
@@ -18,6 +21,8 @@ signal clicked(settlement: Settlement)
 @onready var soldier_label: Label = $SoldierLabel
 
 func _ready() -> void:
+	name_label.visible = false
+	name_label.text = get_display_name()
 	add_to_group("settlements")
 	_make_neighbors_two_way()
 	_refresh_visuals()
@@ -25,8 +30,14 @@ func _ready() -> void:
 	selection_circle.visible = false
 	available_circle.visible = false
 
+func get_display_name() -> String:
+	return settlement_name if settlement_name != "" else name
+
 func set_selected(is_selected: bool) -> void:
 	selection_circle.visible = is_selected
+	name_label.visible = is_selected
+	if is_selected:
+		name_label.text = get_display_name()
 
 func set_available(is_available: bool) -> void:
 	available_circle.visible = is_available
