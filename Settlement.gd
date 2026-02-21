@@ -68,3 +68,10 @@ func _validate_neighbors() -> void:
 			continue
 		if not n.neighbors.has(self):
 			push_warning("%s has neighbor %s but not vice versa" % [name, n.name])
+
+func is_adjacent_to(other: Settlement) -> bool:
+	return neighbors.has(other)
+
+func can_receive_faction(incoming: Faction.Type) -> bool:
+	# Placeholder rule. You might later restrict neutral-only movement etc.
+	return true

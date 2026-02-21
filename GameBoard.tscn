@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://cc2ievfcyitj0" path="res://Graphic/Top1.2.0.png" id="1_13qgv"]
 [ext_resource type="Script" uid="uid://c51s4b4na5btf" path="res://camera_2d.gd" id="2_u5pr3"]
-[ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village.tscn" id="3_ocn0r"]
+[ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Settlement.tscn" id="3_ocn0r"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://connection_drawer.gd" id="4_3fmbn"]
 [ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI.gd" id="5_p1wqh"]
 [ext_resource type="Script" uid="uid://cqv0tts3e8xlb" path="res://BoardController.gd" id="6_trxdi"]
@@ -21,16 +21,22 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("4_3fmbn")
 
-[node name="ElfVillage" parent="." unique_id=167798052 instance=ExtResource("3_ocn0r")]
+[node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
+position = Vector2(1051, 667)
+soldiers = 5
+neighbors = [NodePath("../OrcTown")]
+
+[node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(773, 660)
 faction = 2
 soldiers = 10
+neighbors = [NodePath("../OrcTown")]
 
 [node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)
 faction = 1
 soldiers = 25
-neighbors = [NodePath("../ElfVillage")]
+neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1700058816]
 script = ExtResource("5_p1wqh")
