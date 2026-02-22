@@ -1,7 +1,5 @@
 extends CanvasLayer
 
-
-
 @onready var next_turn_button: Button = $RightPanel/HBoxContainerBottom/VBoxContainer/NextTurnButton
 @onready var turn_label: Label = $RightPanel/HBoxContainerTop/VBoxContainer/TurnLabel
 

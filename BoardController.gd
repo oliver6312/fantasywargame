@@ -1,18 +1,28 @@
 extends Node
 
-@onready var deselect_button: Button = %DeselectButton
-
-@export_node_path("CanvasLayer") var ui_path
-@onready var ui: CanvasLayer = get_node(ui_path)
+@onready var ui: CanvasLayer = _find_ui()
 
 @onready var move_dialog: AcceptDialog = ui.get_node("MoveDialog")
 @onready var amount_edit: LineEdit = move_dialog.get_node("AmountEdit")
 @onready var prompt_label: Label = move_dialog.get_node_or_null("PromptLabel")
+@onready var deselect_button: Button = ui.get_node("DeselectButton")
+
+
+
+func _find_ui() -> CanvasLayer:
+	var nodes := get_tree().get_nodes_in_group("ui_root")
+	if nodes.size() == 0:
+		push_error("No UI root found. Add the UI CanvasLayer to group 'ui_root'.")
+		return null
+	return nodes[0] as CanvasLayer
 
 var selected: Settlement = null
 var pending_target: Settlement = null
 
 func _ready() -> void:
+	#safety check
+	if ui == null:
+		return
 	# Connect all settlements
 	for s in get_tree().get_nodes_in_group("settlements"):
 		s.clicked.connect(_on_settlement_clicked)
@@ -141,5 +151,4 @@ func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
 	else:
 		# Attacker wins: flip faction and survivors = abs(result)
 		target.set_garrison(source.faction, -result)
-	TurnState.recalculate_control_from_board()
 	_deselect()
