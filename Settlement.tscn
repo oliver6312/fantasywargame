@@ -9,11 +9,11 @@
 [ext_resource type="Texture2D" uid="uid://cbyw72bs74384" path="res://Graphic/FoodSymbol.png" id="7_awepx"]
 [ext_resource type="Script" uid="uid://b4etiagejpaxr" path="res://building_slot.gd" id="7_yeo3y"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4hnof"]
-size = Vector2(28, 28)
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4hnof"]
+size = Vector2(28, 28)
 
 [node name="Area2D" type="Area2D" unique_id=167798052]
 script = ExtResource("1_hx6cv")
@@ -43,13 +43,15 @@ visible = false
 scale = Vector2(0.6523437, 0.6523437)
 texture = ExtResource("7_awepx")
 
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
+shape = SubResource("CircleShape2D_hx6cv")
+
 [node name="BuildingSlot3" type="Area2D" parent="." unique_id=964877108]
 position = Vector2(0, -32)
 script = ExtResource("7_yeo3y")
 
 [node name="SlotSelectCircle" type="Sprite2D" parent="BuildingSlot3" unique_id=1553052657]
 visible = false
-position = Vector2(0, -32)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("2_5erx4")
 
@@ -65,7 +67,6 @@ script = ExtResource("7_yeo3y")
 
 [node name="SlotSelectCircle" type="Sprite2D" parent="BuildingSlot2" unique_id=1930467892]
 visible = false
-position = Vector2(32, 32)
 scale = Vector2(0.15, 0.15)
 texture = ExtResource("2_5erx4")
 
@@ -89,10 +90,6 @@ texture = ExtResource("7_4hnof")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BuildingSlot1" unique_id=2095481193]
 shape = SubResource("RectangleShape2D_4hnof")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
-visible = false
-shape = SubResource("CircleShape2D_hx6cv")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
 anchors_preset = 15

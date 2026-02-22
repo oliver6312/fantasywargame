@@ -4,7 +4,6 @@ class_name GameState
 signal turn_changed(new_turn: Faction.Type)
 signal resources_changed(faction: Faction.Type)
 
-# Only the playable factions (no neutral)
 const TURN_ORDER: Array[Faction.Type] = [
 	Faction.Type.ORC,
 	Faction.Type.ELF,

@@ -24,6 +24,7 @@ script = ExtResource("4_3fmbn")
 
 [node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(1051, 667)
+resource_type = 2
 settlement_name = "The Shire"
 soldiers = 5
 neighbors = [NodePath("../OrcTown"), NodePath("../FarawayLand")]

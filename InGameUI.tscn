@@ -54,13 +54,35 @@ offset_right = 20.0
 offset_bottom = 40.0
 grow_horizontal = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RightPanel/HBoxContainerTop" unique_id=1223685560]
+[node name="FactionTurnLabel" type="Label" parent="RightPanel/HBoxContainerTop" unique_id=663230749]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 
-[node name="FactionTurnLabel" type="Label" parent="RightPanel/HBoxContainerTop/VBoxContainer" unique_id=663230749]
+[node name="HBoxContainerMiddle" type="HBoxContainer" parent="RightPanel" unique_id=393587893]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RightPanel/HBoxContainerMiddle" unique_id=1236612206]
 layout_mode = 2
+
+[node name="Label" type="Label" parent="RightPanel/HBoxContainerMiddle/VBoxContainer" unique_id=950263076]
+visible = false
+layout_mode = 2
+text = "Jesus"
+
+[node name="Label2" type="Label" parent="RightPanel/HBoxContainerMiddle/VBoxContainer" unique_id=297287789]
+visible = false
+layout_mode = 2
+text = "Died"
 
 [node name="LeftPanel" type="Panel" parent="." unique_id=1716879136]
 anchors_preset = 9
