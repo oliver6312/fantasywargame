@@ -27,6 +27,14 @@ signal clicked(settlement: Settlement)
 
 @onready var soldier_label: Label = $SoldierLabel
 
+@export_range(1, 3, 1) var available_slots: int = 1 : set = set_available_slots
+
+@onready var building_slots: Array[Node2D] = [
+	$BuildingSlot1,
+	$BuildingSlot2,
+	$BuildingSlot3
+]
+
 func _ready() -> void:
 	name_label.visible = false
 	name_label.text = get_display_name()
@@ -37,6 +45,13 @@ func _ready() -> void:
 	_validate_neighbors()
 	selection_circle.visible = false
 	available_circle.visible = false
+	# ...your existing _ready stuff...
+	set_available_slots(available_slots) # ensures visibility matches initial value
+
+func set_available_slots(value: int) -> void:
+	available_slots = clamp(value, 1, 3)
+	for i in range(building_slots.size()):
+		building_slots[i].visible = (i < available_slots)
 
 func set_resource_type(value: ResourceClass.Type) -> void:
 	resource_type = value

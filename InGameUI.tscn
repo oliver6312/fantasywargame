@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://cdaw4wd7ieqhm"]
 
 [ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI.gd" id="1_vuk1r"]
+[ext_resource type="Script" uid="uid://edyydwe8v17h" path="res://resource_panel.gd" id="2_2p58f"]
 
 [node name="UI" type="CanvasLayer" unique_id=1446758158 groups=["ui_root"]]
 script = ExtResource("1_vuk1r")
@@ -32,10 +33,16 @@ layout_mode = 2
 size_flags_vertical = 8
 
 [node name="NextTurnButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=1790046960]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Next Turn"
+
+[node name="DeselectButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=492022903]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Deselect"
 
 [node name="HBoxContainerTop" type="HBoxContainer" parent="RightPanel" unique_id=1133753304]
 layout_mode = 1
@@ -52,7 +59,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="TurnLabel" type="Label" parent="RightPanel/HBoxContainerTop/VBoxContainer" unique_id=663230749]
+[node name="FactionTurnLabel" type="Label" parent="RightPanel/HBoxContainerTop/VBoxContainer" unique_id=663230749]
 layout_mode = 2
 
 [node name="LeftPanel" type="Panel" parent="." unique_id=1716879136]
@@ -62,45 +69,86 @@ offset_right = 128.0
 grow_vertical = 2
 
 [node name="MoveDialog" type="AcceptDialog" parent="." unique_id=1455087423]
+unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Move Soldiers"
 position = Vector2i(0, 36)
 ok_button_text = "Send"
 
 [node name="AmountEdit" type="LineEdit" parent="MoveDialog" unique_id=1455106872]
+unique_name_in_owner = true
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 92.0
 offset_bottom = 51.0
 
 [node name="PromptLabel" type="Label" parent="MoveDialog" unique_id=1608090264]
+unique_name_in_owner = true
 offset_left = 8.0
 offset_top = 8.0
 offset_right = 92.0
 offset_bottom = 51.0
 
-[node name="Panel" type="Panel" parent="." unique_id=1311022263]
+[node name="ResourcePanel" type="Panel" parent="." unique_id=1311022263]
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 128.0
 offset_right = -128.0
 offset_bottom = 40.0
 grow_horizontal = 2
+script = ExtResource("2_2p58f")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=2104254937]
+[node name="ElfPanel" type="HBoxContainer" parent="ResourcePanel" unique_id=2104254937]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 83.0
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="Panel/HBoxContainer" unique_id=604757859]
+[node name="FoodLabel" type="Label" parent="ResourcePanel/ElfPanel" unique_id=2028888544]
 layout_mode = 2
-text = "Elf Mineral"
 
-[node name="DeselectButton" type="Button" parent="." unique_id=492022903]
-offset_left = 1045.0
-offset_top = 582.0
-offset_right = 1131.0
-offset_bottom = 613.0
-text = "Deselect"
+[node name="LumberLabel" type="Label" parent="ResourcePanel/ElfPanel" unique_id=604757859]
+layout_mode = 2
+
+[node name="MineralsLabel" type="Label" parent="ResourcePanel/ElfPanel" unique_id=1819094540]
+layout_mode = 2
+
+[node name="OrcPanel" type="HBoxContainer" parent="ResourcePanel" unique_id=294328137]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -5.5
+offset_right = 5.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="FoodLabel" type="Label" parent="ResourcePanel/OrcPanel" unique_id=1380479588]
+layout_mode = 2
+
+[node name="LumberLabel" type="Label" parent="ResourcePanel/OrcPanel" unique_id=1504618669]
+layout_mode = 2
+
+[node name="MineralsLabel" type="Label" parent="ResourcePanel/OrcPanel" unique_id=1255412974]
+layout_mode = 2
+
+[node name="DwarfPanel" type="HBoxContainer" parent="ResourcePanel" unique_id=2026171804]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -11.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="FoodLabel" type="Label" parent="ResourcePanel/DwarfPanel" unique_id=1474777462]
+layout_mode = 2
+
+[node name="LumberLabel" type="Label" parent="ResourcePanel/DwarfPanel" unique_id=1188153143]
+layout_mode = 2
+
+[node name="MineralsLabel" type="Label" parent="ResourcePanel/DwarfPanel" unique_id=1346057746]
+layout_mode = 2

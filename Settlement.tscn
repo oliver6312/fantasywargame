@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://djgorxnh2gemb"]
 
 [ext_resource type="Script" uid="uid://xerce68opmqe" path="res://Settlement.gd" id="1_hx6cv"]
-[ext_resource type="Texture2D" uid="uid://b2w0voc5i01pc" path="res://Graphic/SettlmentPrototypeVillage.png" id="1_mrgdo"]
 [ext_resource type="Texture2D" uid="uid://dihtqsnypaq7h" path="res://Graphic/SelectionCircle.png" id="2_5erx4"]
 [ext_resource type="Texture2D" uid="uid://pm3t1dv4oh4e" path="res://Graphic/AvailableCircle.png" id="2_u8w44"]
 [ext_resource type="Texture2D" uid="uid://csu4xuhamhsfg" path="res://Graphic/LumberSymbol.png" id="5_4hnof"]
 [ext_resource type="Texture2D" uid="uid://bqoa5omwd4nfl" path="res://Graphic/MineralSymbol.png" id="6_yeo3y"]
+[ext_resource type="Texture2D" uid="uid://wdwfxhlllke2" path="res://Graphic/BuildingSlot.png" id="7_4hnof"]
 [ext_resource type="Texture2D" uid="uid://cbyw72bs74384" path="res://Graphic/FoodSymbol.png" id="7_awepx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
@@ -24,12 +24,6 @@ visible = false
 scale = Vector2(0.33, 0.33)
 texture = ExtResource("2_5erx4")
 
-[node name="OldSettlement" type="Sprite2D" parent="." unique_id=1562593096]
-visible = false
-position = Vector2(-3.0517578e-05, -4.999996)
-scale = Vector2(0.33, 0.33)
-texture = ExtResource("1_mrgdo")
-
 [node name="Lumber" type="Sprite2D" parent="." unique_id=1236184182]
 visible = false
 scale = Vector2(0.6523437, 0.6523437)
@@ -44,6 +38,36 @@ texture = ExtResource("6_yeo3y")
 visible = false
 scale = Vector2(0.6523437, 0.6523437)
 texture = ExtResource("7_awepx")
+
+[node name="BuildingSlot1" type="Sprite2D" parent="." unique_id=429837736]
+position = Vector2(-32, 32)
+texture = ExtResource("7_4hnof")
+
+[node name="SlotButton1" type="Button" parent="BuildingSlot1" unique_id=525861760]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+
+[node name="BuildingSlot2" type="Sprite2D" parent="." unique_id=479702112]
+position = Vector2(32, 32)
+texture = ExtResource("7_4hnof")
+
+[node name="SlotButton2" type="Button" parent="BuildingSlot2" unique_id=1155479330]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
+
+[node name="BuildingSlot3" type="Sprite2D" parent="." unique_id=1239465230]
+position = Vector2(0, -32)
+texture = ExtResource("7_4hnof")
+
+[node name="SlotButton3" type="Button" parent="BuildingSlot3" unique_id=1346795195]
+offset_left = -14.0
+offset_top = -14.0
+offset_right = 14.0
+offset_bottom = 14.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
 visible = false

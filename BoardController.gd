@@ -2,11 +2,10 @@ extends Node
 
 @onready var ui: CanvasLayer = _find_ui()
 
-@onready var move_dialog: AcceptDialog = ui.get_node("MoveDialog")
-@onready var amount_edit: LineEdit = move_dialog.get_node("AmountEdit")
-@onready var prompt_label: Label = move_dialog.get_node_or_null("PromptLabel")
-@onready var deselect_button: Button = ui.get_node("DeselectButton")
-
+@onready var move_dialog: AcceptDialog = ui.get_node("%MoveDialog") as AcceptDialog
+@onready var amount_edit: LineEdit = ui.get_node("%AmountEdit") as LineEdit
+@onready var prompt_label: Label = ui.get_node_or_null("%PromptLabel") as Label
+@onready var deselect_button: Button = ui.get_node("%DeselectButton") as Button
 
 
 func _find_ui() -> CanvasLayer:

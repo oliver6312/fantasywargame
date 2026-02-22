@@ -1,8 +1,7 @@
 extends CanvasLayer
 
-@onready var next_turn_button: Button = $RightPanel/HBoxContainerBottom/VBoxContainer/NextTurnButton
-@onready var turn_label: Label = $RightPanel/HBoxContainerTop/VBoxContainer/TurnLabel
-
+@onready var next_turn_button: Button = %NextTurnButton
+@onready var faction_turn_label: Label = $RightPanel/HBoxContainerTop/VBoxContainer/FactionTurnLabel
 
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
@@ -15,7 +14,7 @@ func _on_next_turn_pressed() -> void:
 	TurnState.next_turn()
 
 func _on_turn_changed(new_turn: Faction.Type) -> void:
-	turn_label.text = "%s turn" % _turn_name(new_turn)
+	faction_turn_label.text = "%s turn" % _turn_name(new_turn)
 
 func _turn_name(t: Faction.Type) -> String:
 	match t:

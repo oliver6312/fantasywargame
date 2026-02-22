@@ -35,6 +35,7 @@ settlement_name = "Rivendel"
 faction = 2
 soldiers = 10
 neighbors = [NodePath("../OrcTown"), NodePath("../NeutralPit")]
+available_slots = 2
 
 [node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)
