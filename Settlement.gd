@@ -3,6 +3,13 @@ class_name Settlement
 
 signal clicked(settlement: Settlement)
 
+@export var resource_type: ResourceClass.Type = ResourceClass.Type.FOOD : set = set_resource_type
+
+@onready var lumber_icon: Sprite2D = $Lumber
+@onready var mineral_icon: Sprite2D = $Mineral
+@onready var food_icon: Sprite2D = $Food
+
+
 @onready var selection_circle: Sprite2D = $SelectionCircle
 @onready var available_circle: Sprite2D = $AvailableCircle
 
@@ -26,9 +33,30 @@ func _ready() -> void:
 	add_to_group("settlements")
 	_make_neighbors_two_way()
 	_refresh_visuals()
+	_refresh_resource_icon()
 	_validate_neighbors()
 	selection_circle.visible = false
 	available_circle.visible = false
+
+func set_resource_type(value: ResourceClass.Type) -> void:
+	resource_type = value
+	_refresh_resource_icon()
+
+func _refresh_resource_icon() -> void:
+	# Hide all first
+	if lumber_icon: lumber_icon.visible = false
+	if food_icon: food_icon.visible = false
+	if mineral_icon: mineral_icon.visible = false
+
+	# Show the correct one
+	match resource_type:
+		ResourceClass.Type.LUMBER:
+			if lumber_icon: lumber_icon.visible = true
+		ResourceClass.Type.FOOD:
+			if food_icon: food_icon.visible = true
+		ResourceClass.Type.MINERALS:
+			if mineral_icon: mineral_icon.visible = true
+
 
 func get_display_name() -> String:
 	return settlement_name if settlement_name != "" else name

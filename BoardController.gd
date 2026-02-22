@@ -141,4 +141,5 @@ func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
 	else:
 		# Attacker wins: flip faction and survivors = abs(result)
 		target.set_garrison(source.faction, -result)
+	TurnState.recalculate_control_from_board()
 	_deselect()

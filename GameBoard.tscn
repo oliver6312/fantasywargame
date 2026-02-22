@@ -24,18 +24,21 @@ script = ExtResource("4_3fmbn")
 
 [node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(1051, 667)
+settlement_name = "The Shire"
 soldiers = 5
-neighbors = [NodePath("../OrcTown")]
+neighbors = [NodePath("../OrcTown"), NodePath("../FarawayLand")]
 
 [node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(773, 660)
+resource_type = 0
+settlement_name = "Rivendel"
 faction = 2
 soldiers = 10
-neighbors = [NodePath("../OrcTown")]
+neighbors = [NodePath("../OrcTown"), NodePath("../NeutralPit")]
 
 [node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)
-settlement_name = "OrcTown"
+settlement_name = "Mordor"
 faction = 1
 soldiers = 25
 neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
@@ -126,6 +129,25 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 92.0
 offset_bottom = 51.0
+
+[node name="Panel" type="Panel" parent="UI" unique_id=1372730100]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 128.0
+offset_right = -128.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI/Panel" unique_id=2057198136]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 83.0
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI/Panel/HBoxContainer" unique_id=2004808888]
+layout_mode = 2
+text = "Elf Mineral"
 
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
 visible = false

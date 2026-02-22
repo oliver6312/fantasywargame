@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://b2w0voc5i01pc" path="res://Graphic/SettlmentPrototypeVillage.png" id="1_mrgdo"]
 [ext_resource type="Texture2D" uid="uid://dihtqsnypaq7h" path="res://Graphic/SelectionCircle.png" id="2_5erx4"]
 [ext_resource type="Texture2D" uid="uid://pm3t1dv4oh4e" path="res://Graphic/AvailableCircle.png" id="2_u8w44"]
+[ext_resource type="Texture2D" uid="uid://csu4xuhamhsfg" path="res://Graphic/LumberSymbol.png" id="5_4hnof"]
+[ext_resource type="Texture2D" uid="uid://bqoa5omwd4nfl" path="res://Graphic/MineralSymbol.png" id="6_yeo3y"]
+[ext_resource type="Texture2D" uid="uid://cbyw72bs74384" path="res://Graphic/FoodSymbol.png" id="7_awepx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
@@ -21,12 +24,29 @@ visible = false
 scale = Vector2(0.33, 0.33)
 texture = ExtResource("2_5erx4")
 
-[node name="Circle" type="Sprite2D" parent="." unique_id=1562593096]
+[node name="OldSettlement" type="Sprite2D" parent="." unique_id=1562593096]
+visible = false
 position = Vector2(-3.0517578e-05, -4.999996)
 scale = Vector2(0.33, 0.33)
 texture = ExtResource("1_mrgdo")
 
+[node name="Lumber" type="Sprite2D" parent="." unique_id=1236184182]
+visible = false
+scale = Vector2(0.6523437, 0.6523437)
+texture = ExtResource("5_4hnof")
+
+[node name="Mineral" type="Sprite2D" parent="." unique_id=568335794]
+visible = false
+scale = Vector2(0.6523437, 0.6523437)
+texture = ExtResource("6_yeo3y")
+
+[node name="Food" type="Sprite2D" parent="." unique_id=2029893192]
+visible = false
+scale = Vector2(0.6523437, 0.6523437)
+texture = ExtResource("7_awepx")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
+visible = false
 shape = SubResource("CircleShape2D_hx6cv")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
