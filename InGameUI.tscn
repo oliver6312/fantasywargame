@@ -32,17 +32,17 @@ grow_vertical = 0
 layout_mode = 2
 size_flags_vertical = 8
 
+[node name="DeselectButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=492022903]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Deselect"
+
 [node name="NextTurnButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=1790046960]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Next Turn"
-
-[node name="DeselectButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=492022903]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Deselect"
 
 [node name="HBoxContainerTop" type="HBoxContainer" parent="RightPanel" unique_id=1133753304]
 layout_mode = 1
