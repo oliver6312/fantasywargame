@@ -7,6 +7,11 @@ extends Node
 @onready var prompt_label: Label = ui.get_node_or_null("%PromptLabel") as Label
 @onready var deselect_button: Button = ui.get_node("%DeselectButton") as Button
 
+@onready var building_panel: Control = ui.get_node("BuildingPanel")
+@onready var recruitment_button: TextureButton = ui.get_node("%RecruitmentButton") as TextureButton
+
+var selected_slot: BuildingSlot = null
+var selected_building_id: String = ""  # e.g. "recruitment"
 
 func _find_ui() -> CanvasLayer:
 	var nodes := get_tree().get_nodes_in_group("ui_root")
