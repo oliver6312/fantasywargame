@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://b2klyx15ifxcn"]
+
+[ext_resource type="Texture2D" uid="uid://c1el7je7ifqxd" path="res://Graphic/RecruitmentCamp.png" id="1_u7urx"]
+
+[node name="RecruitmentCamp" type="Area2D" unique_id=1813020546]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=745641879]
+texture = ExtResource("1_u7urx")
