@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://bc52l3i835qmq"]
+
+[ext_resource type="Script" uid="uid://ds68jy2mhxwkv" path="res://Building/Buildingdb.gd" id="1_k18if"]
+[ext_resource type="Script" uid="uid://cicgs401yd8ub" path="res://Building/BuildingDef.gd" id="2_ftejw"]
+[ext_resource type="Resource" uid="uid://sxe5dktg6by5" path="res://Building/Buildings/recruitment_camp.tres" id="3_j02t7"]
+
+[node name="Buildingdb" type="Node2D" unique_id=247209700]
+script = ExtResource("1_k18if")
+orc_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7")])
+elf_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7")])
+dwarf_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7")])

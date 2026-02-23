@@ -1,5 +1,7 @@
 extends Node
 
+#real one
+
 # Assign these in the inspector if you autoload this,
 # or load them manually in _ready().
 @export var orc_buildings: Array[BuildingDef] = []

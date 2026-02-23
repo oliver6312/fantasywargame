@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3 uid="uid://sxe5dktg6by5"]
+
+[ext_resource type="Texture2D" uid="uid://c1el7je7ifqxd" path="res://Building/RecruitmentCamp.png" id="1_2ob50"]
+[ext_resource type="Script" uid="uid://cicgs401yd8ub" path="res://Building/BuildingDef.gd" id="2_44sls"]
+
+[resource]
+script = ExtResource("2_44sls")
+id = "recruitment_camp"
+display_name = "Recruitment Camp"
+icon = ExtResource("1_2ob50")
+cost_lumber = 1
+metadata/_custom_type_script = "uid://cicgs401yd8ub"

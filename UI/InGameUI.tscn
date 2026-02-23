@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI/UI.gd" id="1_vuk1r"]
 [ext_resource type="Script" uid="uid://edyydwe8v17h" path="res://UI/resource_panel.gd" id="2_2p58f"]
-[ext_resource type="Script" uid="uid://b37ny67ogwnvr" path="res://UI/right_panel.gd" id="2_5ybyt"]
+[ext_resource type="Script" uid="uid://b37ny67ogwnvr" path="res://UI/SettlementInfoPanel.gd" id="2_5ybyt"]
 [ext_resource type="Script" uid="uid://gwo7si6dtd1l" path="res://UI/building_menu.gd" id="4_sidh8"]
 
 [node name="UI" type="CanvasLayer" unique_id=1446758158 groups=["ui_root"]]
