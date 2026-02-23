@@ -41,10 +41,6 @@ func _ready() -> void:
 	selection_circle.visible = false
 	available_circle.visible = false
 
-
-
-
-
 func set_resource_type(value: ResourceClass.Type) -> void:
 	resource_type = value
 	_refresh_resource_icon()

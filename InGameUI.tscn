@@ -2,11 +2,13 @@
 
 [ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI.gd" id="1_vuk1r"]
 [ext_resource type="Script" uid="uid://edyydwe8v17h" path="res://resource_panel.gd" id="2_2p58f"]
+[ext_resource type="Script" uid="uid://b37ny67ogwnvr" path="res://right_panel.gd" id="2_5ybyt"]
 
 [node name="UI" type="CanvasLayer" unique_id=1446758158 groups=["ui_root"]]
 script = ExtResource("1_vuk1r")
 
 [node name="RightPanel" type="Panel" parent="." unique_id=1808129865]
+unique_name_in_owner = true
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
@@ -14,6 +16,7 @@ anchor_bottom = 1.0
 offset_left = -128.0
 grow_horizontal = 0
 grow_vertical = 2
+script = ExtResource("2_5ybyt")
 
 [node name="HBoxContainerBottom" type="HBoxContainer" parent="RightPanel" unique_id=1149897260]
 layout_mode = 1
@@ -72,7 +75,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="SettlementInfoPanel" type="VBoxContainer" parent="RightPanel/HBoxContainerMiddle" unique_id=1236612206]
-visible = false
 layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="RightPanel/HBoxContainerMiddle/SettlementInfoPanel" unique_id=950263076]

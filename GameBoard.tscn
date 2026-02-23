@@ -43,6 +43,7 @@ settlement_name = "Mordor"
 faction = 1
 soldiers = 25
 neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
+building_slots = 2
 
 [node name="FarawayLand" parent="." unique_id=1631699824 instance=ExtResource("3_ocn0r")]
 position = Vector2(1598, 1084)
