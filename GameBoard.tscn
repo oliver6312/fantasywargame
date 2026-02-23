@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
-[ext_resource type="Texture2D" uid="uid://cc2ievfcyitj0" path="res://Graphic/Top1.2.0.png" id="1_13qgv"]
+[ext_resource type="Texture2D" uid="uid://cpl7xpcgmvmef" path="res://Graphic/SideBridge1.png" id="2_trxdi"]
 [ext_resource type="Script" uid="uid://c51s4b4na5btf" path="res://camera_2d.gd" id="2_u5pr3"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Settlement.tscn" id="3_ocn0r"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://connection_drawer.gd" id="4_3fmbn"]
@@ -16,7 +16,7 @@ script = ExtResource("2_u5pr3")
 map_path = NodePath("../Map")
 
 [node name="Map" type="Sprite2D" parent="." unique_id=1727819468]
-texture = ExtResource("1_13qgv")
+texture = ExtResource("2_trxdi")
 centered = false
 
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
@@ -36,7 +36,6 @@ settlement_name = "Rivendel"
 faction = 2
 soldiers = 10
 neighbors = [NodePath("../OrcTown"), NodePath("../NeutralPit")]
-available_slots = 2
 
 [node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)

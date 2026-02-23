@@ -9,7 +9,6 @@ signal clicked(settlement: Settlement)
 @onready var mineral_icon: Sprite2D = $Mineral
 @onready var food_icon: Sprite2D = $Food
 
-
 @onready var selection_circle: Sprite2D = $SelectionCircle
 @onready var available_circle: Sprite2D = $AvailableCircle
 
@@ -27,13 +26,9 @@ signal clicked(settlement: Settlement)
 
 @onready var soldier_label: Label = $SoldierLabel
 
-@export_range(1, 3, 1) var available_slots: int = 1 : set = set_available_slots
+@export_range(1, 3, 1) var building_slots: int = 1
 
-@onready var building_slots: Array[Node2D] = [
-	$BuildingSlot1,
-	$BuildingSlot2,
-	$BuildingSlot3
-]
+var buildings: Array[String] = [] # later you can make this an enum or Resource
 
 func _ready() -> void:
 	name_label.visible = false
@@ -45,13 +40,10 @@ func _ready() -> void:
 	_validate_neighbors()
 	selection_circle.visible = false
 	available_circle.visible = false
-	# ...your existing _ready stuff...
-	set_available_slots(available_slots) # ensures visibility matches initial value
 
-func set_available_slots(value: int) -> void:
-	available_slots = clamp(value, 1, 3)
-	for i in range(building_slots.size()):
-		building_slots[i].visible = (i < available_slots)
+
+
+
 
 func set_resource_type(value: ResourceClass.Type) -> void:
 	resource_type = value
