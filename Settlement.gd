@@ -24,11 +24,12 @@ signal clicked(settlement: Settlement)
 # We'll fill this in manually in the editor at first (simple + reliable).
 @export var neighbors: Array[Settlement] = []
 
+#thegoodkind
 @onready var soldier_label: Label = $SoldierLabel
-
+#thegoodkind
 @export_range(1, 3, 1) var building_slots: int = 1
 
-var buildings: Array[String] = [] # later you can make this an enum or Resource
+@export var buildings: Array[String] = ["", "", ""]
 
 func _ready() -> void:
 	name_label.visible = false
@@ -40,6 +41,19 @@ func _ready() -> void:
 	_validate_neighbors()
 	selection_circle.visible = false
 	available_circle.visible = false
+
+func set_building(slot_index: int, building_id: String) -> void:
+	# slot_index: 0..2
+	if slot_index < 0 or slot_index >= 3:
+		return
+	if slot_index >= building_slots:
+		return
+	buildings[slot_index] = building_id
+
+func building_in_slot(slot_index: int) -> String:
+	if slot_index < 0 or slot_index >= 3:
+		return ""
+	return buildings[slot_index]
 
 func set_resource_type(value: ResourceClass.Type) -> void:
 	resource_type = value

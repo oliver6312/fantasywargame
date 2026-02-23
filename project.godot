@@ -16,6 +16,7 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 [autoload]
 
 TurnState="*uid://7ihom0dpcm3m"
+BuildingDatabase="*uid://ds68jy2mhxwkv"
 
 [physics]
 

@@ -7,13 +7,13 @@ extends Node
 @onready var prompt_label: Label = ui.get_node_or_null("%PromptLabel") as Label
 @onready var deselect_button: Button = ui.get_node("%DeselectButton") as Button
 
-@onready var building_panel: Control = ui.get_node("%BuildingPanel") as Control
-@onready var recruitment_button: TextureButton = ui.get_node("%RecruitmentBuildingButton") as TextureButton
-
 @export var recruitment_building_scene: PackedScene
 
 @onready var info_panel: Panel = ui.get_node("%SettlementInfoPanel") as Panel
 
+@onready var building_menu: PanelContainer = ui.get_node("%BuildingMenu") as PanelContainer
+
+var selected_slot_index: int = -1
 
 var selected_slot: BuildingSlot = null
 var selected_building_id: String = ""  # e.g. "recruitment"
@@ -40,6 +40,53 @@ func _ready() -> void:
 	move_dialog.canceled.connect(_on_move_canceled)
 	deselect_button.pressed.connect(_on_deselect_pressed)
 	_show_deselect_button(false)
+	
+	info_panel.slot_clicked.connect(_on_building_slot_clicked)
+	building_menu.building_chosen.connect(_on_building_chosen)
+
+func _on_building_chosen(b: BuildingDef) -> void:
+	if selected == null or selected_slot_index < 0:
+		return
+
+	# 2) settlement faction must match current turn
+	if selected.faction != TurnState.current_turn:
+		print("You can only build in settlements of the current turn’s faction.")
+		return
+
+	# Must be a valid slot
+	if selected_slot_index >= selected.building_slots:
+		return
+
+	# Optional: prevent overwriting non-empty slots
+	if selected.building_in_slot(selected_slot_index) != "":
+		print("That slot is not empty.")
+		return
+
+	# 2) check resources
+	var cost := b.cost_dict()
+	if not TurnState.can_afford(selected.faction, cost):
+		print("Not enough resources.")
+		return
+
+	# 3) spend and register building
+	if not TurnState.spend_resources(selected.faction, cost):
+		return
+
+	selected.set_building(selected_slot_index, b.id)
+
+	# Update panel text immediately
+	info_panel.show_for_settlement(selected)
+
+	# Close menu + clear slot selection (optional)
+	building_menu.close()
+	selected_slot_index = -1
+
+func _on_building_slot_clicked(settlement: Settlement, slot_index: int) -> void:
+	# Slot is clicked => selected
+	selected_slot_index = slot_index
+
+	# Open menu depending on settlement faction (as requested)
+	building_menu.open_for_faction(settlement.faction)
 
 func _on_deselect_pressed() -> void:
 	_deselect()

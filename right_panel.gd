@@ -7,17 +7,39 @@ class_name SettlementInfoPanel
 @onready var soldiers_label: Label = $HBoxContainerMiddle/VBoxContainer/SoldiersLabel
 @onready var building_slots_label: Label = $HBoxContainerMiddle/VBoxContainer/BuildingSlotsLabel
 
-@onready var slot1: Label = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot1Label
-@onready var slot2: Label = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot2Label
-@onready var slot3: Label = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot3Label
+@onready var slot1: Button = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot1Label
+@onready var slot2: Button = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot2Label
+@onready var slot3: Button = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot3Label
+var slot_buttons: Array[Button]
+var _current_settlement: Settlement = null
 
-var slot_labels: Array[Label]
+signal slot_clicked(settlement: Settlement, slot_index: int)
+
+
 
 func _ready() -> void:
-	slot_labels = [slot1, slot2, slot3]
+	slot_buttons = [slot1, slot2, slot3]
+	slot1.pressed.connect(func(): _on_slot_pressed(0))
+	slot2.pressed.connect(func(): _on_slot_pressed(1))
+	slot3.pressed.connect(func(): _on_slot_pressed(2))
 	hide_panel()
 
+func _building_name_from_id(b_id: String) -> String:
+	# Brute-force lookup across all factions (fine at this scale)
+	for f in [Faction.Type.ORC, Faction.Type.ELF, Faction.Type.DWARF]:
+		for b in BuildingDatabase.buildings_for_faction(f):
+			if b.id == b_id:
+				return b.display_name
+	return b_id
+
+func _on_slot_pressed(i: int) -> void:
+	if _current_settlement == null:
+		return
+	emit_signal("slot_clicked", _current_settlement, i)
+
 func show_for_settlement(s: Settlement) -> void:
+	_current_settlement = s
+	visible = true
 	if s == null:
 		hide_panel()
 		return
@@ -40,15 +62,20 @@ func show_for_settlement(s: Settlement) -> void:
 	soldiers_label.text = "Soldiers: %d" % s.soldiers
 
 	# Building slots
-	var slots: int = clampi(s.building_slots, 1, 3)
+	var slots: int = clamp(s.building_slots, 1, 3)
 	building_slots_label.text = "Building slots: %d" % slots
 
 	for i in range(3):
-		var lbl: Label = slot_labels[i]
-		var slot_num: int = i + 1
-		lbl.visible = slot_num <= slots
-		if lbl.visible:
-			lbl.text = "Slot %d: (empty)" % slot_num
+		var btn := slot_buttons[i]
+		var slot_num := i + 1
+		btn.visible = slot_num <= slots
+		if btn.visible:
+			var b_id := s.building_in_slot(i)
+			if b_id == "":
+				btn.text = "Building Slot %d: (empty)" % slot_num
+			else:
+				# Convert building id -> display name (via BuildingDB lookup helper below)
+				btn.text = "Building Slot %d: %s" % [slot_num, _building_name_from_id(b_id)]
 
 func hide_panel() -> void:
 	visible = false

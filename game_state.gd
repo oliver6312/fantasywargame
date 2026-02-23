@@ -4,6 +4,43 @@ class_name GameState
 signal turn_changed(new_turn: Faction.Type)
 signal resources_changed(faction: Faction.Type)
 
+func can_afford(f: Faction.Type, cost: Dictionary) -> bool:
+	for r in cost.keys():
+		if resources[f][r] < int(cost[r]):
+			return false
+	return true
+
+func spend_resources(f: Faction.Type, cost: Dictionary) -> bool:
+	if not can_afford(f, cost):
+		return false
+	for r in cost.keys():
+		resources[f][r] -= int(cost[r])
+	emit_signal("resources_changed", f)
+	return true
+
+# buildings_owned[faction][building_id] = count
+var buildings_owned := {
+	Faction.Type.ORC: {},
+	Faction.Type.ELF: {},
+	Faction.Type.DWARF: {},
+}
+
+func recalculate_buildings_from_board() -> void:
+	for f in TURN_ORDER:
+		buildings_owned[f].clear()
+
+	for s in get_tree().get_nodes_in_group("settlements"):
+		if s == null:
+			continue
+		var f: Faction.Type = s.faction
+		if not buildings_owned.has(f):
+			continue
+		for i in range(s.building_slots):
+			var b_id: String = str(s.buildings[i])
+			if b_id == "":
+				continue
+			buildings_owned[f][b_id] = int(buildings_owned[f].get(b_id, 0)) + 1
+
 const TURN_ORDER: Array[Faction.Type] = [
 	Faction.Type.ORC,
 	Faction.Type.ELF,
@@ -43,6 +80,7 @@ func next_turn() -> void:
 	turn_index = (turn_index + 1) % TURN_ORDER.size()
 	current_turn = TURN_ORDER[turn_index]
 	_start_turn_income(current_turn)
+	recalculate_buildings_from_board()
 	_emit_turn()
 
 func _emit_turn() -> void:
