@@ -15,7 +15,6 @@ extends Node
 
 var selected_slot_index: int = -1
 
-var selected_slot: BuildingSlot = null
 var selected_building_id: String = ""  # e.g. "recruitment"
 
 func _find_ui() -> CanvasLayer:
@@ -43,6 +42,10 @@ func _ready() -> void:
 	
 	info_panel.slot_clicked.connect(_on_building_slot_clicked)
 	building_menu.building_chosen.connect(_on_building_chosen)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("deselect"):
+		_deselect()
 
 func _on_building_chosen(b: BuildingDef) -> void:
 	if selected == null or selected_slot_index < 0:
@@ -157,6 +160,8 @@ func _deselect() -> void:
 	_clear_all_highlights()
 	_show_deselect_button(false)
 	info_panel.hide_panel()
+	building_menu.close()
+	selected_slot_index = -1
 
 func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	var max_send := source.soldiers

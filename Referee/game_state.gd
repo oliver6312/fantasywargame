@@ -4,6 +4,10 @@ class_name GameState
 signal turn_changed(new_turn: Faction.Type)
 signal resources_changed(faction: Faction.Type)
 
+signal round_changed(round: int)
+
+var round: int = 1
+
 func can_afford(f: Faction.Type, cost: Dictionary) -> bool:
 	for r in cost.keys():
 		if resources[f][r] < int(cost[r]):
@@ -78,6 +82,10 @@ func _ready() -> void:
 
 func next_turn() -> void:
 	turn_index = (turn_index + 1) % TURN_ORDER.size()
+	if turn_index == 0:
+		round += 1
+		emit_signal("round_changed", round)
+
 	current_turn = TURN_ORDER[turn_index]
 	_start_turn_income(current_turn)
 	recalculate_buildings_from_board()

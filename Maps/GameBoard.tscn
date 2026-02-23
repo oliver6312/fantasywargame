@@ -22,27 +22,26 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("3_wmin7")
 
-[node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+[node name="NeutralPit" parent="." unique_id=167798052 instance=ExtResource("4_msna8")]
 position = Vector2(1051, 667)
 resource_type = 2
 settlement_name = "The Shire"
 soldiers = 5
-neighbors = [NodePath("../OrcTown"), NodePath("../FarawayLand")]
 
 [node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
-position = Vector2(773, 660)
+position = Vector2(772, 658)
 resource_type = 0
 settlement_name = "Rivendel"
 faction = 2
 soldiers = 10
-neighbors = [NodePath("../OrcTown"), NodePath("../NeutralPit")]
+neighbors = [NodePath("../OrcTown")]
+buildings = Array[String](["", ""])
 
-[node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+[node name="OrcTown" parent="." unique_id=1386872374 instance=ExtResource("4_msna8")]
 position = Vector2(890, 831)
 settlement_name = "Mordor"
 faction = 1
 soldiers = 25
-neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
 building_slots = 2
 buildings = Array[String](["", ""])
 

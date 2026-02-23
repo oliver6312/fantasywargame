@@ -14,3 +14,12 @@ func buildings_for_faction(f: Faction.Type) -> Array[BuildingDef]:
 		Faction.Type.ELF: return elf_buildings
 		Faction.Type.DWARF: return dwarf_buildings
 		_: return []
+
+func get_def_by_id(id: String) -> BuildingDef:
+	for b in orc_buildings:
+		if b.id == id: return b
+	for b in elf_buildings:
+		if b.id == id: return b
+	for b in dwarf_buildings:
+		if b.id == id: return b
+	return null

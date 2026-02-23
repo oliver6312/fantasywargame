@@ -1,22 +1,18 @@
 [gd_scene format=3 uid="uid://djgorxnh2gemb"]
 
-[ext_resource type="Script" uid="uid://xerce68opmqe" path="res://Settlement/Settlement.gd" id="1_hx6cv"]
+[ext_resource type="Script" uid="uid://xerce68opmqe" path="res://Settlement/Settlement.gd" id="1_nl124"]
 [ext_resource type="Texture2D" uid="uid://dihtqsnypaq7h" path="res://UI/SelectionCircle.png" id="2_5erx4"]
 [ext_resource type="Texture2D" uid="uid://pm3t1dv4oh4e" path="res://UI/AvailableCircle.png" id="2_u8w44"]
 [ext_resource type="Texture2D" uid="uid://csu4xuhamhsfg" path="res://Settlement/Graphic/LumberSymbol.png" id="5_4hnof"]
 [ext_resource type="Texture2D" uid="uid://bqoa5omwd4nfl" path="res://Settlement/Graphic/MineralSymbol.png" id="6_yeo3y"]
-[ext_resource type="Texture2D" uid="uid://wdwfxhlllke2" path="res://Settlement/Graphic/BuildingSlot.png" id="7_4hnof"]
+[ext_resource type="Texture2D" uid="uid://wdwfxhlllke2" path="res://Building/BuildingSlot.png" id="7_4hnof"]
 [ext_resource type="Texture2D" uid="uid://cbyw72bs74384" path="res://Settlement/Graphic/FoodSymbol.png" id="7_awepx"]
-[ext_resource type="Script" uid="uid://b4etiagejpaxr" path="res://Building/building_slot.gd" id="7_yeo3y"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_4hnof"]
-size = Vector2(28, 28)
-
 [node name="Area2D" type="Area2D" unique_id=167798052]
-script = ExtResource("1_hx6cv")
+script = ExtResource("1_nl124")
 
 [node name="AvailableCircle" type="Sprite2D" parent="." unique_id=1837975081]
 visible = false
@@ -46,50 +42,32 @@ texture = ExtResource("7_awepx")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
 shape = SubResource("CircleShape2D_hx6cv")
 
-[node name="BuildingSlot3" type="Area2D" parent="." unique_id=964877108]
+[node name="Slot3Sprite" type="Sprite2D" parent="." unique_id=1553052657]
+unique_name_in_owner = true
 position = Vector2(0, -32)
-script = ExtResource("7_yeo3y")
-
-[node name="SlotSelectCircle" type="Sprite2D" parent="BuildingSlot3" unique_id=1553052657]
-visible = false
-scale = Vector2(0.15, 0.15)
-texture = ExtResource("2_5erx4")
-
-[node name="Square" type="Sprite2D" parent="BuildingSlot3" unique_id=1239465230]
 texture = ExtResource("7_4hnof")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildingSlot3" unique_id=1968093090]
-shape = SubResource("RectangleShape2D_4hnof")
+[node name="Slot3Icon" type="Sprite2D" parent="Slot3Sprite" unique_id=1361707271]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
 
-[node name="BuildingSlot2" type="Area2D" parent="." unique_id=134613570]
+[node name="Slot2Sprite" type="Sprite2D" parent="." unique_id=1930467892]
+unique_name_in_owner = true
 position = Vector2(32, 32)
-script = ExtResource("7_yeo3y")
-
-[node name="SlotSelectCircle" type="Sprite2D" parent="BuildingSlot2" unique_id=1930467892]
-visible = false
-scale = Vector2(0.15, 0.15)
-texture = ExtResource("2_5erx4")
-
-[node name="Square" type="Sprite2D" parent="BuildingSlot2" unique_id=479702112]
 texture = ExtResource("7_4hnof")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildingSlot2" unique_id=1460680084]
-shape = SubResource("RectangleShape2D_4hnof")
+[node name="Slot2Icon" type="Sprite2D" parent="Slot2Sprite" unique_id=565295180]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
 
-[node name="BuildingSlot1" type="Area2D" parent="." unique_id=535820757]
+[node name="Slot1Sprite" type="Sprite2D" parent="." unique_id=2001202379]
+unique_name_in_owner = true
 position = Vector2(-32, 32)
-script = ExtResource("7_yeo3y")
-
-[node name="SlotSelectCircle" type="Sprite2D" parent="BuildingSlot1" unique_id=2001202379]
-visible = false
-scale = Vector2(0.15, 0.15)
-texture = ExtResource("2_5erx4")
-
-[node name="Square" type="Sprite2D" parent="BuildingSlot1" unique_id=429837736]
 texture = ExtResource("7_4hnof")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="BuildingSlot1" unique_id=2095481193]
-shape = SubResource("RectangleShape2D_4hnof")
+[node name="Slot1Icon" type="Sprite2D" parent="Slot1Sprite" unique_id=37093341]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
 anchors_preset = 15

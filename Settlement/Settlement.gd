@@ -1,6 +1,8 @@
 extends Area2D
 class_name Settlement
 
+#real one
+
 signal clicked(settlement: Settlement)
 
 @export var resource_type: ResourceClass.Type = ResourceClass.Type.FOOD : set = set_resource_type
@@ -31,6 +33,18 @@ signal clicked(settlement: Settlement)
 
 @export var buildings: Array[String] = ["", "", ""]
 
+@onready var slot_sprites: Array[Sprite2D] = [
+	%Slot1Sprite,
+	%Slot2Sprite,
+	%Slot3Sprite
+]
+
+@onready var slot_icons: Array[Sprite2D] = [
+	%Slot1Icon,
+	%Slot2Icon,
+	%Slot3Icon
+]
+
 func _ready() -> void:
 	name_label.visible = false
 	name_label.text = get_display_name()
@@ -41,6 +55,45 @@ func _ready() -> void:
 	_validate_neighbors()
 	selection_circle.visible = false
 	available_circle.visible = false
+	_refresh_slot_sprites()
+	_refresh_building_icons()
+
+func _refresh_building_icons() -> void:
+	var slots : int = clamp(building_slots, 1, 3)
+	var db := _building_db()
+
+	for i in range(3):
+		# Only show icons for active slots
+		slot_icons[i].visible = (i < slots)
+
+		if i >= slots:
+			continue
+
+		var b_id := buildings[i]
+		if b_id == "":
+			slot_icons[i].texture = null
+			continue
+
+		if db == null:
+			# If DB not found, fail gracefully
+			slot_icons[i].texture = null
+			continue
+
+		var def: BuildingDef = db.get_def_by_id(b_id)
+		slot_icons[i].texture = def.icon if def != null else null
+
+func _building_db() -> Node:
+	# If BuildingDB is autoloaded, this works:
+	if Engine.has_singleton("BuildingDB"):
+		return Engine.get_singleton("BuildingDB")
+	# Common case: autoload exists at /root/BuildingDB
+	var n := get_node_or_null("/root/BuildingDB")
+	return n
+
+func _refresh_slot_sprites() -> void:
+	var slots : int = clamp(building_slots, 1, 3)
+	for i in range(3):
+		slot_sprites[i].visible = (i < slots)
 
 func set_building(slot_index: int, building_id: String) -> void:
 	# slot_index: 0..2
@@ -49,6 +102,7 @@ func set_building(slot_index: int, building_id: String) -> void:
 	if slot_index >= building_slots:
 		return
 	buildings[slot_index] = building_id
+	_refresh_building_icons()
 
 func building_in_slot(slot_index: int) -> String:
 	if slot_index < 0 or slot_index >= 3:
