@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqoa5omwd4nfl"
-path="res://.godot/imported/MineralSymbol.png-9108aba9d1fdc0e6ff0823c387811ca8.ctex"
+uid="uid://cbyw72bs74384"
+path="res://.godot/imported/FoodSymbol.png-8ccf0a744d920b8e21a85cfac3bdeb9a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/MineralSymbol.png"
-dest_files=["res://.godot/imported/MineralSymbol.png-9108aba9d1fdc0e6ff0823c387811ca8.ctex"]
+source_file="res://Settlement/Graphic/FoodSymbol.png"
+dest_files=["res://.godot/imported/FoodSymbol.png-8ccf0a744d920b8e21a85cfac3bdeb9a.ctex"]
 
 [params]
 

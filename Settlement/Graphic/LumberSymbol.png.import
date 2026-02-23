@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wdwfxhlllke2"
-path="res://.godot/imported/BuildingSlot.png-607e3d92290dc55dd49ecd285e383322.ctex"
+uid="uid://csu4xuhamhsfg"
+path="res://.godot/imported/LumberSymbol.png-39780681ceed9c7a2ee70821f8918cfe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/BuildingSlot.png"
-dest_files=["res://.godot/imported/BuildingSlot.png-607e3d92290dc55dd49ecd285e383322.ctex"]
+source_file="res://Settlement/Graphic/LumberSymbol.png"
+dest_files=["res://.godot/imported/LumberSymbol.png-39780681ceed9c7a2ee70821f8918cfe.ctex"]
 
 [params]
 

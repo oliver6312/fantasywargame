@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csu4xuhamhsfg"
-path="res://.godot/imported/LumberSymbol.png-bbb16e1d347ae681a5e9ccb1a6f26dca.ctex"
+uid="uid://pm3t1dv4oh4e"
+path="res://.godot/imported/AvailableCircle.png-a7250dc33af85f7a435e7e3cef16d151.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/LumberSymbol.png"
-dest_files=["res://.godot/imported/LumberSymbol.png-bbb16e1d347ae681a5e9ccb1a6f26dca.ctex"]
+source_file="res://UI/AvailableCircle.png"
+dest_files=["res://.godot/imported/AvailableCircle.png-a7250dc33af85f7a435e7e3cef16d151.ctex"]
 
 [params]
 

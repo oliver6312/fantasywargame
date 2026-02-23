@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cc2ievfcyitj0"
-path="res://.godot/imported/Top1.2.0.png-7efdcd5dfbcedda19434ae159ec4ed3d.ctex"
+uid="uid://bqoa5omwd4nfl"
+path="res://.godot/imported/MineralSymbol.png-196bc185346c1f7ab64e91e392e11d6b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/Top1.2.0.png"
-dest_files=["res://.godot/imported/Top1.2.0.png-7efdcd5dfbcedda19434ae159ec4ed3d.ctex"]
+source_file="res://Settlement/Graphic/MineralSymbol.png"
+dest_files=["res://.godot/imported/MineralSymbol.png-196bc185346c1f7ab64e91e392e11d6b.ctex"]
 
 [params]
 

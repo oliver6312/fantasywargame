@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c5js5wou2pbc2"
-path="res://.godot/imported/SettlmentPrototypeTown.png-68dd0a55bf2d5fd5fba8e64ad56f675a.ctex"
+uid="uid://wdwfxhlllke2"
+path="res://.godot/imported/BuildingSlot.png-55a73c9b30a9a66d7330fd4edf21f9a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/SettlmentPrototypeTown.png"
-dest_files=["res://.godot/imported/SettlmentPrototypeTown.png-68dd0a55bf2d5fd5fba8e64ad56f675a.ctex"]
+source_file="res://Settlement/Graphic/BuildingSlot.png"
+dest_files=["res://.godot/imported/BuildingSlot.png-55a73c9b30a9a66d7330fd4edf21f9a7.ctex"]
 
 [params]
 

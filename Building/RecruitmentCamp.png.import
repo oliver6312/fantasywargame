@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cpl7xpcgmvmef"
-path="res://.godot/imported/SideBridge1.png-8691613851c30b1be596bc1e78cd5a64.ctex"
+uid="uid://c1el7je7ifqxd"
+path="res://.godot/imported/RecruitmentCamp.png-6c7708aaf29d7ace17eb148b8b8935e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/SideBridge1.png"
-dest_files=["res://.godot/imported/SideBridge1.png-8691613851c30b1be596bc1e78cd5a64.ctex"]
+source_file="res://Building/RecruitmentCamp.png"
+dest_files=["res://.godot/imported/RecruitmentCamp.png-6c7708aaf29d7ace17eb148b8b8935e3.ctex"]
 
 [params]
 

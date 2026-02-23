@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://bo7a0o02dfy61"]
+
+[ext_resource type="Script" uid="uid://c51s4b4na5btf" path="res://camera_2d.gd" id="1_pvpqk"]
+[ext_resource type="Texture2D" uid="uid://cpl7xpcgmvmef" path="res://Maps/SideBridge1.png" id="2_23tac"]
+[ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://Maps/connection_drawer.gd" id="3_wmin7"]
+[ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Settlement/Settlement.tscn" id="4_msna8"]
+[ext_resource type="Script" uid="uid://cqv0tts3e8xlb" path="res://Referee/BoardController.gd" id="5_ovkfm"]
+[ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://UI/InGameUI.tscn" id="6_33ruw"]
+
+[node name="Board" type="Node2D" unique_id=1598262314]
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=374990783]
+offset = Vector2(1754, 1240)
+zoom = Vector2(0.33, 0.33)
+script = ExtResource("1_pvpqk")
+map_path = NodePath("../Map")
+
+[node name="Map" type="Sprite2D" parent="." unique_id=1727819468]
+texture = ExtResource("2_23tac")
+centered = false
+
+[node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
+script = ExtResource("3_wmin7")
+
+[node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1051, 667)
+resource_type = 2
+settlement_name = "The Shire"
+soldiers = 5
+neighbors = [NodePath("../OrcTown"), NodePath("../FarawayLand")]
+
+[node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(773, 660)
+resource_type = 0
+settlement_name = "Rivendel"
+faction = 2
+soldiers = 10
+neighbors = [NodePath("../OrcTown"), NodePath("../NeutralPit")]
+
+[node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(890, 831)
+settlement_name = "Mordor"
+faction = 1
+soldiers = 25
+neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
+building_slots = 2
+buildings = Array[String](["", ""])
+
+[node name="FarawayLand" parent="." unique_id=1631699824 instance=ExtResource("4_msna8")]
+position = Vector2(1598, 1084)
+settlement_name = "Faraway Land"
+soldiers = 2
+
+[node name="BoardController" type="Node2D" parent="." unique_id=426453066]
+visible = false
+script = ExtResource("5_ovkfm")
+
+[node name="UI" parent="." unique_id=1446758158 instance=ExtResource("6_33ruw")]

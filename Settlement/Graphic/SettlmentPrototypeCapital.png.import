@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cbyw72bs74384"
-path="res://.godot/imported/FoodSymbol.png-f3a3cb9bf1ed69f5e4375c2cc9d7ca79.ctex"
+uid="uid://dil8nhog7q3so"
+path="res://.godot/imported/SettlmentPrototypeCapital.png-478ede01ff69c62cbf3543ba372fca0c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/FoodSymbol.png"
-dest_files=["res://.godot/imported/FoodSymbol.png-f3a3cb9bf1ed69f5e4375c2cc9d7ca79.ctex"]
+source_file="res://Settlement/Graphic/SettlmentPrototypeCapital.png"
+dest_files=["res://.godot/imported/SettlmentPrototypeCapital.png-478ede01ff69c62cbf3543ba372fca0c.ctex"]
 
 [params]
 

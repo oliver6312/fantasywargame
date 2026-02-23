@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://cdaw4wd7ieqhm"]
 
-[ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI.gd" id="1_vuk1r"]
-[ext_resource type="Script" uid="uid://edyydwe8v17h" path="res://resource_panel.gd" id="2_2p58f"]
-[ext_resource type="Script" uid="uid://b37ny67ogwnvr" path="res://right_panel.gd" id="2_5ybyt"]
-[ext_resource type="Script" uid="uid://gwo7si6dtd1l" path="res://building_menu.gd" id="4_sidh8"]
+[ext_resource type="Script" uid="uid://b005jigrgc6n" path="res://UI/UI.gd" id="1_vuk1r"]
+[ext_resource type="Script" uid="uid://edyydwe8v17h" path="res://UI/resource_panel.gd" id="2_2p58f"]
+[ext_resource type="Script" uid="uid://b37ny67ogwnvr" path="res://UI/right_panel.gd" id="2_5ybyt"]
+[ext_resource type="Script" uid="uid://gwo7si6dtd1l" path="res://UI/building_menu.gd" id="4_sidh8"]
 
 [node name="UI" type="CanvasLayer" unique_id=1446758158 groups=["ui_root"]]
 script = ExtResource("1_vuk1r")
@@ -203,10 +203,11 @@ layout_mode = 2
 
 [node name="BuildingMenu" type="PanelContainer" parent="." unique_id=618012696]
 unique_name_in_owner = true
-offset_left = 319.0
-offset_top = 161.0
-offset_right = 359.0
-offset_bottom = 201.0
+visible = false
+offset_left = 849.0
+offset_top = 197.0
+offset_right = 977.0
+offset_bottom = 453.0
 script = ExtResource("4_sidh8")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="BuildingMenu" unique_id=510833912]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pm3t1dv4oh4e"
-path="res://.godot/imported/AvailableCircle.png-4e31a0798bdf9d94081699b7e782cc8d.ctex"
+uid="uid://c5js5wou2pbc2"
+path="res://.godot/imported/SettlmentPrototypeTown.png-bdf6c363e18b59917e634e36a9102cb4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Graphic/AvailableCircle.png"
-dest_files=["res://.godot/imported/AvailableCircle.png-4e31a0798bdf9d94081699b7e782cc8d.ctex"]
+source_file="res://Settlement/Graphic/SettlmentPrototypeTown.png"
+dest_files=["res://.godot/imported/SettlmentPrototypeTown.png-bdf6c363e18b59917e634e36a9102cb4.ctex"]
 
 [params]
 
