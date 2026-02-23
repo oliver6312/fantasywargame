@@ -1,15 +1,15 @@
 extends Panel
 class_name SettlementInfoPanel
 
-@onready var name_label: Label = $HBoxContainerMiddle/SettlementInfoPanel/NameLabel
-@onready var resource_label: Label = $HBoxContainerMiddle/SettlementInfoPanel/ResourceLabel
-@onready var faction_label: Label = $HBoxContainerMiddle/SettlementInfoPanel/FactionLabel
-@onready var soldiers_label: Label = $HBoxContainerMiddle/SettlementInfoPanel/SoldiersLabel
-@onready var building_slots_label: Label = $HBoxContainerMiddle/SettlementInfoPanel/BuildingSlotsLabel
+@onready var name_label: Label = $HBoxContainerMiddle/VBoxContainer/NameLabel
+@onready var resource_label: Label = $HBoxContainerMiddle/VBoxContainer/ResourceLabel
+@onready var faction_label: Label = $HBoxContainerMiddle/VBoxContainer/FactionLabel
+@onready var soldiers_label: Label = $HBoxContainerMiddle/VBoxContainer/SoldiersLabel
+@onready var building_slots_label: Label = $HBoxContainerMiddle/VBoxContainer/BuildingSlotsLabel
 
-@onready var slot1: Label = $HBoxContainerMiddle/SettlementInfoPanel/VBoxContainer/Slot1Label
-@onready var slot2: Label = $HBoxContainerMiddle/SettlementInfoPanel/VBoxContainer/Slot2Label
-@onready var slot3: Label = $HBoxContainerMiddle/SettlementInfoPanel/VBoxContainer/Slot3Label
+@onready var slot1: Label = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot1Label
+@onready var slot2: Label = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot2Label
+@onready var slot3: Label = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot3Label
 
 var slot_labels: Array[Label]
 
@@ -48,7 +48,7 @@ func show_for_settlement(s: Settlement) -> void:
 		var slot_num: int = i + 1
 		lbl.visible = slot_num <= slots
 		if lbl.visible:
-			lbl.text = "Building Slot %d: (empty)" % slot_num
+			lbl.text = "Slot %d: (empty)" % slot_num
 
 func hide_panel() -> void:
 	visible = false

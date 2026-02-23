@@ -12,7 +12,7 @@ extends Node
 
 @export var recruitment_building_scene: PackedScene
 
-@onready var info_panel: Panel = ui.get_node("%RightPanel") as Panel
+@onready var info_panel: Panel = ui.get_node("%SettlementInfoPanel") as Panel
 
 
 var selected_slot: BuildingSlot = null
