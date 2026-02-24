@@ -17,7 +17,7 @@ func open_for_faction(f: Faction.Type) -> void:
 		c.queue_free()
 
 	# Populate
-	for b in BuildingDatabase.buildings_for_faction(f):
+	for b in BuildingDB.buildings_for_faction(f):
 		var btn := Button.new()
 		btn.text = _button_text(b)
 		btn.pressed.connect(func(): emit_signal("building_chosen", b))

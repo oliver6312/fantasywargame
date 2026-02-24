@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3 uid="uid://6wcm1vaaash5"]
+
+[ext_resource type="Script" uid="uid://cicgs401yd8ub" path="res://Building/BuildingDef.gd" id="1_2bx8m"]
+[ext_resource type="Texture2D" uid="uid://c1el7je7ifqxd" path="res://Building/RecruitmentCamp.png" id="1_nk18n"]
+
+[resource]
+script = ExtResource("1_2bx8m")
+id = "breeding_pit"
+display_name = "Breeding Pit"
+icon = ExtResource("1_nk18n")
+cost_food = 2
+metadata/_custom_type_script = "uid://cicgs401yd8ub"

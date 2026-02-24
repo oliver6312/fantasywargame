@@ -47,8 +47,9 @@ unique_name_in_owner = true
 position = Vector2(0, -32)
 texture = ExtResource("7_4hnof")
 
-[node name="Slot3Icon" type="Sprite2D" parent="Slot3Sprite" unique_id=1361707271]
+[node name="Slot3Icon" type="Sprite2D" parent="." unique_id=1361707271]
 unique_name_in_owner = true
+position = Vector2(0, -32)
 scale = Vector2(2, 2)
 
 [node name="Slot2Sprite" type="Sprite2D" parent="." unique_id=1930467892]
@@ -56,8 +57,9 @@ unique_name_in_owner = true
 position = Vector2(32, 32)
 texture = ExtResource("7_4hnof")
 
-[node name="Slot2Icon" type="Sprite2D" parent="Slot2Sprite" unique_id=565295180]
+[node name="Slot2Icon" type="Sprite2D" parent="." unique_id=565295180]
 unique_name_in_owner = true
+position = Vector2(32, 32)
 scale = Vector2(2, 2)
 
 [node name="Slot1Sprite" type="Sprite2D" parent="." unique_id=2001202379]
@@ -65,8 +67,9 @@ unique_name_in_owner = true
 position = Vector2(-32, 32)
 texture = ExtResource("7_4hnof")
 
-[node name="Slot1Icon" type="Sprite2D" parent="Slot1Sprite" unique_id=37093341]
+[node name="Slot1Icon" type="Sprite2D" parent="." unique_id=37093341]
 unique_name_in_owner = true
+position = Vector2(-32, 32)
 scale = Vector2(2, 2)
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]

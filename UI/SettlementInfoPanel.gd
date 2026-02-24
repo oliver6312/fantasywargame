@@ -27,7 +27,7 @@ func _ready() -> void:
 func _building_name_from_id(b_id: String) -> String:
 	# Brute-force lookup across all factions (fine at this scale)
 	for f in [Faction.Type.ORC, Faction.Type.ELF, Faction.Type.DWARF]:
-		for b in BuildingDatabase.buildings_for_faction(f):
+		for b in BuildingDB.buildings_for_faction(f):
 			if b.id == b_id:
 				return b.display_name
 	return b_id
@@ -50,20 +50,20 @@ func show_for_settlement(s: Settlement) -> void:
 	var display_name: String = s.settlement_name
 	if display_name == "":
 		display_name = s.name
-	name_label.text = "Name: %s" % display_name
+	name_label.text = "%s" % display_name
 
 	# Resource
-	resource_label.text = "Resource: %s" % ResourceClass.name_for(s.resource_type)
+	resource_label.text = "%s" % ResourceClass.name_for(s.resource_type)
 
 	# Faction
-	faction_label.text = "Faction: %s" % _faction_name(s.faction)
+	faction_label.text = "%s" % _faction_name(s.faction)
 
 	# Soldiers
-	soldiers_label.text = "Soldiers: %d" % s.soldiers
+	soldiers_label.text = "%d" % s.soldiers
 
 	# Building slots
 	var slots: int = clamp(s.building_slots, 1, 3)
-	building_slots_label.text = "Building slots: %d" % slots
+	building_slots_label.text = "Slots: %d" % slots
 
 	for i in range(3):
 		var btn := slot_buttons[i]
@@ -72,10 +72,10 @@ func show_for_settlement(s: Settlement) -> void:
 		if btn.visible:
 			var b_id := s.building_in_slot(i)
 			if b_id == "":
-				btn.text = "Building Slot %d: (empty)" % slot_num
+				btn.text = "Slot %d: (empty)" % slot_num
 			else:
 				# Convert building id -> display name (via BuildingDB lookup helper below)
-				btn.text = "Building Slot %d: %s" % [slot_num, _building_name_from_id(b_id)]
+				btn.text = "Slot %d: %s" % [slot_num, _building_name_from_id(b_id)]
 
 func hide_panel() -> void:
 	visible = false

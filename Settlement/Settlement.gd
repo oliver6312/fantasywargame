@@ -61,6 +61,7 @@ func _ready() -> void:
 func _refresh_building_icons() -> void:
 	var slots : int = clamp(building_slots, 1, 3)
 	var db := _building_db()
+	print("DB node:", db)
 
 	for i in range(3):
 		# Only show icons for active slots
@@ -83,12 +84,15 @@ func _refresh_building_icons() -> void:
 		slot_icons[i].texture = def.icon if def != null else null
 
 func _building_db() -> Node:
-	# If BuildingDB is autoloaded, this works:
-	if Engine.has_singleton("BuildingDB"):
-		return Engine.get_singleton("BuildingDB")
-	# Common case: autoload exists at /root/BuildingDB
-	var n := get_node_or_null("/root/BuildingDB")
-	return n
+	# Try common autoload names (case-sensitive)
+	var db := get_node_or_null("/root/BuildingDB")
+	if db != null:
+		return db
+	db = get_node_or_null("/root/Buildingdb")
+	if db != null:
+		return db
+	db = get_node_or_null("/root/buildingdb")
+	return db
 
 func _refresh_slot_sprites() -> void:
 	var slots : int = clamp(building_slots, 1, 3)
@@ -127,7 +131,6 @@ func _refresh_resource_icon() -> void:
 			if food_icon: food_icon.visible = true
 		ResourceClass.Type.MINERALS:
 			if mineral_icon: mineral_icon.visible = true
-
 
 func get_display_name() -> String:
 	return settlement_name if settlement_name != "" else name
