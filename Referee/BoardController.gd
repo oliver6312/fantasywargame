@@ -204,16 +204,30 @@ func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
 		target.set_soldiers(target.soldiers + amount)
 		return
 
-	# Different faction (including neutral): fight / capture
-	var result := target.soldiers - amount
+# Different faction (including neutral): fight / capture using power + strength
+# ---- COMBAT STARTS HERE ----
+	var atk_f := source.faction
+	var def_f := target.faction
 
-	if result > 0:
-		# Defender survives
-		target.set_soldiers(result)
-		# faction unchanged
-	elif result == 0:
-		target.set_soldiers(0) # keep faction as-is
+	var atk_str := TurnState.effective_unit_strength(atk_f, def_f)
+	var def_str := TurnState.effective_unit_strength(def_f, atk_f)
+
+	var atk_power := float(amount) * atk_str
+	var def_power := float(target.soldiers) * def_str
+
+	var diff := def_power - atk_power
+
+	if diff > 0.0:
+		var remaining := int(floor(diff / def_str))
+		target.set_soldiers(remaining)
+
+	elif diff == 0.0:
+		target.set_soldiers(0)
+
 	else:
-		# Attacker wins: flip faction and survivors = abs(result)
-		target.set_garrison(source.faction, -result)
+		var remaining_power := -diff
+		var remaining := int(floor(remaining_power / atk_str))
+		target.set_garrison(atk_f, remaining)
+
+	TurnState.recalculate_control_from_board()
 	_deselect()

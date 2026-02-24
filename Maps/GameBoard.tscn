@@ -34,7 +34,7 @@ resource_type = 0
 settlement_id = "ElfVillage"
 settlement_name = "Rivendel"
 faction = 2
-soldiers = 10
+soldiers = 100
 neighbors = [NodePath("../OrcTown")]
 buildings = Array[String](["", ""])
 
@@ -42,7 +42,7 @@ buildings = Array[String](["", ""])
 position = Vector2(890, 831)
 settlement_name = "Mordor"
 faction = 1
-soldiers = 25
+soldiers = 100
 neighbors = [NodePath("../NeutralPit")]
 building_slots = 2
 buildings = Array[String](["", ""])

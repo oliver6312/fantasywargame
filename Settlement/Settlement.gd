@@ -45,6 +45,8 @@ signal clicked(settlement: Settlement)
 	%Slot3Icon
 ]
 
+
+
 func _ready() -> void:
 	name_label.visible = false
 	name_label.text = get_display_name()

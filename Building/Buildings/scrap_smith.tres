@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3 uid="uid://cepd6blbd1vdk"]
+
+[ext_resource type="Texture2D" uid="uid://c1el7je7ifqxd" path="res://Building/RecruitmentCamp.png" id="1_bdr8x"]
+[ext_resource type="Script" uid="uid://cicgs401yd8ub" path="res://Building/BuildingDef.gd" id="1_dvb30"]
+
+[resource]
+script = ExtResource("1_dvb30")
+id = "scrap_smith"
+display_name = "Scrap Smith"
+icon = ExtResource("1_bdr8x")
+cost_food = 1
+grants_trait = "Armor"
+metadata/_custom_type_script = "uid://cicgs401yd8ub"

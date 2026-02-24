@@ -8,6 +8,89 @@ signal round_changed(round: int)
 
 var round: int = 1
 
+const TRAIT_BONUS := 0.33
+
+# NEW: base unit strength per faction
+var base_unit_strength := {
+	Faction.Type.ORC: 1.0,
+	Faction.Type.ELF: 1.0,
+	Faction.Type.DWARF: 2.0,
+}
+
+# NEW: derived per-turn from buildings
+# traits[faction] is a set: { "Armor": true, "Rage": true, ... }
+var traits := {
+	Faction.Type.ORC: {},
+	Faction.Type.ELF: {},
+	Faction.Type.DWARF: {},
+}
+
+# counters[faction] is a set: { "Armor": true, ... }
+var counters := {
+	Faction.Type.ORC: {},
+	Faction.Type.ELF: {},
+	Faction.Type.DWARF: {},
+}
+
+func recalculate_traits_and_counters() -> void:
+	for f in TURN_ORDER:
+		traits[f].clear()
+		counters[f].clear()
+
+	for s in get_tree().get_nodes_in_group("settlements"):
+		if s == null:
+			continue
+		var f: Faction.Type = s.faction
+		if not traits.has(f):
+			continue # ignore NEUTRAL
+
+		for i in range(s.building_slots):
+			var b_id: String = s.buildings[i]
+			if b_id == "":
+				continue
+
+			var def: BuildingDef = _get_building_def_by_id(b_id)
+			if def == null:
+				continue
+
+			if def.grants_trait != "":
+				traits[f][def.grants_trait] = true  # set-like, duplicates don't stack
+
+			if def.counters_trait != "":
+				counters[f][def.counters_trait] = true
+
+func _get_building_def_by_id(id: String) -> BuildingDef:
+	var db := get_node_or_null("/root/BuildingDB")
+	if db == null:
+		return null
+	return db.get_def_by_id(id)
+
+func effective_unit_strength(side: Faction.Type, opponent: Faction.Type) -> float:
+	var strength := _base_strength(side)
+
+	# If side is neutral, it has no traits, done.
+	if side == Faction.Type.NEUTRAL:
+		return strength
+
+	# If opponent is neutral, it has no counters, so no trait gets nullified.
+	if opponent == Faction.Type.NEUTRAL:
+		for trait_name in traits[side].keys():
+			strength += TRAIT_BONUS
+		return strength
+
+	# Normal case: apply traits unless opponent counters them
+	for trait_name in traits[side].keys():
+		if counters[opponent].has(trait_name):
+			continue
+		strength += TRAIT_BONUS
+
+	return strength
+
+func _base_strength(f: Faction.Type) -> float:
+	if f == Faction.Type.NEUTRAL:
+		return 1.0
+	return float(base_unit_strength.get(f, 1.0))
+
 func can_afford(f: Faction.Type, cost: Dictionary) -> bool:
 	for r in cost.keys():
 		if resources[f][r] < int(cost[r]):
@@ -78,7 +161,10 @@ var resources := {
 
 func _ready() -> void:
 	recalculate_control_from_board()
+	recalculate_buildings_from_board()
+	recalculate_traits_and_counters()
 	_emit_turn()
+	
 
 func next_turn() -> void:
 	turn_index = (turn_index + 1) % TURN_ORDER.size()
@@ -87,8 +173,11 @@ func next_turn() -> void:
 		emit_signal("round_changed", round)
 
 	current_turn = TURN_ORDER[turn_index]
-	_start_turn_income(current_turn)
+	
 	recalculate_buildings_from_board()
+	recalculate_traits_and_counters()
+	
+	_start_turn_income(current_turn)
 	_emit_turn()
 
 func _emit_turn() -> void:

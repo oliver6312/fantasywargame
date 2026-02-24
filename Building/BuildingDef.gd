@@ -8,6 +8,10 @@ class_name BuildingDef
 @export var cost_food: int = 0
 @export var cost_minerals: int = 0
 
+# NEW: building combat metadata
+@export var grants_trait: String = ""        # e.g. "Armor" (empty = none)
+@export var counters_trait: String = ""      # e.g. "Armor" (empty = none)
+
 func cost_dict() -> Dictionary:
 	return {
 		ResourceClass.Type.LUMBER: cost_lumber,
