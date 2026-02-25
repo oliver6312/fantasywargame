@@ -32,6 +32,47 @@ var counters := {
 	Faction.Type.DWARF: {},
 }
 
+func apply_start_of_turn_building_effects(f: Faction.Type) -> void:
+	var db := get_node_or_null("/root/BuildingDB")
+	if db == null:
+		return
+
+	# For each settlement owned by f, apply each building's SOT effects
+	for s in get_tree().get_nodes_in_group("settlements"):
+		if s == null:
+			continue
+		if s.faction != f:
+			continue
+
+		for i in range(s.building_slots):
+			var b_id : String = s.buildings[i]
+			if b_id == "":
+				continue
+
+			var def: BuildingDef = db.get_def_by_id(b_id)
+			if def == null:
+				continue
+
+			# Soldiers (spawn into the settlement)
+			if def.sot_add_soldiers != 0:
+				s.set_soldiers(s.soldiers + def.sot_add_soldiers)
+
+			# Resources to faction
+			if def.sot_add_lumber != 0:
+				resources[f][ResourceClass.Type.LUMBER] += def.sot_add_lumber
+			if def.sot_add_food != 0:
+				resources[f][ResourceClass.Type.FOOD] += def.sot_add_food
+			if def.sot_add_minerals != 0:
+				resources[f][ResourceClass.Type.MINERALS] += def.sot_add_minerals
+
+	# Notify UI
+	emit_signal("resources_changed", f)
+
+	# Ownership counts might change if you later add effects that change faction/soldiers to 0 etc.
+	recalculate_control_from_board()
+	recalculate_buildings_from_board()
+	recalculate_traits_and_counters()
+
 func recalculate_traits_and_counters() -> void:
 	for f in TURN_ORDER:
 		traits[f].clear()
@@ -174,10 +215,17 @@ func next_turn() -> void:
 
 	current_turn = TURN_ORDER[turn_index]
 	
+	# Always keep derived state fresh
 	recalculate_buildings_from_board()
 	recalculate_traits_and_counters()
+	recalculate_control_from_board()
 	
+	# Base income from settlements
 	_start_turn_income(current_turn)
+	
+	# Extra effects from buildings
+	apply_start_of_turn_building_effects(current_turn)
+	
 	_emit_turn()
 
 func _emit_turn() -> void:

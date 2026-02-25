@@ -10,19 +10,47 @@ class_name SettlementInfoPanel
 @onready var slot1: Button = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot1Label
 @onready var slot2: Button = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot2Label
 @onready var slot3: Button = $HBoxContainerMiddle/VBoxContainer/VBoxContainer/Slot3Label
+
+@onready var delete_button: Button = $DeletePromptPanel/DeleteBuildingButton
 var slot_buttons: Array[Button]
 var _current_settlement: Settlement = null
 
 signal slot_clicked(settlement: Settlement, slot_index: int)
 
+signal delete_building_requested(settlement: Settlement, slot_index: int)
 
+var _selected_slot_index: int = -1
 
 func _ready() -> void:
 	slot_buttons = [slot1, slot2, slot3]
 	slot1.pressed.connect(func(): _on_slot_pressed(0))
 	slot2.pressed.connect(func(): _on_slot_pressed(1))
 	slot3.pressed.connect(func(): _on_slot_pressed(2))
+	delete_button.pressed.connect(_on_delete_pressed)
 	hide_panel()
+
+func _on_slot_pressed(i: int) -> void:
+	if _current_settlement == null:
+		return
+	_selected_slot_index = i
+	_update_delete_button()
+	emit_signal("slot_clicked", _current_settlement, i)
+
+func _update_delete_button() -> void:
+	if _current_settlement == null or _selected_slot_index < 0:
+		delete_button.visible = false
+		return
+
+	if _selected_slot_index >= _current_settlement.building_slots:
+		delete_button.visible = false
+		return
+
+	delete_button.visible = (_current_settlement.building_in_slot(_selected_slot_index) != "")
+
+func _on_delete_pressed() -> void:
+	if _current_settlement == null or _selected_slot_index < 0:
+		return
+	emit_signal("delete_building_requested", _current_settlement, _selected_slot_index)
 
 func _building_name_from_id(b_id: String) -> String:
 	# Brute-force lookup across all factions (fine at this scale)
@@ -32,10 +60,6 @@ func _building_name_from_id(b_id: String) -> String:
 				return b.display_name
 	return b_id
 
-func _on_slot_pressed(i: int) -> void:
-	if _current_settlement == null:
-		return
-	emit_signal("slot_clicked", _current_settlement, i)
 
 func show_for_settlement(s: Settlement) -> void:
 	_current_settlement = s
@@ -76,6 +100,8 @@ func show_for_settlement(s: Settlement) -> void:
 			else:
 				# Convert building id -> display name (via BuildingDB lookup helper below)
 				btn.text = "Slot %d: %s" % [slot_num, _building_name_from_id(b_id)]
+	_selected_slot_index = -1
+	_update_delete_button()
 
 func hide_panel() -> void:
 	visible = false

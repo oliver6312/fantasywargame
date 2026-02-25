@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BuildingDef" format=3 uid="uid://dce17747s1uvt"]
+
+[ext_resource type="Script" uid="uid://cicgs401yd8ub" path="res://Building/BuildingDef.gd" id="1_a3xmk"]
+[ext_resource type="Texture2D" uid="uid://c1el7je7ifqxd" path="res://Building/RecruitmentCamp.png" id="1_bxju3"]
+
+[resource]
+script = ExtResource("1_a3xmk")
+id = "greathorn_bow"
+display_name = "Greathorn Bow"
+icon = ExtResource("1_bxju3")
+cost_lumber = 1
+counters_trait = "Armor"
+metadata/_custom_type_script = "uid://cicgs401yd8ub"

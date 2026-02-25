@@ -114,6 +114,23 @@ layout_mode = 2
 [node name="Slot3Label" type="Button" parent="RightPanel/SettlementInfoPanel/HBoxContainerMiddle/VBoxContainer/VBoxContainer" unique_id=301591631]
 layout_mode = 2
 
+[node name="DeletePromptPanel" type="Panel" parent="RightPanel/SettlementInfoPanel" unique_id=157731969]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 263.0
+offset_right = 124.0
+offset_bottom = 301.0
+
+[node name="DeleteBuildingButton" type="Button" parent="RightPanel/SettlementInfoPanel/DeletePromptPanel" unique_id=771830564]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Delete building"
+
 [node name="LeftPanel" type="Panel" parent="." unique_id=1716879136]
 anchors_preset = 9
 anchor_bottom = 1.0

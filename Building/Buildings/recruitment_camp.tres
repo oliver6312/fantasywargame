@@ -9,4 +9,6 @@ id = "recruitment_camp"
 display_name = "Recruitment Camp"
 icon = ExtResource("1_2ob50")
 cost_lumber = 1
+sot_add_soldiers = 10
+sot_add_food = -1
 metadata/_custom_type_script = "uid://cicgs401yd8ub"

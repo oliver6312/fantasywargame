@@ -5,9 +5,10 @@
 [ext_resource type="Resource" uid="uid://sxe5dktg6by5" path="res://Building/Buildings/recruitment_camp.tres" id="3_j02t7"]
 [ext_resource type="Resource" uid="uid://6wcm1vaaash5" path="res://Building/Buildings/breeding_pit.tres" id="4_ftejw"]
 [ext_resource type="Resource" uid="uid://cepd6blbd1vdk" path="res://Building/Buildings/scrap_smith.tres" id="5_j02t7"]
+[ext_resource type="Resource" uid="uid://dce17747s1uvt" path="res://Building/Buildings/greathorn_bow.tres" id="6_42f0i"]
 
 [node name="Buildingdb" type="Node2D" unique_id=247209700]
 script = ExtResource("1_k18if")
 orc_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7"), ExtResource("4_ftejw"), ExtResource("5_j02t7")])
-elf_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7")])
+elf_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7"), ExtResource("6_42f0i")])
 dwarf_buildings = Array[ExtResource("2_ftejw")]([ExtResource("3_j02t7")])

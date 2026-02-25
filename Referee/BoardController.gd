@@ -41,7 +41,32 @@ func _ready() -> void:
 	_show_deselect_button(false)
 	
 	info_panel.slot_clicked.connect(_on_building_slot_clicked)
+	info_panel.delete_building_requested.connect(_on_delete_building_requested)
 	building_menu.building_chosen.connect(_on_building_chosen)
+
+func _on_delete_building_requested(s: Settlement, slot_index: int) -> void:
+	# Only allow deleting on your own turn in your own faction's settlement
+	if s.faction != TurnState.current_turn:
+		print("You can only delete buildings in your faction’s settlements on your turn.")
+		return
+
+	if slot_index < 0 or slot_index >= s.building_slots:
+		return
+
+	if s.building_in_slot(slot_index) == "":
+		return
+
+	# Delete = empty slot
+	s.set_building(slot_index, "")
+
+	# Recompute building-derived state (traits/counters etc.)
+	TurnState.recalculate_buildings_from_board()
+	TurnState.recalculate_traits_and_counters()
+
+	# Refresh info panel display
+	info_panel.show_for_settlement(s)
+
+	print("Building deleted.")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("deselect"):
