@@ -18,6 +18,14 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 TurnState="*uid://7ihom0dpcm3m"
 BuildingDB="*uid://bc52l3i835qmq"
 
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/size/mode=3
+window/stretch/mode="viewport"
+window/stretch/aspect="expand"
+
 [input]
 
 deselect={
