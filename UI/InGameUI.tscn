@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://edyydwe8v17h" path="res://UI/resource_panel.gd" id="2_2p58f"]
 [ext_resource type="Script" uid="uid://b37ny67ogwnvr" path="res://UI/SettlementInfoPanel.gd" id="2_5ybyt"]
 [ext_resource type="Script" uid="uid://gwo7si6dtd1l" path="res://UI/building_menu.gd" id="4_sidh8"]
+[ext_resource type="Script" uid="uid://bayi4h46phlls" path="res://UI/TradingMenu.gd" id="5_slqm7"]
 
 [node name="UI" type="CanvasLayer" unique_id=1446758158 groups=["ui_root"]]
 script = ExtResource("1_vuk1r")
@@ -137,15 +138,18 @@ anchor_bottom = 1.0
 offset_right = 128.0
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="LeftPanel" unique_id=1965095123]
+[node name="TradeButton" type="Button" parent="LeftPanel" unique_id=1081563819]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -616.0
+offset_top = -56.0
+offset_bottom = -25.0
 grow_horizontal = 2
 grow_vertical = 0
+text = "Trade"
 
 [node name="MoveDialog" type="AcceptDialog" parent="." unique_id=1455087423]
 unique_name_in_owner = true
@@ -249,3 +253,64 @@ layout_mode = 2
 
 [node name="ListContainer" type="VBoxContainer" parent="BuildingMenu/VBoxContainer" unique_id=528529533]
 layout_mode = 2
+
+[node name="TradingMenu" type="PanelContainer" parent="." unique_id=1692335307]
+unique_name_in_owner = true
+offset_left = 157.0
+offset_top = 432.0
+offset_right = 392.0
+offset_bottom = 642.0
+script = ExtResource("5_slqm7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TradingMenu" unique_id=226295513]
+layout_mode = 2
+
+[node name="TradingLabel" type="Label" parent="TradingMenu/VBoxContainer" unique_id=1022950]
+layout_mode = 2
+
+[node name="FactionOption" type="OptionButton" parent="TradingMenu/VBoxContainer" unique_id=23193425]
+layout_mode = 2
+
+[node name="FoodRow" type="HBoxContainer" parent="TradingMenu/VBoxContainer" unique_id=970420829]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TradingMenu/VBoxContainer/FoodRow" unique_id=1476568106]
+layout_mode = 2
+text = "Food       "
+
+[node name="FoodEdit" type="LineEdit" parent="TradingMenu/VBoxContainer/FoodRow" unique_id=1268118788]
+layout_mode = 2
+
+[node name="LumberRow" type="HBoxContainer" parent="TradingMenu/VBoxContainer" unique_id=2045614170]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TradingMenu/VBoxContainer/LumberRow" unique_id=574071921]
+layout_mode = 2
+text = "Lumber  "
+
+[node name="LumberEdit" type="LineEdit" parent="TradingMenu/VBoxContainer/LumberRow" unique_id=215825620]
+layout_mode = 2
+
+[node name="MineralsRow" type="HBoxContainer" parent="TradingMenu/VBoxContainer" unique_id=378009303]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TradingMenu/VBoxContainer/MineralsRow" unique_id=997743396]
+layout_mode = 2
+text = "Minerals"
+
+[node name="MineralsEdit" type="LineEdit" parent="TradingMenu/VBoxContainer/MineralsRow" unique_id=73545750]
+layout_mode = 2
+
+[node name="MessageLabel" type="Label" parent="TradingMenu/VBoxContainer" unique_id=1408917747]
+layout_mode = 2
+
+[node name="ButtonsRow" type="HBoxContainer" parent="TradingMenu/VBoxContainer" unique_id=2067392697]
+layout_mode = 2
+
+[node name="AcceptButton" type="Button" parent="TradingMenu/VBoxContainer/ButtonsRow" unique_id=1429974412]
+layout_mode = 2
+text = "Accept"
+
+[node name="CancelButton" type="Button" parent="TradingMenu/VBoxContainer/ButtonsRow" unique_id=1956221351]
+layout_mode = 2
+text = "Cancel"

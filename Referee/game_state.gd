@@ -207,6 +207,33 @@ func _ready() -> void:
 	_emit_turn()
 	
 
+func try_trade(from_faction: Faction.Type, to_faction: Faction.Type, offer: Dictionary) -> bool:
+	# offer: { ResourceClass.Type.LUMBER: int, FOOD: int, MINERALS: int }
+	if from_faction == to_faction:
+		return false
+	if to_faction == Faction.Type.NEUTRAL:
+		return false
+
+	# Validate non-negative amounts
+	for r in offer.keys():
+		if int(offer[r]) < 0:
+			return false
+
+	# Check affordability
+	for r in offer.keys():
+		if resources[from_faction][r] < int(offer[r]):
+			return false
+
+	# Apply transfer
+	for r in offer.keys():
+		var amt := int(offer[r])
+		resources[from_faction][r] -= amt
+		resources[to_faction][r] += amt
+
+	emit_signal("resources_changed", from_faction)
+	emit_signal("resources_changed", to_faction)
+	return true
+
 func next_turn() -> void:
 	turn_index = (turn_index + 1) % TURN_ORDER.size()
 	if turn_index == 0:
