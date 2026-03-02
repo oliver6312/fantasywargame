@@ -63,6 +63,10 @@ layout_mode = 2
 [node name="RoundLabel" type="Label" parent="RightPanel/HBoxContainerTop/VBoxContainer" unique_id=1894491691]
 layout_mode = 2
 
+[node name="ActionsLabel" type="Label" parent="RightPanel/HBoxContainerTop/VBoxContainer" unique_id=698120716]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="SettlementInfoPanel" type="Panel" parent="RightPanel" unique_id=1943743115]
 unique_name_in_owner = true
 layout_mode = 1

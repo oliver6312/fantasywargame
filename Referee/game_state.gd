@@ -200,12 +200,32 @@ var resources := {
 	Faction.Type.DWARF: { ResourceClass.Type.LUMBER: 0, ResourceClass.Type.FOOD: 0, ResourceClass.Type.MINERALS: 0 },
 }
 
+signal actions_changed(faction: Faction.Type, actions_left: int)
+
+const ACTIONS_PER_TURN := 5
+var actions_left: int = ACTIONS_PER_TURN
+
 func _ready() -> void:
 	recalculate_control_from_board()
 	recalculate_buildings_from_board()
 	recalculate_traits_and_counters()
+	reset_actions_for_new_turn()
 	_emit_turn()
 	
+
+func reset_actions_for_new_turn() -> void:
+	actions_left = ACTIONS_PER_TURN
+	emit_signal("actions_changed", current_turn, actions_left)
+
+func can_act() -> bool:
+	return actions_left > 0
+
+func try_spend_action() -> bool:
+	if actions_left <= 0:
+		return false
+	actions_left -= 1
+	emit_signal("actions_changed", current_turn, actions_left)
+	return true
 
 func try_trade(from_faction: Faction.Type, to_faction: Faction.Type, offer: Dictionary) -> bool:
 	# offer: { ResourceClass.Type.LUMBER: int, FOOD: int, MINERALS: int }
@@ -253,6 +273,7 @@ func next_turn() -> void:
 	# Extra effects from buildings
 	apply_start_of_turn_building_effects(current_turn)
 	
+	reset_actions_for_new_turn()
 	_emit_turn()
 
 func _emit_turn() -> void:

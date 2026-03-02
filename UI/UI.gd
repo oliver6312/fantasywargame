@@ -8,6 +8,8 @@ extends CanvasLayer
 @onready var trade_button: Button = %TradeButton
 @onready var trading_menu: TradingMenu = %TradingMenu
 
+@onready var actions_label: Label = %ActionsLabel
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -18,6 +20,12 @@ func _ready() -> void:
 	_on_round_changed(TurnState.round)
 	
 	trade_button.pressed.connect(_on_trade_pressed)
+	
+	TurnState.actions_changed.connect(_on_actions_changed)
+	_on_actions_changed(TurnState.current_turn, TurnState.actions_left)
+
+func _on_actions_changed(_f: Faction.Type, left: int) -> void:
+	actions_label.text = "Actions: %d/%d" % [left, TurnState.ACTIONS_PER_TURN]
 
 func _on_round_changed(r: int) -> void:
 	round_label.text = "Round: %d" % r

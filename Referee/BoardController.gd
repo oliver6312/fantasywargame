@@ -56,6 +56,10 @@ func _on_delete_building_requested(s: Settlement, slot_index: int) -> void:
 	if s.building_in_slot(slot_index) == "":
 		return
 
+	if not TurnState.try_spend_action():
+		print("No actions left.")
+		return
+
 	# Delete = empty slot
 	s.set_building(slot_index, "")
 
@@ -97,6 +101,9 @@ func _on_building_chosen(b: BuildingDef) -> void:
 		return
 
 	# 3) spend and register building
+	if not TurnState.try_spend_action():
+		print("No actions left.")
+		return
 	if not TurnState.spend_resources(selected.faction, cost):
 		return
 
@@ -218,6 +225,9 @@ func _on_move_confirmed() -> void:
 		print("Cannot send more than you have.")
 		return
 
+	if not TurnState.try_spend_action():
+		print("No actions left.")
+		return
 	_execute_move(source, target, amount)
 
 func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
