@@ -19,6 +19,9 @@ class_name BuildingDef
 @export var sot_add_food: int = 0
 @export var sot_add_minerals: int = 0
 
+@export var grants_research: String = ""         # e.g. "gunpowder"
+@export var requires_research: Array[String] = [] # e.g. ["gunpowder"]
+
 func cost_dict() -> Dictionary:
 	return {
 		ResourceClass.Type.LUMBER: cost_lumber,

@@ -10,4 +10,5 @@ display_name = "Scrap Smith"
 icon = ExtResource("1_bdr8x")
 cost_food = 1
 grants_trait = "Armor"
+requires_research = Array[String](["people"])
 metadata/_custom_type_script = "uid://cicgs401yd8ub"

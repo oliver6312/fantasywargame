@@ -205,6 +205,13 @@ signal actions_changed(faction: Faction.Type, actions_left: int)
 const ACTIONS_PER_TURN := 5
 var actions_left: int = ACTIONS_PER_TURN
 
+# research_unlocked[faction] is a set: { "gunpowder": true, ... }
+var research_unlocked := {
+	Faction.Type.ORC: {},
+	Faction.Type.ELF: {},
+	Faction.Type.DWARF: {},
+}
+
 func _ready() -> void:
 	recalculate_control_from_board()
 	recalculate_buildings_from_board()
@@ -212,6 +219,40 @@ func _ready() -> void:
 	reset_actions_for_new_turn()
 	_emit_turn()
 	
+
+func has_research(f: Faction.Type, key: String) -> bool:
+	return research_unlocked[f].has(key)
+
+func meets_research_requirements(f: Faction.Type, reqs: Array[String]) -> bool:
+	for r in reqs:
+		if not research_unlocked[f].has(r):
+			return false
+	return true
+
+func recalculate_research_from_board() -> void:
+	for f in TURN_ORDER:
+		research_unlocked[f].clear()
+
+	var db := get_node_or_null("/root/BuildingDB")
+	if db == null:
+		return
+
+	for s in get_tree().get_nodes_in_group("settlements"):
+		if s == null:
+			continue
+		var f: Faction.Type = s.faction
+		if not research_unlocked.has(f):
+			continue
+
+		for i in range(s.building_slots):
+			var b_id : String = s.buildings[i]
+			if b_id == "":
+				continue
+			var def: BuildingDef = db.get_def_by_id(b_id)
+			if def == null:
+				continue
+			if def.grants_research != "":
+				research_unlocked[f][def.grants_research] = true
 
 func reset_actions_for_new_turn() -> void:
 	actions_left = ACTIONS_PER_TURN
@@ -266,6 +307,8 @@ func next_turn() -> void:
 	recalculate_buildings_from_board()
 	recalculate_traits_and_counters()
 	recalculate_control_from_board()
+	
+	recalculate_research_from_board()
 	
 	# Base income from settlements
 	_start_turn_income(current_turn)

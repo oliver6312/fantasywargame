@@ -104,6 +104,9 @@ func _on_building_chosen(b: BuildingDef) -> void:
 	if not TurnState.try_spend_action():
 		print("No actions left.")
 		return
+	if not TurnState.meets_research_requirements(selected.faction, b.requires_research):
+		print("Building locked. Missing research: %s" % ", ".join(b.requires_research))
+		return
 	if not TurnState.spend_resources(selected.faction, cost):
 		return
 
@@ -115,6 +118,8 @@ func _on_building_chosen(b: BuildingDef) -> void:
 	# Close menu + clear slot selection (optional)
 	building_menu.close()
 	selected_slot_index = -1
+	
+	
 
 func _on_building_slot_clicked(settlement: Settlement, slot_index: int) -> void:
 	# Slot is clicked => selected
