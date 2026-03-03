@@ -22,38 +22,105 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("3_wmin7")
 
-[node name="NeutralPit" parent="." unique_id=167798052 instance=ExtResource("4_msna8")]
-position = Vector2(1051, 667)
-resource_type = 2
-settlement_name = "The Shire"
-soldiers = 5
-
-[node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
-position = Vector2(772, 658)
-resource_type = 0
-settlement_id = "ElfVillage"
-settlement_name = "Rivendel"
-faction = 2
-soldiers = 100
-neighbors = [NodePath("../OrcTown")]
-buildings = Array[String](["", ""])
-
-[node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
-position = Vector2(890, 831)
-settlement_name = "Mordor"
-faction = 1
-soldiers = 100
-neighbors = [NodePath("../NeutralPit")]
-building_slots = 2
-buildings = Array[String](["", ""])
-
-[node name="FarawayLand" parent="." unique_id=1631699824 instance=ExtResource("4_msna8")]
-position = Vector2(1598, 1084)
-settlement_name = "Faraway Land"
-soldiers = 2
-
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
 visible = false
 script = ExtResource("5_ovkfm")
 
 [node name="UI" parent="." unique_id=1446758158 instance=ExtResource("6_33ruw")]
+visible = false
+
+[node name="Emynsarn" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1641, 669)
+resource_type = 2
+settlement_id = "Emynsarn"
+settlement_name = "Emynsarn"
+faction = 2
+soldiers = 24
+neighbors = [NodePath("../Amontol"), NodePath("../Duinost")]
+building_slots = 2
+
+[node name="Duinost" parent="." unique_id=478128922 instance=ExtResource("4_msna8")]
+position = Vector2(1217, 598)
+settlement_id = "Duinost"
+settlement_name = "Duinost"
+faction = 2
+soldiers = 24
+building_slots = 2
+
+[node name="Taurcalen" parent="." unique_id=1267739056 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(908, 485)
+resource_type = 0
+settlement_id = "Taurcalen"
+settlement_name = "Taurcalen"
+faction = 2
+soldiers = 24
+neighbors = [NodePath("../Duinost"), NodePath("../Sireryn"), NodePath("../Erryn")]
+building_slots = 2
+
+[node name="Amontol" parent="." unique_id=1492214697 instance=ExtResource("4_msna8")]
+position = Vector2(1614, 906)
+resource_type = 2
+settlement_id = "Amontol"
+settlement_name = "Amontol"
+soldiers = 12
+
+[node name="Sireryn" parent="." unique_id=747994273 instance=ExtResource("4_msna8")]
+position = Vector2(589, 633)
+settlement_id = "Amontol"
+settlement_name = "Amontol"
+soldiers = 12
+
+[node name="Erryn" parent="." unique_id=915274863 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(405, 335)
+resource_type = 0
+settlement_id = "Amontol"
+settlement_name = "Amontol"
+soldiers = 12
+neighbors = [NodePath("../Sireryn")]
+
+[node name="Emynsarn2" parent="." unique_id=1715078597 instance=ExtResource("4_msna8")]
+position = Vector2(2554, 1667)
+resource_type = 2
+settlement_id = "Emynsarn"
+settlement_name = "Emynsarn"
+faction = 2
+soldiers = 24
+building_slots = 2
+
+[node name="Duinost2" parent="." unique_id=1325958819 instance=ExtResource("4_msna8")]
+position = Vector2(2130, 1596)
+settlement_id = "Duinost"
+settlement_name = "Duinost"
+faction = 2
+soldiers = 24
+building_slots = 2
+
+[node name="Taurcalen2" parent="." unique_id=70851099 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1821, 1483)
+resource_type = 0
+settlement_id = "Taurcalen"
+settlement_name = "Taurcalen"
+faction = 2
+soldiers = 24
+neighbors = [null]
+building_slots = 2
+
+[node name="Amontol2" parent="." unique_id=1978004957 instance=ExtResource("4_msna8")]
+position = Vector2(2527, 1904)
+resource_type = 2
+settlement_id = "Amontol"
+settlement_name = "Amontol"
+soldiers = 12
+
+[node name="Sireryn2" parent="." unique_id=1730560569 instance=ExtResource("4_msna8")]
+position = Vector2(1502, 1631)
+settlement_id = "Amontol"
+settlement_name = "Amontol"
+soldiers = 12
+
+[node name="Erryn2" parent="." unique_id=800669383 instance=ExtResource("4_msna8")]
+position = Vector2(1318, 1333)
+resource_type = 0
+settlement_id = "Amontol"
+settlement_name = "Amontol"
+soldiers = 12
