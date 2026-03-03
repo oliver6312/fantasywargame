@@ -58,7 +58,7 @@ neighbors = [NodePath("../Duinost"), NodePath("../Sireryn"), NodePath("../Erryn"
 building_slots = 2
 
 [node name="Amontol" parent="." unique_id=1492214697 instance=ExtResource("4_msna8")]
-position = Vector2(1614, 906)
+position = Vector2(1614, 1068)
 resource_type = 2
 settlement_id = "Amontol"
 settlement_name = "Amontol"
@@ -66,61 +66,208 @@ soldiers = 12
 
 [node name="Sireryn" parent="." unique_id=747994273 instance=ExtResource("4_msna8")]
 position = Vector2(589, 633)
-settlement_id = "Amontol"
-settlement_name = "Amontol"
+settlement_id = "Sireryn"
+settlement_name = "Sireryn"
 soldiers = 12
 
 [node name="Erryn" parent="." unique_id=915274863 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
 position = Vector2(405, 335)
 resource_type = 0
-settlement_id = "Amontol"
-settlement_name = "Amontol"
+settlement_id = "Erryn"
+settlement_name = "Erryn"
 soldiers = 12
 neighbors = [NodePath("../Sireryn")]
 
-[node name="Emynsarn2" parent="." unique_id=1715078597 instance=ExtResource("4_msna8")]
-position = Vector2(2554, 1667)
+[node name="Shakgorg" parent="." unique_id=1715078597 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2880, 1541)
 resource_type = 2
-settlement_id = "Emynsarn"
-settlement_name = "Emynsarn"
-faction = 2
+settlement_id = "Shakgorg"
+settlement_name = "Shakgorg"
+faction = 1
 soldiers = 24
+neighbors = [NodePath("../Gasha")]
 building_slots = 2
 
-[node name="Duinost2" parent="." unique_id=1325958819 instance=ExtResource("4_msna8")]
-position = Vector2(2130, 1596)
-settlement_id = "Duinost"
-settlement_name = "Duinost"
-faction = 2
-soldiers = 24
-building_slots = 2
-
-[node name="Taurcalen2" parent="." unique_id=70851099 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
-position = Vector2(1821, 1483)
+[node name="Thaurdur" parent="." unique_id=1325958819 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1932, 1866)
 resource_type = 0
-settlement_id = "Taurcalen"
-settlement_name = "Taurcalen"
-faction = 2
+settlement_id = "Thaurdur"
+settlement_name = "Thaurdur"
+faction = 1
 soldiers = 24
-neighbors = [null]
+neighbors = [NodePath("../Dadur")]
 building_slots = 2
 
-[node name="Amontol2" parent="." unique_id=1978004957 instance=ExtResource("4_msna8")]
-position = Vector2(2527, 1904)
+[node name="Burzur" parent="." unique_id=70851099 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2279, 1603)
+settlement_id = "Burzur"
+settlement_name = "Burzur"
+faction = 1
+soldiers = 24
+neighbors = [NodePath("../Thaurdur"), NodePath("../Gasha"), NodePath("../Gazark"), NodePath("../Grimkhaz")]
+building_slots = 2
+
+[node name="Gazark" parent="." unique_id=1978004957 instance=ExtResource("4_msna8")]
+position = Vector2(2254, 1324)
 resource_type = 2
-settlement_id = "Amontol"
-settlement_name = "Amontol"
+settlement_id = "Gazark"
+settlement_name = "Gazark"
 soldiers = 12
 
-[node name="Sireryn2" parent="." unique_id=1730560569 instance=ExtResource("4_msna8")]
-position = Vector2(1502, 1631)
-settlement_id = "Amontol"
-settlement_name = "Amontol"
+[node name="Dadur" parent="." unique_id=1730560569 instance=ExtResource("4_msna8")]
+position = Vector2(1512, 1579)
+settlement_id = "Dadur"
+settlement_name = "Dadur"
 soldiers = 12
 
-[node name="Erryn2" parent="." unique_id=800669383 instance=ExtResource("4_msna8")]
-position = Vector2(1318, 1333)
+[node name="Gasha" parent="." unique_id=800669383 instance=ExtResource("4_msna8")]
+position = Vector2(2668, 1797)
 resource_type = 0
-settlement_id = "Amontol"
-settlement_name = "Amontol"
+settlement_id = "Gasha"
+settlement_name = "Gasha"
 soldiers = 12
+
+[node name="Khazbund" parent="." unique_id=421242464 instance=ExtResource("4_msna8")]
+position = Vector2(2671, 1146)
+resource_type = 2
+settlement_id = "Khazbund"
+settlement_name = "Khazbund"
+faction = 3
+soldiers = 24
+building_slots = 2
+
+[node name="Zigilbar" parent="." unique_id=421412956 instance=ExtResource("4_msna8")]
+position = Vector2(2992, 1011)
+resource_type = 0
+settlement_id = "Zigilbar"
+settlement_name = "Zigilbar"
+faction = 3
+soldiers = 24
+building_slots = 2
+
+[node name="Narazan" parent="." unique_id=602157167 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2640, 942)
+settlement_id = "Narazan"
+settlement_name = "Narazan"
+faction = 3
+soldiers = 24
+neighbors = [NodePath("../Khazbund"), NodePath("../Zigilbar"), NodePath("../Gatholnar")]
+building_slots = 2
+
+[node name="Grimkhaz" parent="." unique_id=1983816351 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2562, 1354)
+resource_type = 2
+settlement_id = "Grimkhaz"
+settlement_name = "Grimkhaz"
+soldiers = 12
+neighbors = [NodePath("../Khazbund")]
+
+[node name="Gatholnar" parent="." unique_id=2083421289 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2272, 867)
+settlement_id = "Gatholnar"
+settlement_name = "Gatholnar"
+soldiers = 12
+neighbors = [NodePath("../Tharkdarak")]
+
+[node name="Tharkdarak" parent="." unique_id=294406714 instance=ExtResource("4_msna8")]
+position = Vector2(2364, 605)
+resource_type = 0
+settlement_id = "Tharkdarak"
+settlement_name = "Tharkdarak"
+soldiers = 12
+
+[node name="Wolfswood" parent="." unique_id=1314800804 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1995, 560)
+resource_type = 0
+settlement_id = "Wolfswood"
+settlement_name = "Wolfswood"
+soldiers = 24
+neighbors = [NodePath("../Emynsarn"), NodePath("../Tharkdarak")]
+building_slots = 2
+
+[node name="Horsemark" parent="." unique_id=244863183 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1909, 819)
+settlement_id = "Horsemark"
+settlement_name = "Horsemark"
+soldiers = 48
+neighbors = [NodePath("../Emynsarn"), NodePath("../Wolfswood"), NodePath("../Gatholnar"), NodePath("../Amontol")]
+building_slots = 3
+
+[node name="Greytooth" parent="." unique_id=85006582 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2952, 1261)
+resource_type = 2
+settlement_id = "Greytooth"
+settlement_name = "Greytooth"
+soldiers = 12
+neighbors = [NodePath("../Grimkhaz"), NodePath("../Khazbund"), NodePath("../Mothermountain")]
+
+[node name="Mothermountain" parent="." unique_id=1773189071 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(3190, 1434)
+resource_type = 2
+settlement_id = "Mothermountain"
+settlement_name = "Mothermountain"
+soldiers = 12
+neighbors = [NodePath("../Grimkhaz"), NodePath("../Khazbund")]
+
+[node name="Springwood" parent="." unique_id=738670873 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(974, 788)
+resource_type = 0
+settlement_id = "Springwood"
+settlement_name = "Springwood"
+soldiers = 12
+neighbors = [NodePath("../Duinost")]
+
+[node name="Goldenfield" parent="." unique_id=493444381 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(2113, 1024)
+settlement_id = "Goldenfield"
+settlement_name = "Goldenfield"
+soldiers = 12
+neighbors = [NodePath("../Horsemark"), NodePath("../Gatholnar")]
+
+[node name="Pinebreath" parent="." unique_id=2135922547 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(612, 919)
+resource_type = 0
+settlement_id = "Pinebreath"
+settlement_name = "Pinebreath"
+soldiers = 24
+neighbors = [NodePath("../Sireryn"), NodePath("../Springwood")]
+building_slots = 2
+
+[node name="Guardpass" parent="." unique_id=1880503881 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(667, 1126)
+resource_type = 2
+settlement_id = "Guardpass"
+settlement_name = "Guardpass"
+soldiers = 24
+neighbors = [NodePath("../Sireryn"), NodePath("../Springwood")]
+building_slots = 2
+
+[node name="Greencrown" parent="." unique_id=13234683 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(525, 1482)
+resource_type = 0
+settlement_id = "Greencrown"
+settlement_name = "Greencrown"
+soldiers = 12
+neighbors = [NodePath("../Guardpass")]
+
+[node name="Saltville" parent="." unique_id=1082338060 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(936, 1309)
+settlement_id = "Saltville"
+settlement_name = "Saltville"
+soldiers = 12
+neighbors = [NodePath("../Guardpass"), NodePath("../Greencrown")]
+
+[node name="Ridersmarch" parent="." unique_id=292586618 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1357, 1230)
+settlement_id = "Ridersmarch"
+settlement_name = "Ridersmarch"
+soldiers = 12
+neighbors = [NodePath("../Saltville"), NodePath("../Amontol")]
+
+[node name="Rush" parent="." unique_id=1664629024 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
+position = Vector2(1754, 1382)
+settlement_id = "Rush"
+settlement_name = "Rush"
+soldiers = 48
+neighbors = [NodePath("../Dadur"), NodePath("../Gazark"), NodePath("../Ridersmarch"), NodePath("../Amontol")]
+building_slots = 3
