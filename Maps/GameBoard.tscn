@@ -198,8 +198,9 @@ position = Vector2(2952, 1261)
 resource_type = 2
 settlement_id = "Greytooth"
 settlement_name = "Greytooth"
-soldiers = 12
+soldiers = 24
 neighbors = [NodePath("../Grimkhaz"), NodePath("../Khazbund"), NodePath("../Mothermountain")]
+building_slots = 2
 
 [node name="Mothermountain" parent="." unique_id=1773189071 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
 position = Vector2(3190, 1434)
@@ -207,7 +208,7 @@ resource_type = 2
 settlement_id = "Mothermountain"
 settlement_name = "Mothermountain"
 soldiers = 12
-neighbors = [NodePath("../Grimkhaz"), NodePath("../Khazbund")]
+neighbors = [NodePath("../Grimkhaz")]
 
 [node name="Springwood" parent="." unique_id=738670873 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
 position = Vector2(974, 788)
@@ -239,7 +240,7 @@ resource_type = 2
 settlement_id = "Guardpass"
 settlement_name = "Guardpass"
 soldiers = 24
-neighbors = [NodePath("../Sireryn"), NodePath("../Springwood")]
+neighbors = [NodePath("../Sireryn")]
 building_slots = 2
 
 [node name="Greencrown" parent="." unique_id=13234683 node_paths=PackedStringArray("neighbors") instance=ExtResource("4_msna8")]
