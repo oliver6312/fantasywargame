@@ -1,10 +1,13 @@
 extends CanvasLayer
-
-
+class_name BoardUI
 
 @onready var next_turn_button: Button = $RightPanel/HBoxContainerBottom/VBoxContainer/NextTurnButton
 @onready var turn_label: Label = $RightPanel/HBoxContainerTop/VBoxContainer/TurnLabel
 
+@onready var move_dialog: AcceptDialog = %MoveDialog
+@onready var amount_edit: LineEdit = %AmountEdit
+@onready var prompt_label: Label = %PromptLabel
+@onready var deselect_button: Button = %DeselectButton
 
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)

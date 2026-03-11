@@ -1,16 +1,17 @@
 extends Node
 
-@onready var deselect_button: Button = %DeselectButton
+@export_node_path("BoardUI") var ui_path
+@onready var ui: BoardUI = get_node(ui_path)
 
-@export_node_path("CanvasLayer") var ui_path
-@onready var ui: CanvasLayer = get_node(ui_path)
-
-@onready var move_dialog: AcceptDialog = ui.get_node("MoveDialog")
-@onready var amount_edit: LineEdit = move_dialog.get_node("AmountEdit")
-@onready var prompt_label: Label = move_dialog.get_node_or_null("PromptLabel")
+@onready var move_dialog: AcceptDialog = ui.move_dialog
+@onready var amount_edit: LineEdit = ui.amount_edit
+@onready var prompt_label: Label = ui.prompt_label
+@onready var deselect_button: Button = ui.deselect_button
 
 var selected: Settlement = null
 var pending_target: Settlement = null
+
+
 
 func _ready() -> void:
 	# Connect all settlements
