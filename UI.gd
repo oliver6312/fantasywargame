@@ -41,6 +41,12 @@ class_name BoardUI
 @onready var trade_armor_edit: LineEdit = %ArmorEdit
 @onready var trade_info_label: Label = %TradeInfoLabel
 
+@onready var attacker_armor_label: Label = %AttackerArmorLabel
+@onready var attacker_armor_edit: LineEdit = %AttackerArmorEdit
+@onready var defender_armor_label: Label = %DefenderArmorLabel
+@onready var defender_armor_edit: LineEdit = %DefenderArmorEdit
+
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)

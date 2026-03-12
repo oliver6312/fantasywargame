@@ -13,6 +13,13 @@ var pending_target: Settlement = null
 
 var rng := RandomNumberGenerator.new()
 
+var pending_is_attack: bool = false
+
+@onready var attacker_armor_edit: LineEdit = ui.attacker_armor_edit
+@onready var defender_armor_edit: LineEdit = ui.defender_armor_edit
+@onready var attacker_armor_label: Label = ui.attacker_armor_label
+@onready var defender_armor_label: Label = ui.defender_armor_label
+
 func _ready() -> void:
 	rng.randomize()
 	# Connect all settlements
@@ -111,13 +118,36 @@ func _deselect() -> void:
 
 func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	var max_send := source.soldiers
+	var is_attack := target.faction != source.faction and target.faction != Faction.Type.NEUTRAL
+
+	pending_is_attack = is_attack
+
 	if prompt_label:
-		prompt_label.text = "Send how many soldiers from %s to %s? (1-%d)" % [source.name, target.name, max_send]
+		prompt_label.text = "Send how many soldiers from %s to %s? (1-%d)" % [
+			source.name, target.name, max_send
+		]
 
 	amount_edit.text = ""
 	amount_edit.placeholder_text = "1-%d" % max_send
-	amount_edit.grab_focus()
 
+	attacker_armor_edit.text = ""
+	defender_armor_edit.text = ""
+
+	var attacker_max_armor : int = TurnState.get_armor(source.faction)
+	attacker_armor_edit.placeholder_text = "0-%d" % attacker_max_armor
+
+	if is_attack:
+		attacker_armor_label.visible = true
+		attacker_armor_edit.visible = true
+		defender_armor_label.visible = true
+		defender_armor_edit.visible = true
+	else:
+		attacker_armor_label.visible = false
+		attacker_armor_edit.visible = false
+		defender_armor_label.visible = false
+		defender_armor_edit.visible = false
+
+	amount_edit.grab_focus()
 	move_dialog.popup_centered()
 
 func _on_move_canceled() -> void:
@@ -132,48 +162,111 @@ func _on_move_confirmed() -> void:
 	pending_target = null
 
 	var amount := int(amount_edit.text)
-
 	if amount < 1:
 		print("Must send at least 1.")
 		return
-
 	if amount > source.soldiers:
 		print("Cannot send more than you have.")
 		return
 
-	# Apply season effect ONCE
+	var attacker_armor := 0
+	var defender_armor := 0
+
+	if pending_is_attack:
+		attacker_armor = max(0, int(attacker_armor_edit.text))
+		defender_armor = max(0, int(defender_armor_edit.text))
+
+		if attacker_armor > TurnState.get_armor(source.faction):
+			print("Not enough attacker armor.")
+			return
+
+		if target.faction != Faction.Type.NEUTRAL and defender_armor > TurnState.get_armor(target.faction):
+			print("Not enough defender armor.")
+			return
+
 	var arriving_amount := _apply_season_effect_to_movement(amount)
 
-	# Remove the ORIGINAL sent amount from source ONCE
-	source.set_soldiers(source.soldiers - amount)
+	if pending_is_attack:
+		_execute_attack(source, target, arriving_amount, amount, attacker_armor, defender_armor)
+	else:
+		_execute_move(source, target, arriving_amount, amount)
 
-	# If nobody survives the journey, stop here
-	if arriving_amount <= 0:
-		print("All moving soldiers were lost on the way.")
-		_deselect()
-		return
+func _execute_move(source: Settlement, target: Settlement, arriving_amount: int, original_amount: int) -> void:
+	source.set_soldiers(source.soldiers - original_amount)
 
-	# Resolve the move using ONLY the survivors
-	_execute_move(source, target, arriving_amount)
-
-func _execute_move(source: Settlement, target: Settlement, arriving_amount: int) -> void:
-	# Same faction = merge
 	if target.faction == source.faction:
 		target.set_soldiers(target.soldiers + arriving_amount)
-		_deselect()
-		return
+	else:
+		# Neutral capture / regular no-resistance behavior, adjust if you want
+		var result := target.soldiers - arriving_amount
 
-	# Different faction = fight
-	var result := target.soldiers - arriving_amount
+		if result > 0:
+			target.set_soldiers(result)
+		elif result == 0:
+			target.set_soldiers(0)
+		else:
+			target.set_garrison(source.faction, -result)
 
-	if result > 0:
-		# Defender survives
-		target.set_soldiers(result)
-	elif result == 0:
-		# Tie: empty but still owned by current faction, if that's your rule
+	_deselect()
+
+func _execute_attack(
+	source: Settlement,
+	target: Settlement,
+	attacking_soldiers_after_season: int,
+	original_sent_amount: int,
+	attacker_armor_used: int,
+	defender_armor_used: int
+) -> void:
+	# Remove the originally sent soldiers from the source no matter what
+	source.set_soldiers(source.soldiers - original_sent_amount)
+
+	# Spend armor from both factions' pools
+	if attacker_armor_used > 0:
+		TurnState.add_armor(source.faction, -attacker_armor_used)
+
+	if target.faction != Faction.Type.NEUTRAL and defender_armor_used > 0:
+		TurnState.add_armor(target.faction, -defender_armor_used)
+
+	# Battle values
+	var atk_armor := attacker_armor_used
+	var atk_soldiers := attacking_soldiers_after_season
+
+	var def_armor := defender_armor_used
+	var def_soldiers := target.soldiers
+
+	# Defender damage taken from attacker:
+	var attacker_power := atk_armor + atk_soldiers
+	def_armor -= attacker_power
+
+	if def_armor < 0:
+		def_soldiers += def_armor # def_armor is negative, so this subtracts from soldiers
+		def_armor = 0
+
+	# Attacker damage taken from defender:
+	var defender_power := defender_armor_used + target.soldiers
+	atk_armor -= defender_power
+
+	if atk_armor < 0:
+		atk_soldiers += atk_armor # atk_armor is negative, so this subtracts from soldiers
+		atk_armor = 0
+
+	atk_soldiers = max(0, atk_soldiers)
+	def_soldiers = max(0, def_soldiers)
+
+	# Resolve result based on remaining soldiers only
+	if def_soldiers > 0 and atk_soldiers <= 0:
+		target.set_soldiers(def_soldiers)
+	elif atk_soldiers > 0 and def_soldiers <= 0:
+		target.set_garrison(source.faction, atk_soldiers)
+	elif atk_soldiers <= 0 and def_soldiers <= 0:
 		target.set_soldiers(0)
 	else:
-		# Attacker wins
-		target.set_garrison(source.faction, -result)
+		# This should not normally happen with simultaneous resolution,
+		# but keep the defender if both somehow still have soldiers.
+		target.set_soldiers(def_soldiers)
+
+	print("Attack resolved. Attacker remaining soldiers: %d, Defender remaining soldiers: %d" % [
+		atk_soldiers, def_soldiers
+	])
 
 	_deselect()

@@ -77,6 +77,7 @@ text = "Deselect"
 [node name="TradeButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=594072050]
 unique_name_in_owner = true
 layout_mode = 2
+text = "Trade"
 
 [node name="NextTurnButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=1683456407]
 unique_name_in_owner = true
@@ -125,15 +126,6 @@ layout_mode = 2
 [node name="BuildingSlotButton3" type="Button" parent="LeftPanel/SettlementDetailPanel/VBoxContainer" unique_id=197141999]
 unique_name_in_owner = true
 layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="LeftPanel" unique_id=1792214918]
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="TopPanel" type="Panel" parent="." unique_id=2128614229]
 anchors_preset = 14
@@ -229,22 +221,41 @@ layout_mode = 2
 unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Move Soldiers"
-position = Vector2i(0, 36)
+position = Vector2i(200, 200)
+size = Vector2i(243, 243)
 ok_button_text = "Send"
 
-[node name="AmountEdit" type="LineEdit" parent="MoveDialog" unique_id=145275559]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="VBoxContainer" parent="MoveDialog" unique_id=2005171511]
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 92.0
-offset_bottom = 51.0
+offset_right = 235.0
+offset_bottom = 194.0
 
-[node name="PromptLabel" type="Label" parent="MoveDialog" unique_id=1010360574]
+[node name="PromptLabel" type="Label" parent="MoveDialog/VBoxContainer" unique_id=1010360574]
 unique_name_in_owner = true
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 92.0
-offset_bottom = 51.0
+layout_mode = 2
+
+[node name="AmountEdit" type="LineEdit" parent="MoveDialog/VBoxContainer" unique_id=145275559]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="AttackerArmorLabel" type="Label" parent="MoveDialog/VBoxContainer" unique_id=1830775936]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Attacks Armor"
+
+[node name="AttackerArmorEdit" type="LineEdit" parent="MoveDialog/VBoxContainer" unique_id=1911272355]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DefenderArmorLabel" type="Label" parent="MoveDialog/VBoxContainer" unique_id=1453900844]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Defenders Armor"
+
+[node name="DefenderArmorEdit" type="LineEdit" parent="MoveDialog/VBoxContainer" unique_id=2136177517]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="SettingsDialog" type="AcceptDialog" parent="." unique_id=1231288899]
 unique_name_in_owner = true
