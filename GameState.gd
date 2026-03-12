@@ -50,6 +50,7 @@ const SEASON_ORDER := [
 var season_index: int = 0
 var current_season: int = SEASON_ORDER[0]
 
+var current_turn_controller : FactionTurn
 
 func _ready() -> void:
 	set_gold(Faction.Type.ORC, 10)
@@ -64,6 +65,26 @@ func _ready() -> void:
 	emit_signal("round_changed", round)
 	emit_signal("resources_changed")
 	emit_signal("season_changed", current_season)
+
+func _create_turn_controller(faction:int):
+
+	if current_turn_controller != null:
+		current_turn_controller.queue_free()
+
+	match faction:
+		Faction.Type.ORC:
+			current_turn_controller = OrcTurn.new()
+
+		Faction.Type.ELF:
+			current_turn_controller = ElfTurn.new()
+
+		Faction.Type.DWARF:
+			current_turn_controller = DwarfTurn.new()
+
+	add_child(current_turn_controller)
+
+	current_turn_controller.faction = faction
+	current_turn_controller.start_turn()
 
 func _advance_season() -> void:
 	season_index = (season_index + 1) % SEASON_ORDER.size()
