@@ -46,6 +46,9 @@ class_name BoardUI
 @onready var defender_armor_label: Label = %DefenderArmorLabel
 @onready var defender_armor_edit: LineEdit = %DefenderArmorEdit
 
+@onready var mercenary_button: Button = %MercenaryButton
+
+var current_settlement: Settlement = null
 
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
@@ -71,6 +74,40 @@ func _ready() -> void:
 	trade_dialog.confirmed.connect(_on_trade_confirmed)
 	
 	_populate_trade_targets()
+	
+	mercenary_button.pressed.connect(_on_mercenary_button_pressed)
+	
+	TurnState.resources_changed.connect(_on_resources_changed)
+
+func _on_resources_changed() -> void:
+	_update_resource_labels()
+	if current_settlement != null:
+		show_settlement_details(current_settlement)
+
+func _on_mercenary_button_pressed() -> void:
+	if current_settlement == null:
+		return
+
+	var success := current_settlement.hire_mercenaries()
+	if success:
+		show_settlement_details(current_settlement)
+	else:
+		print("Could not hire mercenaries.")
+
+func _update_mercenary_button(s: Settlement) -> void:
+	var cost := s.get_mercenary_gold_cost()
+	var gain := s.get_mercenary_soldier_gain()
+
+	mercenary_button.text = "Hire Mercenaries (+%d soldiers, %d gold)" % [gain, cost]
+
+	if s.faction != TurnState.current_turn:
+		mercenary_button.disabled = true
+	elif s.mercenaries_hired_this_turn:
+		mercenary_button.disabled = true
+	elif TurnState.get_gold(s.faction) < cost:
+		mercenary_button.disabled = true
+	else:
+		mercenary_button.disabled = false
 
 func _on_trade_confirmed() -> void:
 	var sender : int = TurnState.current_turn
@@ -164,6 +201,7 @@ func _update_resource_labels() -> void:
 	dwarf_armor_label.text = "Dwarf Armor: %d" % TurnState.get_armor(Faction.Type.DWARF)
 
 func show_settlement_details(s:Settlement):
+	current_settlement = s
 	settlement_panel.visible = true
 
 	settlement_name.text = s.get_display_name()
@@ -180,6 +218,7 @@ func show_settlement_details(s:Settlement):
 			settlement_faction.text = "Faction: Neutral"
 
 	_update_building_slot_buttons(s)
+	_update_mercenary_button(s)
 
 func _on_round_changed(new_round:int):
 	round_label.text = "Round %d" % new_round
@@ -188,6 +227,7 @@ func _open_settings():
 	settings_dialog.popup_centered()
 
 func hide_settlement_details():
+	current_settlement = null
 	settlement_panel.visible = false
 
 func _quit_game():
@@ -197,8 +237,10 @@ func _on_next_turn_pressed() -> void:
 	TurnState.next_turn()
 
 func _on_turn_changed(new_turn: Faction.Type) -> void:
-	turn_label.text = "%s turn" % _turn_name(new_turn)
+	turn_label.text = "%s turn" % _faction_name(TurnState.current_turn)
 	_populate_trade_targets()
+	if current_settlement != null:
+		show_settlement_details(current_settlement)
 
 func _turn_name(t: Faction.Type) -> String:
 	match t:

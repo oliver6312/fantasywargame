@@ -30,6 +30,8 @@ signal clicked(settlement: Settlement)
 @onready var building_slot_2: Sprite2D = $BuildingSlot2
 @onready var building_slot_3: Sprite2D = $BuildingSlot3
 
+var mercenaries_hired_this_turn: bool = false
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
@@ -40,6 +42,35 @@ func _ready() -> void:
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
+
+func can_hire_mercenaries() -> bool:
+	if faction != TurnState.current_turn:
+		return false
+	if mercenaries_hired_this_turn:
+		return false
+	return true
+
+func get_mercenary_gold_cost() -> int:
+	return 5 * building_slot_count
+
+func get_mercenary_soldier_gain() -> int:
+	return 2 * building_slot_count
+
+func hire_mercenaries() -> bool:
+	if not can_hire_mercenaries():
+		return false
+
+	var cost := get_mercenary_gold_cost()
+	if TurnState.get_gold(faction) < cost:
+		return false
+
+	TurnState.add_gold(faction, -cost)
+	set_soldiers(soldiers + get_mercenary_soldier_gain())
+	mercenaries_hired_this_turn = true
+	return true
+
+func reset_turn_limited_actions() -> void:
+	mercenaries_hired_this_turn = false
 
 func get_building_in_slot(index: int) -> String:
 	if index < 0 or index >= building_slots.size():

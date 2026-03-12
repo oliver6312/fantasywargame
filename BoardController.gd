@@ -29,7 +29,17 @@ func _ready() -> void:
 	move_dialog.confirmed.connect(_on_move_confirmed)
 	move_dialog.canceled.connect(_on_move_canceled)
 	deselect_button.pressed.connect(_on_deselect_pressed)
+	TurnState.turn_changed.connect(_on_turn_changed)
 	_show_deselect_button(false)
+	
+
+func _on_turn_changed(new_turn: int) -> void:
+	for s in get_tree().get_nodes_in_group("settlements"):
+		if s.faction == new_turn:
+			s.reset_turn_limited_actions()
+
+	if selected != null and ui != null:
+		ui.show_settlement_details(selected)
 
 func _faction_name(faction: int) -> String:
 	match faction:

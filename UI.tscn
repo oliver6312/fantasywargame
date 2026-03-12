@@ -96,10 +96,9 @@ offset_bottom = 452.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="LeftPanel/SettlementDetailPanel" unique_id=696029719]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
+anchors_preset = 9
 anchor_bottom = 1.0
-grow_horizontal = 2
+offset_right = 8.0
 grow_vertical = 2
 size_flags_horizontal = 4
 
@@ -124,6 +123,10 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="BuildingSlotButton3" type="Button" parent="LeftPanel/SettlementDetailPanel/VBoxContainer" unique_id=197141999]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MercenaryButton" type="Button" parent="LeftPanel/SettlementDetailPanel/VBoxContainer" unique_id=151428402]
 unique_name_in_owner = true
 layout_mode = 2
 
