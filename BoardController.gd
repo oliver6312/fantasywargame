@@ -194,12 +194,15 @@ func _on_move_confirmed() -> void:
 	var attacker_armor := 0
 	var defender_armor := 0
 
-	var arriving_amount := _apply_season_effect_to_movement(amount)
-
 	if pending_is_attack:
 		attacker_armor = max(0, int(attacker_armor_edit.text))
-		defender_armor = max(0, int(defender_armor_edit.text))
 
+		if target.faction != Faction.Type.NEUTRAL:
+			defender_armor = max(0, int(defender_armor_edit.text))
+		else:
+			defender_armor = 0
+
+		# Only check against armor stockpile here
 		if attacker_armor > TurnState.get_armor(source.faction):
 			print("Not enough attacker armor.")
 			return
@@ -208,16 +211,13 @@ func _on_move_confirmed() -> void:
 			print("Not enough defender armor.")
 			return
 
-	if pending_is_attack:
-		if attacker_armor > arriving_amount:
-			print("Cannot use more armor than remaining attacking soldiers after winter losses.")
-			return
+	var arriving_amount := _apply_season_effect_to_movement(amount)
 
-		if target.faction != Faction.Type.NEUTRAL and defender_armor > target.soldiers:
-			print("Defender cannot use more armor than defending soldiers.")
-			return
-
+	# Clamp armor AFTER winter / soldier changes
 	if pending_is_attack:
+		attacker_armor = min(attacker_armor, arriving_amount)
+		defender_armor = min(defender_armor, target.soldiers)
+
 		_execute_attack(source, target, arriving_amount, amount, attacker_armor, defender_armor)
 	else:
 		_execute_move(source, target, arriving_amount, amount)
