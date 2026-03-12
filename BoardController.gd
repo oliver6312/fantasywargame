@@ -11,8 +11,6 @@ extends Node
 var selected: Settlement = null
 var pending_target: Settlement = null
 
-
-
 func _ready() -> void:
 	# Connect all settlements
 	for s in get_tree().get_nodes_in_group("settlements"):

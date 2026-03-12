@@ -14,7 +14,37 @@ offset_left = -128.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="HBoxContainerBottom" type="HBoxContainer" parent="RightPanel" unique_id=1780124466]
+[node name="LeftPanel" type="Panel" parent="." unique_id=1982825963]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 128.0
+grow_vertical = 2
+
+[node name="HBoxContainerTop" type="HBoxContainer" parent="LeftPanel" unique_id=2019726855]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -0.5
+offset_right = 0.5
+offset_bottom = 23.0
+grow_horizontal = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftPanel/HBoxContainerTop" unique_id=1354717922]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TurnLabel" type="Label" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=655966467]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SettingsButton" type="Button" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=699180968]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Settings"
+
+[node name="HBoxContainerBottom" type="HBoxContainer" parent="LeftPanel" unique_id=1780124466]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -27,46 +57,21 @@ offset_right = 43.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="RightPanel/HBoxContainerBottom" unique_id=248120252]
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftPanel/HBoxContainerBottom" unique_id=248120252]
 layout_mode = 2
 size_flags_vertical = 8
 
-[node name="DeselectButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=1664342678]
+[node name="DeselectButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=1664342678]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Deselect"
 
-[node name="NextTurnButton" type="Button" parent="RightPanel/HBoxContainerBottom/VBoxContainer" unique_id=1683456407]
+[node name="NextTurnButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=1683456407]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Next Turn"
-
-[node name="HBoxContainerTop" type="HBoxContainer" parent="RightPanel" unique_id=2019726855]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -20.0
-offset_right = 20.0
-offset_bottom = 40.0
-grow_horizontal = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="RightPanel/HBoxContainerTop" unique_id=1354717922]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="TurnLabel" type="Label" parent="RightPanel/HBoxContainerTop/VBoxContainer" unique_id=655966467]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="LeftPanel" type="Panel" parent="." unique_id=1982825963]
-anchors_preset = 9
-anchor_bottom = 1.0
-offset_right = 128.0
-grow_vertical = 2
 
 [node name="MoveDialog" type="AcceptDialog" parent="." unique_id=435250643]
 unique_name_in_owner = true
@@ -88,3 +93,13 @@ offset_left = 8.0
 offset_top = 8.0
 offset_right = 92.0
 offset_bottom = 51.0
+
+[node name="SettingsDialog" type="AcceptDialog" parent="." unique_id=1231288899]
+unique_name_in_owner = true
+ok_button_text = "Close"
+
+[node name="QuitButton" type="Button" parent="SettingsDialog" unique_id=1065418446]
+unique_name_in_owner = true
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Quit"
