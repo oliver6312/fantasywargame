@@ -20,15 +20,62 @@ signal clicked(settlement: Settlement)
 
 @onready var soldier_label: Label = $SoldierLabel
 
+@export_range(1, 3, 1) var building_slot_count: int = 1 : set = set_building_slot_count
+
+# For now, each slot just stores a string.
+# Empty string = no building in that slot.
+@export var building_slots: Array[String] = []
+
+@onready var building_slot_1: Sprite2D = $BuildingSlot1
+@onready var building_slot_2: Sprite2D = $BuildingSlot2
+@onready var building_slot_3: Sprite2D = $BuildingSlot3
+
 func _ready() -> void:
-	name_label.visible = false
 	name_label.text = get_display_name()
 	add_to_group("settlements")
 	_make_neighbors_two_way()
 	_refresh_visuals()
+	_refresh_building_slot_visuals()
 	_validate_neighbors()
 	selection_circle.visible = false
 	available_circle.visible = false
+	name_label.visible = false
+
+func get_building_in_slot(index: int) -> String:
+	if index < 0 or index >= building_slots.size():
+		return ""
+	return building_slots[index]
+
+func set_building_in_slot(index: int, building_name: String) -> void:
+	if index < 0 or index >= building_slots.size():
+		return
+	building_slots[index] = building_name
+
+func get_building_slot_display_name(index: int) -> String:
+	var building := get_building_in_slot(index)
+	if building == "":
+		return "Empty"
+	return building
+
+func _refresh_building_slot_visuals() -> void:
+	if building_slot_1 == null:
+		return
+
+	building_slot_1.visible = building_slot_count >= 1
+	building_slot_2.visible = building_slot_count >= 2
+	building_slot_3.visible = building_slot_count >= 3
+
+func set_building_slot_count(value: int) -> void:
+	building_slot_count = clamp(value, 1, 3)
+	_resize_building_slots()
+	_refresh_building_slot_visuals()
+
+func _resize_building_slots() -> void:
+	while building_slots.size() < building_slot_count:
+		building_slots.append("")
+
+	while building_slots.size() > building_slot_count:
+		building_slots.remove_at(building_slots.size() - 1)
 
 func get_display_name() -> String:
 	return settlement_name if settlement_name != "" else name

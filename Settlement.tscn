@@ -1,9 +1,10 @@
 [gd_scene format=3 uid="uid://djgorxnh2gemb"]
 
 [ext_resource type="Script" uid="uid://xerce68opmqe" path="res://Settlement.gd" id="1_hx6cv"]
-[ext_resource type="Texture2D" uid="uid://b2w0voc5i01pc" path="res://Graphic/SettlmentPrototypeVillage.png" id="1_mrgdo"]
 [ext_resource type="Texture2D" uid="uid://dihtqsnypaq7h" path="res://Graphic/SelectionCircle.png" id="2_5erx4"]
 [ext_resource type="Texture2D" uid="uid://pm3t1dv4oh4e" path="res://Graphic/AvailableCircle.png" id="2_u8w44"]
+[ext_resource type="Texture2D" uid="uid://blw1w1urbg48p" path="res://Graphic/SettlementCircle.png" id="4_u8w44"]
+[ext_resource type="Texture2D" uid="uid://dixcc4r2fumem" path="res://Graphic/BuildingShell.png" id="5_bykt4"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
@@ -22,12 +23,30 @@ scale = Vector2(0.33, 0.33)
 texture = ExtResource("2_5erx4")
 
 [node name="Circle" type="Sprite2D" parent="." unique_id=1562593096]
-position = Vector2(-3.0517578e-05, -4.999996)
-scale = Vector2(0.33, 0.33)
-texture = ExtResource("1_mrgdo")
+position = Vector2(4.7683716e-07, 1.1920929e-07)
+scale = Vector2(0.60937494, 0.60937494)
+texture = ExtResource("4_u8w44")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
 shape = SubResource("CircleShape2D_hx6cv")
+
+[node name="BuildingSlot1" type="Sprite2D" parent="." unique_id=2116025175]
+unique_name_in_owner = true
+visible = false
+position = Vector2(32, 32)
+texture = ExtResource("5_bykt4")
+
+[node name="BuildingSlot2" type="Sprite2D" parent="." unique_id=5456342]
+unique_name_in_owner = true
+visible = false
+position = Vector2(-32, 32)
+texture = ExtResource("5_bykt4")
+
+[node name="BuildingSlot3" type="Sprite2D" parent="." unique_id=1546745769]
+unique_name_in_owner = true
+visible = false
+position = Vector2(0, -32)
+texture = ExtResource("5_bykt4")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
 anchors_preset = 15

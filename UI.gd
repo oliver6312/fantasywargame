@@ -30,6 +30,9 @@ class_name BoardUI
 @onready var season_button: Button = %SeasonButton
 @onready var season_dialog: Window = %SeasonDialog
 
+@onready var building_slot_button_1: Button = %BuildingSlotButton1
+@onready var building_slot_button_2: Button = %BuildingSlotButton2
+@onready var building_slot_button_3: Button = %BuildingSlotButton3
 
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
@@ -51,6 +54,20 @@ func _ready() -> void:
 	TurnState.season_changed.connect(_on_season_changed)
 	_on_season_changed(TurnState.current_season)
 
+func _update_building_slot_buttons(s: Settlement) -> void:
+	var buttons := [
+		building_slot_button_1,
+		building_slot_button_2,
+		building_slot_button_3
+	]
+
+	for i in range(3):
+		if i < s.building_slot_count:
+			buttons[i].visible = true
+			buttons[i].text = s.get_building_slot_display_name(i)
+		else:
+			buttons[i].visible = false
+
 func _on_season_button_pressed() -> void:
 	season_dialog.popup_centered()
 
@@ -68,7 +85,6 @@ func _update_resource_labels() -> void:
 	dwarf_armor_label.text = "Dwarf Armor: %d" % TurnState.get_armor(Faction.Type.DWARF)
 
 func show_settlement_details(s:Settlement):
-
 	settlement_panel.visible = true
 
 	settlement_name.text = s.get_display_name()
@@ -83,6 +99,8 @@ func show_settlement_details(s:Settlement):
 			settlement_faction.text = "Faction: Dwarf"
 		_:
 			settlement_faction.text = "Faction: Neutral"
+
+	_update_building_slot_buttons(s)
 
 func _on_round_changed(new_round:int):
 	round_label.text = "Round %d" % new_round

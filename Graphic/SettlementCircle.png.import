@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddsjlkn1bdxmm"
-path="res://.godot/imported/seasonprototypeimage.png-7aa7d8a689fd2a2baacc25f4767fffd2.ctex"
+uid="uid://blw1w1urbg48p"
+path="res://.godot/imported/SettlementCircle.png-cb15a06fa93ca71393b0d5e0690744d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://seasonprototypeimage.png"
-dest_files=["res://.godot/imported/seasonprototypeimage.png-7aa7d8a689fd2a2baacc25f4767fffd2.ctex"]
+source_file="res://Graphic/SettlementCircle.png"
+dest_files=["res://.godot/imported/SettlementCircle.png-cb15a06fa93ca71393b0d5e0690744d9.ctex"]
 
 [params]
 

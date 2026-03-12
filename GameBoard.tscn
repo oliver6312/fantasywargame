@@ -34,6 +34,7 @@ position = Vector2(773, 660)
 faction = 2
 soldiers = 10
 neighbors = [NodePath("../OrcTown")]
+building_slot_count = 3
 
 [node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(890, 831)
@@ -53,6 +54,7 @@ settlement_name = "DwarfTown"
 faction = 3
 soldiers = 1
 neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
+building_slot_count = 2
 
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
 visible = false
