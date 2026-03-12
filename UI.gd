@@ -34,6 +34,13 @@ class_name BoardUI
 @onready var building_slot_button_2: Button = %BuildingSlotButton2
 @onready var building_slot_button_3: Button = %BuildingSlotButton3
 
+@onready var trade_button: Button = %TradeButton
+@onready var trade_dialog: AcceptDialog = %TradeDialog
+@onready var target_faction_option: OptionButton = %TargetFactionOption
+@onready var trade_gold_edit: LineEdit = %GoldEdit
+@onready var trade_armor_edit: LineEdit = %ArmorEdit
+@onready var trade_info_label: Label = %TradeInfoLabel
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -53,6 +60,72 @@ func _ready() -> void:
 	season_button.pressed.connect(_on_season_button_pressed)
 	TurnState.season_changed.connect(_on_season_changed)
 	_on_season_changed(TurnState.current_season)
+
+	trade_button.pressed.connect(_on_trade_button_pressed)
+	trade_dialog.confirmed.connect(_on_trade_confirmed)
+	
+	_populate_trade_targets()
+
+func _on_trade_confirmed() -> void:
+	var sender : int = TurnState.current_turn
+	var receiver := target_faction_option.get_selected_id()
+
+	var gold_amount := int(trade_gold_edit.text)
+	var armor_amount := int(trade_armor_edit.text)
+
+	gold_amount = max(0, gold_amount)
+	armor_amount = max(0, armor_amount)
+
+	if gold_amount > TurnState.get_gold(sender):
+		print("Not enough gold.")
+		return
+
+	if armor_amount > TurnState.get_armor(sender):
+		print("Not enough armor.")
+		return
+
+	TurnState.add_gold(sender, -gold_amount)
+	TurnState.add_gold(receiver, gold_amount)
+
+	TurnState.add_armor(sender, -armor_amount)
+	TurnState.add_armor(receiver, armor_amount)
+
+	print("%s sent %d gold and %d armor to %s." % [
+		_faction_name(sender),
+		gold_amount,
+		armor_amount,
+		_faction_name(receiver)
+	])
+
+func _on_trade_button_pressed() -> void:
+	_populate_trade_targets()
+	trade_gold_edit.text = ""
+	trade_armor_edit.text = ""
+	trade_info_label.text = "Send resources to another faction."
+	trade_dialog.popup_centered()
+
+func _faction_name(faction: int) -> String:
+	match faction:
+		Faction.Type.ORC: return "Orc"
+		Faction.Type.ELF: return "Elf"
+		Faction.Type.DWARF: return "Dwarf"
+		_: return "Neutral"
+
+func _populate_trade_targets() -> void:
+	target_faction_option.clear()
+
+	var current: Faction.Type = TurnState.current_turn
+	var factions := [
+		Faction.Type.ORC,
+		Faction.Type.ELF,
+		Faction.Type.DWARF
+	]
+
+	for faction in factions:
+		if faction == current:
+			continue
+
+		target_faction_option.add_item(_faction_name(faction), faction)
 
 func _update_building_slot_buttons(s: Settlement) -> void:
 	var buttons := [
@@ -119,6 +192,7 @@ func _on_next_turn_pressed() -> void:
 
 func _on_turn_changed(new_turn: Faction.Type) -> void:
 	turn_label.text = "%s turn" % _turn_name(new_turn)
+	_populate_trade_targets()
 
 func _turn_name(t: Faction.Type) -> String:
 	match t:
