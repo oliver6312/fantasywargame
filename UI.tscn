@@ -206,6 +206,7 @@ offset_bottom = 51.0
 
 [node name="SettingsDialog" type="AcceptDialog" parent="." unique_id=1231288899]
 unique_name_in_owner = true
+title = "Settings"
 ok_button_text = "Close"
 
 [node name="QuitButton" type="Button" parent="SettingsDialog" unique_id=1065418446]
@@ -214,17 +215,21 @@ offset_right = 8.0
 offset_bottom = 8.0
 text = "Quit"
 
-[node name="SeasonDialog" type="Window" parent="." unique_id=368538630]
+[node name="SeasonDialog" type="AcceptDialog" parent="." unique_id=408923835]
 unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Season Details"
 position = Vector2i(137, 64)
-size = Vector2i(200, 100)
-visible = false
+size = Vector2i(161, 184)
+ok_button_text = "Close"
 
-[node name="SeasonInfoLabel" type="Label" parent="SeasonDialog" unique_id=525398841]
-unique_name_in_owner = true
-offset_right = 40.0
-offset_bottom = 23.0
-text = "Summer does x thing
-Winter does"
+[node name="Label" type="Label" parent="SeasonDialog" unique_id=980938198]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 153.0
+offset_bottom = 135.0
+text = "Spring does:
+Summer does:
+Autumn:
+Winder does:
+"

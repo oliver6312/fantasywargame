@@ -29,7 +29,7 @@ class_name BoardUI
 
 @onready var season_button: Button = %SeasonButton
 @onready var season_dialog: Window = %SeasonDialog
-@onready var season_info_label: Label = %SeasonInfoLabel
+
 
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
@@ -52,24 +52,10 @@ func _ready() -> void:
 	_on_season_changed(TurnState.current_season)
 
 func _on_season_button_pressed() -> void:
-	season_info_label.text = _get_season_description()
 	season_dialog.popup_centered()
 
 func _on_season_changed(new_season: int) -> void:
 	season_button.text = TurnState.get_season_name(new_season)
-
-func _get_season_description() -> String:
-	match TurnState.current_season:
-		TurnState.Season.SPRING:
-			return "Spring"
-		TurnState.Season.SUMMER:
-			return "Summer"
-		TurnState.Season.AUTUMN:
-			return "Autumn"
-		TurnState.Season.WINTER:
-			return "Winter: Moving soldiers loses 1 to 6 soldiers."
-		_:
-			return "Unknown season"
 
 func _update_resource_labels() -> void:
 	orc_gold_label.text = "Orc Gold: %d" % TurnState.get_gold(Faction.Type.ORC)
