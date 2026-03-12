@@ -78,6 +78,7 @@ func _on_settlement_clicked(s: Settlement) -> void:
 func _select(s: Settlement) -> void:
 	selected = s
 	_apply_selection_visuals()
+	ui.show_settlement_details(s)
 	print("Selected: %s (%s soldiers)" % [selected.name, selected.soldiers])
 	_show_deselect_button(true)
 
@@ -85,6 +86,7 @@ func _deselect() -> void:
 	selected = null
 	pending_target = null
 	_clear_all_highlights()
+	ui.hide_settlement_details()
 	_show_deselect_button(false)
 
 func _open_move_dialog(source: Settlement, target: Settlement) -> void:

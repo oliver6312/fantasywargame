@@ -13,11 +13,21 @@ const TURN_ORDER: Array[Faction.Type] = [
 var turn_index: int = 0
 var current_turn: Faction.Type = TURN_ORDER[0]
 
+signal round_changed(new_round:int)
+
+var round:int = 1
+
 func _ready() -> void:
 	_emit_turn()
 
 func next_turn() -> void:
-	turn_index = (turn_index + 1) % TURN_ORDER.size()
+	turn_index += 1
+
+	if turn_index >= TURN_ORDER.size():
+		turn_index = 0
+		round += 1
+		emit_signal("round_changed", round)
+
 	current_turn = TURN_ORDER[turn_index]
 	_emit_turn()
 

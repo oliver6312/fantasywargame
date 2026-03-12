@@ -35,14 +35,18 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="TurnLabel" type="Label" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=655966467]
-unique_name_in_owner = true
-layout_mode = 2
-
 [node name="SettingsButton" type="Button" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=699180968]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Settings"
+
+[node name="RoundLabel" type="Label" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=1012793232]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=655966467]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="HBoxContainerBottom" type="HBoxContainer" parent="LeftPanel" unique_id=1780124466]
 layout_mode = 1
@@ -72,6 +76,44 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 8
 text = "Next Turn"
+
+[node name="SettlementDetailPanel" type="Panel" parent="LeftPanel" unique_id=388741207]
+unique_name_in_owner = true
+visible = false
+layout_mode = 0
+offset_top = 196.0
+offset_right = 128.0
+offset_bottom = 452.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LeftPanel/SettlementDetailPanel" unique_id=696029719]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="SettlementNameLabel" type="Label" parent="LeftPanel/SettlementDetailPanel/VBoxContainer" unique_id=866012718]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SettlementFactionLabel" type="Label" parent="LeftPanel/SettlementDetailPanel/VBoxContainer" unique_id=135525481]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="SettlementSoldiersLabel" type="Label" parent="LeftPanel/SettlementDetailPanel/VBoxContainer" unique_id=2102729668]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="LeftPanel" unique_id=1792214918]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="MoveDialog" type="AcceptDialog" parent="." unique_id=435250643]
 unique_name_in_owner = true

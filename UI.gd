@@ -13,6 +13,13 @@ class_name BoardUI
 @onready var settings_dialog: Window = %SettingsDialog
 @onready var quit_button: Button = %QuitButton
 
+@onready var round_label: Label = %RoundLabel
+
+@onready var settlement_panel: Control = %SettlementDetailPanel
+@onready var settlement_name: Label = %SettlementNameLabel
+@onready var settlement_faction: Label = %SettlementFactionLabel
+@onready var settlement_soldiers: Label = %SettlementSoldiersLabel
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -22,8 +29,35 @@ func _ready() -> void:
 	# Initialize label immediately
 	_on_turn_changed(TurnState.current_turn)
 
+	TurnState.round_changed.connect(_on_round_changed)
+
+	round_label.text = "Round %d" % TurnState.round
+
+func show_settlement_details(s:Settlement):
+
+	settlement_panel.visible = true
+
+	settlement_name.text = s.get_display_name()
+	settlement_soldiers.text = "Soldiers: %d" % s.soldiers
+
+	match s.faction:
+		Faction.Type.ORC:
+			settlement_faction.text = "Faction: Orc"
+		Faction.Type.ELF:
+			settlement_faction.text = "Faction: Elf"
+		Faction.Type.DWARF:
+			settlement_faction.text = "Faction: Dwarf"
+		_:
+			settlement_faction.text = "Faction: Neutral"
+
+func _on_round_changed(new_round:int):
+	round_label.text = "Round %d" % new_round
+
 func _open_settings():
 	settings_dialog.popup_centered()
+
+func hide_settlement_details():
+	settlement_panel.visible = false
 
 func _quit_game():
 	get_tree().quit()
