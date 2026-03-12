@@ -47,14 +47,14 @@ position = Vector2(1598, 1084)
 settlement_name = "Faraway Land"
 soldiers = 2
 
-[node name="BoardController" type="Node2D" parent="." unique_id=426453066]
-visible = false
-script = ExtResource("6_trxdi")
-ui_path = NodePath("../UI")
-
 [node name="Area2D" parent="." unique_id=1422351740 node_paths=PackedStringArray("neighbors") instance=ExtResource("3_ocn0r")]
 position = Vector2(931, 560)
 settlement_name = "DwarfTown"
 faction = 3
 soldiers = 1
 neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
+
+[node name="BoardController" type="Node2D" parent="." unique_id=426453066]
+visible = false
+script = ExtResource("6_trxdi")
+ui_path = NodePath("../UI")

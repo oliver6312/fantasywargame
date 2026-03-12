@@ -40,6 +40,10 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Settings"
 
+[node name="SeasonButton" type="Button" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=1159562499]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="RoundLabel" type="Label" parent="LeftPanel/HBoxContainerTop/VBoxContainer" unique_id=1012793232]
 unique_name_in_owner = true
 layout_mode = 2
@@ -115,6 +119,68 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="TopPanel" type="Panel" parent="." unique_id=2128614229]
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 128.0
+offset_top = -324.0
+offset_right = -128.0
+offset_bottom = -292.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LeftVBoxContainer" type="VBoxContainer" parent="TopPanel" unique_id=6609909]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 1.0
+grow_vertical = 2
+
+[node name="DwarfGoldLabel" type="Label" parent="TopPanel/LeftVBoxContainer" unique_id=1066746541]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DwarfArmorLabel" type="Label" parent="TopPanel/LeftVBoxContainer" unique_id=938185318]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="MiddleVBoxContainer" type="VBoxContainer" parent="TopPanel" unique_id=2136836554]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ElfGoldLabel" type="Label" parent="TopPanel/MiddleVBoxContainer" unique_id=446576583]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ElfArmorLabel" type="Label" parent="TopPanel/MiddleVBoxContainer" unique_id=167438592]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RightVBoxContainer" type="VBoxContainer" parent="TopPanel" unique_id=678869966]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="OrcGoldLabel" type="Label" parent="TopPanel/RightVBoxContainer" unique_id=879603925]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OrcArmorLabel" type="Label" parent="TopPanel/RightVBoxContainer" unique_id=721930783]
+unique_name_in_owner = true
+layout_mode = 2
+
 [node name="MoveDialog" type="AcceptDialog" parent="." unique_id=435250643]
 unique_name_in_owner = true
 oversampling_override = 1.0
@@ -145,3 +211,18 @@ unique_name_in_owner = true
 offset_right = 8.0
 offset_bottom = 8.0
 text = "Quit"
+
+[node name="SeasonDialog" type="Window" parent="." unique_id=368538630]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Season Details"
+position = Vector2i(137, 64)
+size = Vector2i(200, 100)
+visible = false
+
+[node name="SeasonInfoLabel" type="Label" parent="SeasonDialog" unique_id=525398841]
+unique_name_in_owner = true
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Summer does x thing
+Winter does"

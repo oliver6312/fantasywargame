@@ -11,7 +11,10 @@ extends Node
 var selected: Settlement = null
 var pending_target: Settlement = null
 
+var rng := RandomNumberGenerator.new()
+
 func _ready() -> void:
+	rng.randomize()
 	# Connect all settlements
 	for s in get_tree().get_nodes_in_group("settlements"):
 		s.clicked.connect(_on_settlement_clicked)
@@ -20,6 +23,23 @@ func _ready() -> void:
 	move_dialog.canceled.connect(_on_move_canceled)
 	deselect_button.pressed.connect(_on_deselect_pressed)
 	_show_deselect_button(false)
+
+func _apply_season_effect_to_movement(amount: int) -> int:
+	if TurnState.current_season == TurnState.Season.WINTER:
+		var loss := rng.randi_range(1, 6)
+		loss = min(loss, amount)
+		print("Winter effect: lost %d soldiers to the cold." % loss)
+		return amount - loss
+
+	return amount
+
+func _unhandled_input(event: InputEvent) -> void:
+	if selected == null:
+		return
+
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_Q:
+			_deselect()
 
 func _on_deselect_pressed() -> void:
 	_deselect()
@@ -104,6 +124,15 @@ func _on_move_canceled() -> void:
 	pending_target = null
 
 func _on_move_confirmed() -> void:
+	var amount := int(amount_edit.text)
+	var moved_amount := _apply_season_effect_to_movement(amount)
+
+	if moved_amount <= 0:
+		selected.set_soldiers(selected.soldiers - amount)
+		print("All moving soldiers were lost before reaching the target.")
+		_deselect()
+		return
+
 	if selected == null or pending_target == null:
 		return
 
@@ -111,7 +140,6 @@ func _on_move_confirmed() -> void:
 	var target := pending_target
 	pending_target = null
 
-	var amount := int(amount_edit.text)
 	if amount < 1:
 		print("Must send at least 1.")
 		return
@@ -119,11 +147,20 @@ func _on_move_confirmed() -> void:
 		print("Cannot send more than you have.")
 		return
 
-	_execute_move(source, target, amount)
+	var arriving_amount := _apply_season_effect_to_movement(amount)
 
-func _execute_move(source: Settlement, target: Settlement, amount: int) -> void:
+	_execute_move(source, target, amount, moved_amount)
+
+func _execute_move(source: Settlement, target: Settlement, arriving_amount: int, original_amount: int) -> void:
+	var amount := int(amount_edit.text)
+	source.set_soldiers(source.soldiers - original_amount)
 	# Remove from source first
 	source.set_soldiers(source.soldiers - amount)
+
+	if target.faction == source.faction and target.faction != Faction.Type.NEUTRAL:
+		target.set_soldiers(target.soldiers + arriving_amount)
+		_deselect()
+		return
 
 	# Same faction: merge
 	if target.faction == source.faction and target.faction != Faction.Type.NEUTRAL:

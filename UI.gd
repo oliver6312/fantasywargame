@@ -20,6 +20,17 @@ class_name BoardUI
 @onready var settlement_faction: Label = %SettlementFactionLabel
 @onready var settlement_soldiers: Label = %SettlementSoldiersLabel
 
+@onready var orc_gold_label: Label = %OrcGoldLabel
+@onready var orc_armor_label: Label = %OrcArmorLabel
+@onready var elf_gold_label: Label = %ElfGoldLabel
+@onready var elf_armor_label: Label = %ElfArmorLabel
+@onready var dwarf_gold_label: Label = %DwarfGoldLabel
+@onready var dwarf_armor_label: Label = %DwarfArmorLabel
+
+@onready var season_button: Button = %SeasonButton
+@onready var season_dialog: Window = %SeasonDialog
+@onready var season_info_label: Label = %SeasonInfoLabel
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -32,6 +43,43 @@ func _ready() -> void:
 	TurnState.round_changed.connect(_on_round_changed)
 
 	round_label.text = "Round %d" % TurnState.round
+	
+	TurnState.resources_changed.connect(_update_resource_labels)
+	_update_resource_labels()
+	
+	season_button.pressed.connect(_on_season_button_pressed)
+	TurnState.season_changed.connect(_on_season_changed)
+	_on_season_changed(TurnState.current_season)
+
+func _on_season_button_pressed() -> void:
+	season_info_label.text = _get_season_description()
+	season_dialog.popup_centered()
+
+func _on_season_changed(new_season: int) -> void:
+	season_button.text = TurnState.get_season_name(new_season)
+
+func _get_season_description() -> String:
+	match TurnState.current_season:
+		TurnState.Season.SPRING:
+			return "Spring"
+		TurnState.Season.SUMMER:
+			return "Summer"
+		TurnState.Season.AUTUMN:
+			return "Autumn"
+		TurnState.Season.WINTER:
+			return "Winter: Moving soldiers loses 1 to 6 soldiers."
+		_:
+			return "Unknown season"
+
+func _update_resource_labels() -> void:
+	orc_gold_label.text = "Orc Gold: %d" % TurnState.get_gold(Faction.Type.ORC)
+	orc_armor_label.text = "Orc Armor: %d" % TurnState.get_armor(Faction.Type.ORC)
+
+	elf_gold_label.text = "Elf Gold: %d" % TurnState.get_gold(Faction.Type.ELF)
+	elf_armor_label.text = "Elf Armor: %d" % TurnState.get_armor(Faction.Type.ELF)
+
+	dwarf_gold_label.text = "Dwarf Gold: %d" % TurnState.get_gold(Faction.Type.DWARF)
+	dwarf_armor_label.text = "Dwarf Armor: %d" % TurnState.get_armor(Faction.Type.DWARF)
 
 func show_settlement_details(s:Settlement):
 
