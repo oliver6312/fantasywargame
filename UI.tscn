@@ -131,53 +131,55 @@ offset_bottom = -292.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="LeftVBoxContainer" type="VBoxContainer" parent="TopPanel" unique_id=6609909]
+[node name="LeftHBoxContainer" type="HBoxContainer" parent="TopPanel" unique_id=609131742]
 layout_mode = 1
 anchors_preset = 9
 anchor_bottom = 1.0
-offset_right = 1.0
+offset_right = 6.0
 grow_vertical = 2
 
-[node name="DwarfGoldLabel" type="Label" parent="TopPanel/LeftVBoxContainer" unique_id=1066746541]
+[node name="DwarfGoldLabel" type="Label" parent="TopPanel/LeftHBoxContainer" unique_id=191775118]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DwarfArmorLabel" type="Label" parent="TopPanel/LeftVBoxContainer" unique_id=938185318]
+[node name="DwarfArmorLabel" type="Label" parent="TopPanel/LeftHBoxContainer" unique_id=2074824726]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MiddleVBoxContainer" type="VBoxContainer" parent="TopPanel" unique_id=2136836554]
+[node name="MiddleHBoxContainer" type="HBoxContainer" parent="TopPanel" unique_id=2028150882]
 layout_mode = 1
 anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
+offset_left = -3.0
+offset_right = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ElfGoldLabel" type="Label" parent="TopPanel/MiddleVBoxContainer" unique_id=446576583]
+[node name="ElfGoldLabel" type="Label" parent="TopPanel/MiddleHBoxContainer" unique_id=847990961]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="ElfArmorLabel" type="Label" parent="TopPanel/MiddleVBoxContainer" unique_id=167438592]
+[node name="ElfArmorLabel" type="Label" parent="TopPanel/MiddleHBoxContainer" unique_id=1097984600]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="RightVBoxContainer" type="VBoxContainer" parent="TopPanel" unique_id=678869966]
+[node name="RightHBoxContainer" type="HBoxContainer" parent="TopPanel" unique_id=103010978]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1.0
+offset_left = -6.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="OrcGoldLabel" type="Label" parent="TopPanel/RightVBoxContainer" unique_id=879603925]
+[node name="OrcGoldLabel" type="Label" parent="TopPanel/RightHBoxContainer" unique_id=946670654]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="OrcArmorLabel" type="Label" parent="TopPanel/RightVBoxContainer" unique_id=721930783]
+[node name="OrcArmorLabel" type="Label" parent="TopPanel/RightHBoxContainer" unique_id=469040073]
 unique_name_in_owner = true
 layout_mode = 2
 

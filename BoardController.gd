@@ -124,15 +124,6 @@ func _on_move_canceled() -> void:
 	pending_target = null
 
 func _on_move_confirmed() -> void:
-	var amount := int(amount_edit.text)
-	var moved_amount := _apply_season_effect_to_movement(amount)
-
-	if moved_amount <= 0:
-		selected.set_soldiers(selected.soldiers - amount)
-		print("All moving soldiers were lost before reaching the target.")
-		_deselect()
-		return
-
 	if selected == null or pending_target == null:
 		return
 
@@ -140,43 +131,49 @@ func _on_move_confirmed() -> void:
 	var target := pending_target
 	pending_target = null
 
+	var amount := int(amount_edit.text)
+
 	if amount < 1:
 		print("Must send at least 1.")
 		return
+
 	if amount > source.soldiers:
 		print("Cannot send more than you have.")
 		return
 
+	# Apply season effect ONCE
 	var arriving_amount := _apply_season_effect_to_movement(amount)
 
-	_execute_move(source, target, amount, moved_amount)
-
-func _execute_move(source: Settlement, target: Settlement, arriving_amount: int, original_amount: int) -> void:
-	var amount := int(amount_edit.text)
-	source.set_soldiers(source.soldiers - original_amount)
-	# Remove from source first
+	# Remove the ORIGINAL sent amount from source ONCE
 	source.set_soldiers(source.soldiers - amount)
 
-	if target.faction == source.faction and target.faction != Faction.Type.NEUTRAL:
+	# If nobody survives the journey, stop here
+	if arriving_amount <= 0:
+		print("All moving soldiers were lost on the way.")
+		_deselect()
+		return
+
+	# Resolve the move using ONLY the survivors
+	_execute_move(source, target, arriving_amount)
+
+func _execute_move(source: Settlement, target: Settlement, arriving_amount: int) -> void:
+	# Same faction = merge
+	if target.faction == source.faction:
 		target.set_soldiers(target.soldiers + arriving_amount)
 		_deselect()
 		return
 
-	# Same faction: merge
-	if target.faction == source.faction and target.faction != Faction.Type.NEUTRAL:
-		target.set_soldiers(target.soldiers + amount)
-		return
-
-	# Different faction (including neutral): fight / capture
-	var result := target.soldiers - amount
+	# Different faction = fight
+	var result := target.soldiers - arriving_amount
 
 	if result > 0:
 		# Defender survives
 		target.set_soldiers(result)
-		# faction unchanged
 	elif result == 0:
-		target.set_soldiers(0) # keep faction as-is
+		# Tie: empty but still owned by current faction, if that's your rule
+		target.set_soldiers(0)
 	else:
-		# Attacker wins: flip faction and survivors = abs(result)
+		# Attacker wins
 		target.set_garrison(source.faction, -result)
+
 	_deselect()
