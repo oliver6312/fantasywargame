@@ -50,6 +50,7 @@ const SEASON_ORDER := [
 var season_index: int = 0
 var current_season: int = SEASON_ORDER[0]
 
+
 func _ready() -> void:
 	set_gold(Faction.Type.ORC, 10)
 	set_gold(Faction.Type.ELF, 10)

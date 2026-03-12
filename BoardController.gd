@@ -31,6 +31,13 @@ func _ready() -> void:
 	deselect_button.pressed.connect(_on_deselect_pressed)
 	_show_deselect_button(false)
 
+func _faction_name(faction: int) -> String:
+	match faction:
+		Faction.Type.ORC: return "Orc"
+		Faction.Type.ELF: return "Elf"
+		Faction.Type.DWARF: return "Dwarf"
+		_: return "Neutral"
+
 func _apply_season_effect_to_movement(amount: int) -> int:
 	if TurnState.current_season == TurnState.Season.WINTER:
 		var loss := rng.randi_range(1, 6)
@@ -118,13 +125,13 @@ func _deselect() -> void:
 
 func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	var max_send := source.soldiers
-	var is_attack := target.faction != source.faction and target.faction != Faction.Type.NEUTRAL
+	var is_attack := target.faction != source.faction
 
 	pending_is_attack = is_attack
 
 	if prompt_label:
 		prompt_label.text = "Send how many soldiers from %s to %s? (1-%d)" % [
-			source.name, target.name, max_send
+			source.get_display_name(), target.get_display_name(), max_send
 		]
 
 	amount_edit.text = ""
@@ -133,14 +140,19 @@ func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	attacker_armor_edit.text = ""
 	defender_armor_edit.text = ""
 
-	var attacker_max_armor : int = TurnState.get_armor(source.faction)
-	attacker_armor_edit.placeholder_text = "0-%d" % attacker_max_armor
+	attacker_armor_label.text = "%s's armor used" % _faction_name(source.faction)
+	defender_armor_label.text = "%s's armor used" % _faction_name(target.faction)
 
 	if is_attack:
 		attacker_armor_label.visible = true
 		attacker_armor_edit.visible = true
-		defender_armor_label.visible = true
-		defender_armor_edit.visible = true
+
+		if target.faction == Faction.Type.NEUTRAL:
+			defender_armor_label.visible = false
+			defender_armor_edit.visible = false
+		else:
+			defender_armor_label.visible = true
+			defender_armor_edit.visible = true
 	else:
 		attacker_armor_label.visible = false
 		attacker_armor_edit.visible = false
@@ -172,6 +184,8 @@ func _on_move_confirmed() -> void:
 	var attacker_armor := 0
 	var defender_armor := 0
 
+	var arriving_amount := _apply_season_effect_to_movement(amount)
+
 	if pending_is_attack:
 		attacker_armor = max(0, int(attacker_armor_edit.text))
 		defender_armor = max(0, int(defender_armor_edit.text))
@@ -184,7 +198,14 @@ func _on_move_confirmed() -> void:
 			print("Not enough defender armor.")
 			return
 
-	var arriving_amount := _apply_season_effect_to_movement(amount)
+	if pending_is_attack:
+		if attacker_armor > arriving_amount:
+			print("Cannot use more armor than remaining attacking soldiers after winter losses.")
+			return
+
+		if target.faction != Faction.Type.NEUTRAL and defender_armor > target.soldiers:
+			print("Defender cannot use more armor than defending soldiers.")
+			return
 
 	if pending_is_attack:
 		_execute_attack(source, target, arriving_amount, amount, attacker_armor, defender_armor)
