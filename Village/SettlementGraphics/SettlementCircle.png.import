@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dixcc4r2fumem"
-path="res://.godot/imported/BuildingShell.png-3b2a0e11f217258c31ee8154c70401cc.ctex"
+uid="uid://blw1w1urbg48p"
+path="res://.godot/imported/SettlementCircle.png-a02e30582c11cc51e04699931a55ad85.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Village/BuildingShell.png"
-dest_files=["res://.godot/imported/BuildingShell.png-3b2a0e11f217258c31ee8154c70401cc.ctex"]
+source_file="res://Village/SettlementGraphics/SettlementCircle.png"
+dest_files=["res://.godot/imported/SettlementCircle.png-a02e30582c11cc51e04699931a55ad85.ctex"]
 
 [params]
 
