@@ -50,6 +50,8 @@ class_name BoardUI
 
 var current_settlement: Settlement = null
 
+signal action_requested(action_id: String)
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -78,6 +80,12 @@ func _ready() -> void:
 	mercenary_button.pressed.connect(_on_mercenary_button_pressed)
 	
 	TurnState.resources_changed.connect(_on_resources_changed)
+
+func show_faction_actions(actions: Array) -> void:
+	# clear old buttons
+	# create one button per ActionDefinition
+	# connect button to emit action_requested(action_id)
+	pass
 
 func _on_resources_changed() -> void:
 	_update_resource_labels()

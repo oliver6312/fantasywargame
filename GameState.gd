@@ -52,6 +52,8 @@ var current_season: int = SEASON_ORDER[0]
 
 var current_turn_controller : FactionTurn
 
+var current_faction_controller: FactionController
+
 func _ready() -> void:
 	set_gold(Faction.Type.ORC, 10)
 	set_gold(Faction.Type.ELF, 10)
@@ -65,6 +67,8 @@ func _ready() -> void:
 	emit_signal("round_changed", round)
 	emit_signal("resources_changed")
 	emit_signal("season_changed", current_season)
+
+
 
 func _create_turn_controller(faction:int):
 

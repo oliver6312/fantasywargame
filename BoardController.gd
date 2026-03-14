@@ -15,6 +15,8 @@ var rng := RandomNumberGenerator.new()
 
 var pending_is_attack: bool = false
 
+#ui.action_requested.connect(_on_action_requested)
+
 @onready var attacker_armor_edit: LineEdit = ui.attacker_armor_edit
 @onready var defender_armor_edit: LineEdit = ui.defender_armor_edit
 @onready var attacker_armor_label: Label = ui.attacker_armor_label
@@ -31,9 +33,35 @@ func _ready() -> void:
 	deselect_button.pressed.connect(_on_deselect_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
 	_show_deselect_button(false)
-	
+
+func _build_faction_controller(faction: int) -> FactionController:
+	var controller: FactionController
+
+	match faction:
+		Faction.Type.ORC:
+			controller = OrcController.new()
+		Faction.Type.ELF:
+			controller = ElfController.new()
+		Faction.Type.DWARF:
+			controller = DwarfController.new()
+		_:
+			controller = FactionController.new()
+
+	controller.setup(faction, self, ui)
+	return controller
+
+func _make_command_context() -> CommandContext:
+	var ctx := CommandContext.new()
+	ctx.current_faction = TurnState.current_turn
+	ctx.board = self
+	ctx.ui = ui
+	return ctx
 
 func _on_turn_changed(new_turn: int) -> void:
+	TurnState.current_faction_controller = _build_faction_controller(new_turn)
+	TurnState.current_faction_controller.start_turn()
+	ui.show_faction_actions(TurnState.current_faction_controller.get_action_list())
+
 	for s in get_tree().get_nodes_in_group("settlements"):
 		if s.faction == new_turn:
 			s.reset_turn_limited_actions()
