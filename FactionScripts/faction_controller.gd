@@ -13,14 +13,8 @@ func setup(_faction: int, _board, _ui) -> void:
 func start_turn() -> void:
 	pass
 
-func end_turn() -> void:
-	pass
-
 func get_action_list() -> Array:
 	return []
 
-func on_settlement_selected(_settlement: Settlement) -> void:
-	pass
-
-func on_empty_board_clicked() -> void:
+func handle_action(_action_id: String) -> void:
 	pass
