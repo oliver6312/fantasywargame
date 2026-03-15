@@ -49,12 +49,19 @@ var used_gold_action_thresholds_this_turn := {
 	520: false
 }
 
+var in_war_meeting: bool = true
+
+# =========================
+# Turn and phases
+# =========================
+
 func start_turn() -> void:
 	normal_actions_remaining = 2
 	mode = MODE_NONE
 	build_selected_settlement = null
 	march_moves_remaining = 0
 	march_source = null
+	var in_war_meeting: bool = true
 
 	for threshold in HOARD_THRESHOLDS:
 		used_gold_action_thresholds_this_turn[threshold] = false
@@ -63,6 +70,15 @@ func start_turn() -> void:
 	_refresh_ui()
 
 	print("Dwarf turn begins with 2 actions")
+	print("Dwarf War Meeting begins")
+
+func is_in_war_meeting() -> bool:
+	return in_war_meeting
+
+func finish_war_meeting() -> void:
+	in_war_meeting = false
+	print("Dwarf War Meeting ended")
+	_refresh_ui()
 
 # =========================
 # Public hoard helpers
@@ -142,6 +158,10 @@ func get_action_list() -> Array:
 	return actions
 
 func handle_action(action_id: String) -> void:
+	if in_war_meeting:
+		print("Finish the War Meeting first.")
+		return
+	
 	if _get_available_uses(action_id) <= 0:
 		print("No dwarf uses remaining for action: %s" % action_id)
 		return

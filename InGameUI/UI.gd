@@ -1,6 +1,8 @@
 extends CanvasLayer
 class_name BoardUI
 
+signal war_meeting_finished()
+@onready var war_meeting_done_button: Button = %WarMeetingDoneButton
 signal action_requested(action_id: String)
 signal dwarf_build_requested(building_name: String)
 signal dwarf_gold_action_chosen(threshold: int, action_type: String)
@@ -130,6 +132,7 @@ func _connect_button_signals() -> void:
 	trade_button.pressed.connect(_on_trade_button_pressed)
 	trade_dialog.confirmed.connect(_on_trade_confirmed)
 	mercenary_button.pressed.connect(_on_mercenary_button_pressed)
+	war_meeting_done_button.pressed.connect(func(): war_meeting_finished.emit())
 
 	# Dwarf build buttons
 	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
@@ -177,7 +180,7 @@ func _set_faction_label(label: Label, faction: int, prefix: String) -> void:
 	label.text = "%s: %s" % [prefix, _faction_name(faction)]
 
 # =========================
-# Turn / round / season UI
+# Turn / round / season UI / phases
 # =========================
 
 func _on_next_turn_pressed() -> void:
@@ -198,6 +201,12 @@ func _on_season_button_pressed() -> void:
 
 func _on_season_changed(new_season: int) -> void:
 	season_button.text = TurnState.get_season_name(new_season)
+
+func show_war_meeting_button() -> void:
+	war_meeting_done_button.visible = true
+
+func hide_war_meeting_button() -> void:
+	war_meeting_done_button.visible = false
 
 # =========================
 # Settings UI

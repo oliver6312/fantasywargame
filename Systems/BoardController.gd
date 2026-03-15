@@ -38,6 +38,11 @@ func _ready() -> void:
 	ui.dwarf_gold_action_chosen.connect(_on_dwarf_gold_action_chosen)
 	ui.dwarf_gold_assignment_requested.connect(_on_dwarf_gold_assignment_requested)
 	ui.dwarf_build_requested.connect(_on_dwarf_build_requested)
+	ui.war_meeting_finished.connect(_on_war_meeting_finished)
+
+func _on_war_meeting_finished() -> void:
+	if TurnState.current_faction_controller != null:
+		TurnState.current_faction_controller.finish_war_meeting()
 
 func _on_dwarf_build_requested(building_name: String) -> void:
 	if TurnState.current_faction_controller is DwarfController:
@@ -95,6 +100,11 @@ func _on_turn_changed(new_turn: int) -> void:
 
 	if selected != null and ui != null:
 		ui.show_settlement_details(selected)
+
+	if TurnState.current_faction_controller.is_in_war_meeting():
+		ui.show_war_meeting_button()
+	else:
+		ui.hide_war_meeting_button()
 
 func _faction_name(faction: int) -> String:
 	match faction:

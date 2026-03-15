@@ -5,6 +5,12 @@ var faction: int
 var board
 var ui
 
+func is_in_war_meeting() -> bool:
+	return false
+
+func finish_war_meeting() -> void:
+	pass
+
 func can_start_move_from_settlement(_settlement: Settlement) -> bool:
 	return true
 
