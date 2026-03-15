@@ -39,10 +39,27 @@ func _ready() -> void:
 	ui.dwarf_gold_assignment_requested.connect(_on_dwarf_gold_assignment_requested)
 	ui.dwarf_build_requested.connect(_on_dwarf_build_requested)
 	ui.war_meeting_finished.connect(_on_war_meeting_finished)
+	TurnState.resources_changed.connect(_on_resources_changed)
+	ui.building_delete_requested.connect(_on_building_delete_requested)
+
+func _on_building_delete_requested(slot_index: int) -> void:
+	if selected == null:
+		return
+
+	if TurnState.current_faction_controller == null:
+		return
+
+	if TurnState.current_faction_controller is DwarfController:
+		TurnState.current_faction_controller.delete_building(selected, slot_index)
+
+func _on_resources_changed() -> void:
+	if TurnState.current_faction_controller is DwarfController:
+		TurnState.current_faction_controller.on_resources_changed()
 
 func _on_war_meeting_finished() -> void:
 	if TurnState.current_faction_controller != null:
 		TurnState.current_faction_controller.finish_war_meeting()
+		ui.hide_war_meeting_button()
 
 func _on_dwarf_build_requested(building_name: String) -> void:
 	if TurnState.current_faction_controller is DwarfController:

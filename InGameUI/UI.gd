@@ -45,12 +45,17 @@ signal dwarf_gold_assignment_requested(threshold: int)
 @onready var settlement_faction: Label = %SettlementFactionLabel
 @onready var settlement_soldiers: Label = %SettlementSoldiersLabel
 @onready var mercenary_button: Button = %MercenaryButton
+@onready var delete_building_button: Button = %DeleteBuildingButton
+var selected_building_slot_index: int = -1
 
 @onready var building_slot_buttons: Array[Button] = [
 	%BuildingSlotButton1,
 	%BuildingSlotButton2,
 	%BuildingSlotButton3
 ]
+
+signal building_slot_selected(slot_index: int)
+signal building_delete_requested(slot_index: int)
 
 # =========================
 # Resources / trade
@@ -133,6 +138,10 @@ func _connect_button_signals() -> void:
 	trade_dialog.confirmed.connect(_on_trade_confirmed)
 	mercenary_button.pressed.connect(_on_mercenary_button_pressed)
 	war_meeting_done_button.pressed.connect(func(): war_meeting_finished.emit())
+	for i in range(building_slot_buttons.size()):
+		var slot_index := i
+		building_slot_buttons[i].pressed.connect(func(): _on_building_slot_button_pressed(slot_index))
+	delete_building_button.pressed.connect(_on_delete_building_button_pressed)
 
 	# Dwarf build buttons
 	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
@@ -152,9 +161,11 @@ func _initialize_ui() -> void:
 	_on_season_changed(TurnState.current_season)
 	_update_resource_labels()
 	_populate_trade_targets()
+	hide_dwarf_hoard_panel()
 
 	settlement_panel.visible = false
 	dwarf_building_menu.visible = false
+	delete_building_button.visible = false
 
 # =========================
 # General helpers
@@ -186,8 +197,12 @@ func _set_faction_label(label: Label, faction: int, prefix: String) -> void:
 func _on_next_turn_pressed() -> void:
 	TurnState.next_turn()
 
-func _on_turn_changed(_new_turn: Faction.Type) -> void:
-	turn_label.text = "%s turn" % _faction_name(TurnState.current_turn)
+func _on_turn_changed(new_turn: Faction.Type) -> void:
+	turn_label.text = "%s turn" % _faction_name(new_turn)
+
+	# Show dwarf hoard only during dwarf turn
+	dwarf_hoard_panel.visible = (new_turn == Faction.Type.DWARF)
+
 	_populate_trade_targets()
 
 	if current_settlement != null:
@@ -307,10 +322,15 @@ func show_settlement_details(s: Settlement) -> void:
 
 	_update_building_slot_buttons(s)
 	_update_mercenary_button(s)
+	
+	selected_building_slot_index = -1
+	delete_building_button.visible = false
 
 func hide_settlement_details() -> void:
 	current_settlement = null
 	settlement_panel.visible = false
+	selected_building_slot_index = -1
+	delete_building_button.visible = false
 
 func _update_building_slot_buttons(s: Settlement) -> void:
 	for i in range(building_slot_buttons.size()):
@@ -321,6 +341,24 @@ func _update_building_slot_buttons(s: Settlement) -> void:
 			button.text = s.get_building_slot_display_name(i)
 		else:
 			button.visible = false
+
+func _on_building_slot_button_pressed(slot_index: int) -> void:
+	if current_settlement == null:
+		return
+
+	if slot_index >= current_settlement.building_slot_count:
+		return
+
+	selected_building_slot_index = slot_index
+	delete_building_button.visible = true
+
+func _on_delete_building_button_pressed() -> void:
+	if current_settlement == null:
+		return
+	if selected_building_slot_index == -1:
+		return
+
+	building_delete_requested.emit(selected_building_slot_index)
 
 func _on_mercenary_button_pressed() -> void:
 	if current_settlement == null:

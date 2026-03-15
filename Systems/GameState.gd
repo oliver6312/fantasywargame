@@ -120,6 +120,10 @@ func get_armor(faction: Faction.Type) -> int:
 
 func set_gold(faction: Faction.Type, value: int) -> void:
 	gold[faction] = max(0, value)
+
+	if faction == Faction.Type.DWARF:
+		_refresh_dwarf_hoard_unlocks()
+
 	emit_signal("resources_changed")
 
 func set_armor(faction: Faction.Type, value: int) -> void:
@@ -140,3 +144,10 @@ func set_dwarf_gold_action_assignment(threshold: int, action_type: String) -> vo
 
 func clear_dwarf_gold_action_assignment(threshold: int) -> void:
 	dwarf_gold_action_assignments[threshold] = ""
+
+func _refresh_dwarf_hoard_unlocks() -> void:
+	var thresholds = [40, 80, 120, 200, 320, 520]
+
+	for threshold in thresholds:
+		if get_gold(Faction.Type.DWARF) < threshold:
+			dwarf_gold_action_assignments[threshold] = ""

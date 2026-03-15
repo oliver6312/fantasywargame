@@ -42,7 +42,8 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_bottom = 193.0
+offset_top = -96.5
+offset_bottom = 138.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -171,14 +172,11 @@ layout_mode = 2
 
 [node name="HBoxContainerBottom" type="HBoxContainer" parent="LeftPanel" unique_id=1780124466]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
+anchors_preset = 12
 anchor_top = 1.0
-anchor_right = 0.5
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -43.0
-offset_top = -66.0
-offset_right = 43.0
+offset_top = -136.0
 grow_horizontal = 2
 grow_vertical = 0
 
@@ -186,21 +184,28 @@ grow_vertical = 0
 layout_mode = 2
 size_flags_vertical = 8
 
+[node name="DeleteBuildingButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=1955708162]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Delete Building"
+
 [node name="DeselectButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=1664342678]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 4
 text = "Deselect"
 
 [node name="TradeButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=594072050]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 4
 text = "Trade"
 
 [node name="NextTurnButton" type="Button" parent="LeftPanel/HBoxContainerBottom/VBoxContainer" unique_id=1683456407]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
+size_flags_horizontal = 4
 text = "Next Turn"
 
 [node name="SettlementDetailPanel" type="Panel" parent="LeftPanel" unique_id=388741207]

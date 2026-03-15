@@ -100,6 +100,9 @@ func assign_gold_action(threshold: int, action_type: String) -> void:
 	_refresh_ui()
 
 func request_gold_assignment(threshold: int) -> void:
+	if not in_war_meeting:
+		return
+
 	if not _is_threshold_active(threshold):
 		return
 
@@ -107,6 +110,10 @@ func request_gold_assignment(threshold: int) -> void:
 		return
 
 	ui.show_dwarf_gold_assignment_picker(threshold)
+
+func on_resources_changed() -> void:
+	_refresh_gold_hoard_assignments()
+	_refresh_ui()
 
 # =========================
 # Selection / move hooks
@@ -379,6 +386,26 @@ func _get_first_empty_building_slot(settlement: Settlement) -> int:
 		if settlement.building_slots[i] == "":
 			return i
 	return -1
+
+func delete_building(settlement: Settlement, slot_index: int) -> void:
+	if settlement == null:
+		return
+
+	if settlement.faction != DWARF_FACTION:
+		print("You can only delete buildings in dwarf settlements.")
+		return
+
+	if slot_index < 0 or slot_index >= settlement.building_slot_count:
+		return
+
+	if settlement.building_slots[slot_index] == "":
+		print("That slot is already empty.")
+		return
+
+	settlement.set_building_in_slot(slot_index, "")
+	print("Deleted building from slot %d" % slot_index)
+
+	_refresh_ui()
 
 # =========================
 # UI helpers
