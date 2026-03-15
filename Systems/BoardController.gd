@@ -146,6 +146,10 @@ func _on_settlement_clicked(s: Settlement) -> void:
 		print("Not your turn to move that faction.")
 		_select(s) # or keep selection; your choice
 		return
+	if TurnState.current_faction_controller != null:
+		if not TurnState.current_faction_controller.can_start_move_from_settlement(selected):
+			print("You cannot move from that settlement right now.")
+			return
 
 	# Must have soldiers to send
 	if selected.soldiers <= 0:
@@ -278,6 +282,9 @@ func _execute_move(source: Settlement, target: Settlement, arriving_amount: int,
 		else:
 			target.set_garrison(source.faction, -result)
 
+	if TurnState.current_faction_controller != null:
+		TurnState.current_faction_controller.after_successful_move(source, target)
+
 	_deselect()
 
 func _execute_attack(
@@ -287,7 +294,7 @@ func _execute_attack(
 	original_sent_amount: int,
 	attacker_armor_used: int,
 	defender_armor_used: int
-) -> void:
+	) -> void:
 	# Remove the originally sent soldiers from the source no matter what
 	source.set_soldiers(source.soldiers - original_sent_amount)
 
@@ -339,5 +346,8 @@ func _execute_attack(
 	print("Attack resolved. Attacker remaining soldiers: %d, Defender remaining soldiers: %d" % [
 		atk_soldiers, def_soldiers
 	])
+
+	if TurnState.current_faction_controller != null:
+		TurnState.current_faction_controller.after_successful_move(source, target)
 
 	_deselect()

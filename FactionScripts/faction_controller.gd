@@ -5,6 +5,15 @@ var faction: int
 var board
 var ui
 
+func can_start_move_from_settlement(_settlement: Settlement) -> bool:
+	return true
+
+func is_in_special_move_mode() -> bool:
+	return false
+
+func after_successful_move(_source: Settlement, _target: Settlement) -> void:
+	pass
+
 func on_settlement_selected(_settlement: Settlement) -> void:
 	pass
 

@@ -11,6 +11,9 @@ const BUILDING_ARMOR_SMITH := "Armor Smith"
 const BUILDING_GOAT_STABLE := "Goat Stable"
 const BUILDING_TRAINING_GROUNDS := "Training Grounds"
 
+var march_moves_remaining: int = 0
+var march_source: Settlement = null
+
 func start_turn() -> void:
 	normal_actions_remaining = 2
 	print("Dwarf turn begins with 2 actions")
@@ -18,8 +21,32 @@ func start_turn() -> void:
 func on_settlement_selected(settlement: Settlement) -> void:
 	if mode == "build_choose_settlement":
 		_handle_build_settlement_selected(settlement)
-#	elif mode == "march":
-#		_handle_march_settlement_selected(settlement)
+	elif mode == "march":
+		_handle_march_settlement_selected(settlement)
+
+func is_in_special_move_mode() -> bool:
+	return mode == "march"
+
+func after_successful_move(_source: Settlement, _target: Settlement) -> void:
+	if mode != "march":
+		return
+
+	march_moves_remaining -= 1
+	print("March move used. %d remaining." % march_moves_remaining)
+
+	if march_moves_remaining <= 0:
+		mode = ""
+		march_source = null
+		print("March ended.")
+
+	_refresh_ui()
+
+func _handle_march_settlement_selected(settlement: Settlement) -> void:
+	if settlement.faction != Faction.Type.DWARF:
+		print("You can only move soldiers in dwarf settlements.")
+		return
+
+	print("Choose place to move to.")
 
 func _handle_build_settlement_selected(settlement: Settlement) -> void:
 	if settlement.faction != Faction.Type.DWARF:
@@ -87,8 +114,8 @@ func handle_action(action_id: String) -> void:
 			_action_smith()
 		"train":
 			_action_train()
-#		"march":
-#			_start_march()
+		"march":
+			_start_march()
 		_:
 			print("Unknown dwarf action: ", action_id)
 
@@ -111,6 +138,20 @@ func _count_buildings(building_name: String) -> int:
 				total += 1
 
 	return total
+
+func _start_march() -> void:
+	var stables := _count_buildings("Goat Stable")
+	if stables <= 0:
+		print("No Goat Stables, so no March moves available.")
+		return
+
+	normal_actions_remaining -= 1
+	mode = "march"
+	march_moves_remaining = stables
+	march_source = null
+
+	print("March started. You may make %d moves." % march_moves_remaining)
+	_refresh_ui()
 
 func _start_build() -> void:
 	mode = "build_choose_settlement"
@@ -162,3 +203,9 @@ func _refresh_ui() -> void:
 
 	if board.selected != null:
 		ui.show_settlement_details(board.selected)
+
+func can_start_move_from_settlement(settlement: Settlement) -> bool:
+	if settlement.faction != Faction.Type.DWARF:
+		return false
+
+	return mode == "march" and march_moves_remaining > 0
