@@ -1,29 +1,44 @@
 extends FactionController
 class_name DwarfController
 
-var normal_actions_remaining: int = 2
+const DWARF_FACTION := Faction.Type.DWARF
 
-var mode: String = ""
-var build_selected_settlement: Settlement = null
+# =========================
+# Mode
+# =========================
+
+const MODE_NONE := ""
+const MODE_BUILD_CHOOSE_SETTLEMENT := "build_choose_settlement"
+const MODE_MARCH := "march"
+
+# =========================
+# Action
+# =========================
+
+const ACTION_BUILD := "build"
+const ACTION_MARCH := "march"
+const ACTION_TRAIN := "train"
+const ACTION_MINE := "mine"
+const ACTION_SMITH := "smith"
+
+# =========================
+# Buildings
+# =========================
 
 const BUILDING_GOLD_MINE := "Gold Mine"
 const BUILDING_ARMOR_SMITH := "Armor Smith"
 const BUILDING_GOAT_STABLE := "Goat Stable"
 const BUILDING_TRAINING_GROUNDS := "Training Grounds"
 
-var march_moves_remaining: int = 0
-var march_source: Settlement = null
-
 const HOARD_THRESHOLDS := [40, 80, 120, 200, 320, 520]
 
-var gold_action_assignments := {
-	40: "",
-	80: "",
-	120: "",
-	200: "",
-	320: "",
-	520: ""
-}
+var normal_actions_remaining: int = 2
+
+var mode: String = MODE_NONE
+var build_selected_settlement: Settlement = null
+
+var march_moves_remaining: int = 0
+var march_source: Settlement = null
 
 var used_gold_action_thresholds_this_turn := {
 	40: false,
@@ -36,101 +51,130 @@ var used_gold_action_thresholds_this_turn := {
 
 func start_turn() -> void:
 	normal_actions_remaining = 2
-	print("Dwarf turn begins with 2 actions")
-	
+	mode = MODE_NONE
+	build_selected_settlement = null
+	march_moves_remaining = 0
+	march_source = null
+
 	for threshold in HOARD_THRESHOLDS:
 		used_gold_action_thresholds_this_turn[threshold] = false
 
 	_refresh_gold_hoard_assignments()
-#	_prompt_for_unassigned_gold_actions_if_needed()
 	_refresh_ui()
 
-func _spend_action(action_type: String) -> bool:
-	for threshold in HOARD_THRESHOLDS:
-		if _is_threshold_active(threshold):
-			if gold_action_assignments[threshold] == action_type and not used_gold_action_thresholds_this_turn[threshold]:
-				used_gold_action_thresholds_this_turn[threshold] = true
-				return true
+	print("Dwarf turn begins with 2 actions")
 
-	if normal_actions_remaining > 0:
-		normal_actions_remaining -= 1
-		return true
-
-	return false
+# =========================
+# Public hoard helpers
+# =========================
 
 func is_gold_threshold_active(threshold: int) -> bool:
 	return _is_threshold_active(threshold)
 
 func get_gold_assignment(threshold: int) -> String:
-	return gold_action_assignments.get(threshold, "")
+	return TurnState.get_dwarf_gold_action_assignment(threshold)
 
 func assign_gold_action(threshold: int, action_type: String) -> void:
 	if not _is_threshold_active(threshold):
 		return
 
-	gold_action_assignments[threshold] = action_type
+	TurnState.set_dwarf_gold_action_assignment(threshold, action_type)
 	print("Assigned threshold %d to %s" % [threshold, action_type])
 
-#	_prompt_for_unassigned_gold_actions_if_needed()
 	_refresh_ui()
 
 func request_gold_assignment(threshold: int) -> void:
 	if not _is_threshold_active(threshold):
 		return
 
-	if gold_action_assignments[threshold] != "":
+	if TurnState.get_dwarf_gold_action_assignment(threshold) != "":
 		return
 
 	ui.show_dwarf_gold_assignment_picker(threshold)
 
-func _get_unassigned_active_thresholds() -> Array:
-	var result := []
-	for threshold in HOARD_THRESHOLDS:
-		if _is_threshold_active(threshold) and gold_action_assignments[threshold] == "":
-			result.append(threshold)
-	return result
-
-func _is_threshold_active(threshold: int) -> bool:
-	return TurnState.get_gold(Faction.Type.DWARF) >= threshold
-
-func _refresh_gold_hoard_assignments() -> void:
-	for threshold in HOARD_THRESHOLDS:
-		if not _is_threshold_active(threshold):
-			gold_action_assignments[threshold] = ""
-			used_gold_action_thresholds_this_turn[threshold] = false
+# =========================
+# Selection / move hooks
+# =========================
 
 func on_settlement_selected(settlement: Settlement) -> void:
-	if mode == "build_choose_settlement":
-		_handle_build_settlement_selected(settlement)
-	elif mode == "march":
-		_handle_march_settlement_selected(settlement)
+	match mode:
+		MODE_BUILD_CHOOSE_SETTLEMENT:
+			_handle_build_settlement_selected(settlement)
+		MODE_MARCH:
+			_handle_march_settlement_selected(settlement)
 
 func is_in_special_move_mode() -> bool:
-	return mode == "march"
+	return mode == MODE_MARCH
+
+func can_start_move_from_settlement(settlement: Settlement) -> bool:
+	if settlement.faction != DWARF_FACTION:
+		return false
+
+	return mode == MODE_MARCH and march_moves_remaining > 0
 
 func after_successful_move(_source: Settlement, _target: Settlement) -> void:
-	if mode != "march":
+	if mode != MODE_MARCH:
 		return
 
 	march_moves_remaining -= 1
 	print("March move used. %d remaining." % march_moves_remaining)
 
 	if march_moves_remaining <= 0:
-		mode = ""
+		mode = MODE_NONE
 		march_source = null
 		print("March ended.")
 
 	_refresh_ui()
 
-func _handle_march_settlement_selected(settlement: Settlement) -> void:
-	if settlement.faction != Faction.Type.DWARF:
-		print("You can only move soldiers in dwarf settlements.")
+# =========================
+# Action list / action handling
+# =========================
+
+func get_action_list() -> Array:
+	var actions: Array = []
+
+	actions.append(_make_action(ACTION_BUILD, "Build (%d)" % _get_available_uses(ACTION_BUILD)))
+	actions.append(_make_action(ACTION_MINE, "Mine (%d)" % _get_available_uses(ACTION_MINE)))
+	actions.append(_make_action(ACTION_SMITH, "Smith (%d)" % _get_available_uses(ACTION_SMITH)))
+	actions.append(_make_action(ACTION_TRAIN, "Train (%d)" % _get_available_uses(ACTION_TRAIN)))
+	actions.append(_make_action(ACTION_MARCH, "March (%d)" % _get_available_uses(ACTION_MARCH)))
+
+	return actions
+
+func handle_action(action_id: String) -> void:
+	if _get_available_uses(action_id) <= 0:
+		print("No dwarf uses remaining for action: %s" % action_id)
 		return
 
-	print("Choose place to move to.")
+	match action_id:
+		ACTION_BUILD:
+			_start_build()
+		ACTION_MINE:
+			_action_mine()
+		ACTION_SMITH:
+			_action_smith()
+		ACTION_TRAIN:
+			_action_train()
+		ACTION_MARCH:
+			_start_march()
+		_:
+			print("Unknown dwarf action: %s" % action_id)
+
+# =========================
+# Build
+# =========================
+
+func _start_build() -> void:
+	if _get_available_uses(ACTION_BUILD) <= 0:
+		print("No Build actions remaining.")
+		return
+
+	mode = MODE_BUILD_CHOOSE_SETTLEMENT
+	build_selected_settlement = null
+	print("Choose a dwarf settlement with an empty building slot.")
 
 func _handle_build_settlement_selected(settlement: Settlement) -> void:
-	if settlement.faction != Faction.Type.DWARF:
+	if settlement.faction != DWARF_FACTION:
 		print("You can only build in dwarf settlements.")
 		return
 
@@ -143,15 +187,10 @@ func _handle_build_settlement_selected(settlement: Settlement) -> void:
 	ui.show_dwarf_build_options()
 	print("Choose a building to place.")
 
-func _get_first_empty_building_slot(settlement: Settlement) -> int:
-	for i in range(settlement.building_slots.size()):
-		if settlement.building_slots[i] == "":
-			return i
-	return -1
-
 func finish_build(building_name: String) -> void:
-	if mode != "build_choose_settlement":
+	if mode != MODE_BUILD_CHOOSE_SETTLEMENT:
 		return
+
 	if build_selected_settlement == null:
 		return
 
@@ -160,146 +199,181 @@ func finish_build(building_name: String) -> void:
 		print("No empty building slot.")
 		return
 
-	build_selected_settlement.set_building_in_slot(empty_index, building_name)
-
-	normal_actions_remaining -= 1
-	mode = ""
-	build_selected_settlement = null
-
-	print("Built ", building_name)
-	_refresh_ui()
-	ui.hide_dwarf_build_options()
-
-func _get_available_uses(action_type: String) -> int:
-	var total := 0
-
-	if normal_actions_remaining > 0:
-		total += normal_actions_remaining
-
-	for threshold in HOARD_THRESHOLDS:
-		if _is_threshold_active(threshold):
-			if gold_action_assignments[threshold] == action_type and not used_gold_action_thresholds_this_turn[threshold]:
-				total += 1
-
-	return total
-
-func get_action_list() -> Array:
-	var actions: Array = []
-
-	actions.append(_make_action("build", "Build (%d)" % _get_available_uses("build")))
-	actions.append(_make_action("mine", "Mine (%d)" % _get_available_uses("mine")))
-	actions.append(_make_action("smith", "Smith (%d)" % _get_available_uses("smith")))
-	actions.append(_make_action("train", "Train (%d)" % _get_available_uses("train")))
-	actions.append(_make_action("march", "March (%d)" % _get_available_uses("march")))
-
-	return actions
-
-func handle_action(action_id: String) -> void:
-	if normal_actions_remaining <= 0:
-		print("No dwarf actions remaining.")
+	if not _spend_action(ACTION_BUILD):
+		print("No Build actions remaining.")
 		return
 
-	match action_id:
-		"build":
-			_start_build()
-		"mine":
-			_action_mine()
-		"smith":
-			_action_smith()
-		"train":
-			_action_train()
-		"march":
-			_start_march()
-		_:
-			print("Unknown dwarf action: ", action_id)
+	build_selected_settlement.set_building_in_slot(empty_index, building_name)
 
-func _make_action(id: String, label: String) -> ActionDefinition:
-	var a := ActionDefinition.new()
-	a.id = id
-	a.label = label
-	a.enabled = normal_actions_remaining > 0
-	return a
+	mode = MODE_NONE
+	build_selected_settlement = null
 
-func _count_buildings(building_name: String) -> int:
-	var total := 0
+	print("Built %s" % building_name)
+	ui.hide_dwarf_build_options()
+	_refresh_ui()
 
-	for s in board.get_tree().get_nodes_in_group("settlements"):
-		if s.faction != Faction.Type.DWARF:
-			continue
-
-		for slot in s.building_slots:
-			if slot == building_name:
-				total += 1
-
-	return total
+# =========================
+# March
+# =========================
 
 func _start_march() -> void:
-	var stables := _count_buildings("Goat Stable")
+	var stables := _count_buildings(BUILDING_GOAT_STABLE)
 	if stables <= 0:
 		print("No Goat Stables, so no March moves available.")
 		return
 
-	normal_actions_remaining -= 1
-	mode = "march"
+	if not _spend_action(ACTION_MARCH):
+		print("No March actions remaining.")
+		return
+
+	mode = MODE_MARCH
 	march_moves_remaining = stables
 	march_source = null
 
 	print("March started. You may make %d moves." % march_moves_remaining)
 	_refresh_ui()
 
-func _start_build() -> void:
-	mode = "build_choose_settlement"
-	build_selected_settlement = null
-	print("Choose a dwarf settlement with an empty building slot.")
+func _handle_march_settlement_selected(settlement: Settlement) -> void:
+	if settlement.faction != DWARF_FACTION:
+		print("You can only move soldiers in dwarf settlements.")
+		return
+
+	print("Choose place to move to.")
+
+# =========================
+# Simple actions
+# =========================
 
 func _action_mine() -> void:
-	var mines := _count_buildings("Gold Mine")
+	if not _spend_action(ACTION_MINE):
+		print("No Mine actions remaining.")
+		return
+
+	var mines := _count_buildings(BUILDING_GOLD_MINE)
 	var gain := mines * 20
 
-	TurnState.add_gold(Faction.Type.DWARF, gain)
-	normal_actions_remaining -= 1
+	TurnState.add_gold(DWARF_FACTION, gain)
 
-	print("Dwarves mined ", gain, " gold")
+	print("Dwarves mined %d gold" % gain)
 	_refresh_ui()
 
 func _action_smith() -> void:
-	var smiths := _count_buildings("Armor Smith")
+	if not _spend_action(ACTION_SMITH):
+		print("No Smith actions remaining.")
+		return
+
+	var smiths := _count_buildings(BUILDING_ARMOR_SMITH)
 	var gain := smiths * 2
 
-	TurnState.add_armor(Faction.Type.DWARF, gain)
-	normal_actions_remaining -= 1
+	TurnState.add_armor(DWARF_FACTION, gain)
 
-	print("Dwarves forged ", gain, " armor")
+	print("Dwarves forged %d armor" % gain)
 	_refresh_ui()
 
 func _action_train() -> void:
-	for s in board.get_tree().get_nodes_in_group("settlements"):
-		if s.faction != Faction.Type.DWARF:
-			continue
+	if not _spend_action(ACTION_TRAIN):
+		print("No Train actions remaining.")
+		return
 
-		var has_training := false
-		for slot in s.building_slots:
-			if slot == "Training Grounds":
-				has_training = true
-				break
-
-		if has_training:
-			print("has_training")
-			s.set_soldiers(s.soldiers + 1)
-
-	normal_actions_remaining -= 1
+	for settlement in _get_owned_settlements():
+		if _settlement_has_building(settlement, BUILDING_TRAINING_GROUNDS):
+			settlement.set_soldiers(settlement.soldiers + 1)
 
 	print("Dwarves trained soldiers")
 	_refresh_ui()
 
+# =========================
+# Hoard logic
+# =========================
+
+func _spend_action(action_type: String) -> bool:
+	for threshold in HOARD_THRESHOLDS:
+		if _is_threshold_active(threshold):
+			if TurnState.get_dwarf_gold_action_assignment(threshold) == action_type and not used_gold_action_thresholds_this_turn[threshold]:
+				used_gold_action_thresholds_this_turn[threshold] = true
+				return true
+
+	if normal_actions_remaining > 0:
+		normal_actions_remaining -= 1
+		return true
+
+	return false
+
+func _get_available_uses(action_type: String) -> int:
+	var total := normal_actions_remaining
+
+	for threshold in HOARD_THRESHOLDS:
+		if _is_threshold_active(threshold):
+			if TurnState.get_dwarf_gold_action_assignment(threshold) == action_type and not used_gold_action_thresholds_this_turn[threshold]:
+				total += 1
+
+	return total
+
+func _is_threshold_active(threshold: int) -> bool:
+	return TurnState.get_gold(DWARF_FACTION) >= threshold
+
+func _refresh_gold_hoard_assignments() -> void:
+	for threshold in HOARD_THRESHOLDS:
+		if not _is_threshold_active(threshold):
+			TurnState.get_dwarf_gold_action_assignment(threshold) != ""
+			used_gold_action_thresholds_this_turn[threshold] = false
+
+func _get_unassigned_active_thresholds() -> Array:
+	var result := []
+	for threshold in HOARD_THRESHOLDS:
+		if _is_threshold_active(threshold) and TurnState.get_dwarf_gold_action_assignment(threshold) == "":
+			result.append(threshold)
+	return result
+
+# =========================
+# Settlement / building helpers
+# =========================
+
+func _get_owned_settlements() -> Array:
+	var owned := []
+
+	for settlement in board.get_tree().get_nodes_in_group("settlements"):
+		if settlement.faction == DWARF_FACTION:
+			owned.append(settlement)
+
+	return owned
+
+func _count_buildings(building_name: String) -> int:
+	var total := 0
+
+	for settlement in _get_owned_settlements():
+		for slot in settlement.building_slots:
+			if slot == building_name:
+				total += 1
+
+	return total
+
+func _settlement_has_building(settlement: Settlement, building_name: String) -> bool:
+	for slot in settlement.building_slots:
+		if slot == building_name:
+			return true
+	return false
+
+func _get_first_empty_building_slot(settlement: Settlement) -> int:
+	for i in range(settlement.building_slots.size()):
+		if settlement.building_slots[i] == "":
+			return i
+	return -1
+
+# =========================
+# UI helpers
+# =========================
+
+func _make_action(id: String, label: String) -> ActionDefinition:
+	var action := ActionDefinition.new()
+	action.id = id
+	action.label = label
+	action.enabled = _get_available_uses(id) > 0
+	return action
+
 func _refresh_ui() -> void:
 	ui.show_faction_actions(get_action_list())
+	ui.update_dwarf_hoard_panel(self)
 
 	if board.selected != null:
 		ui.show_settlement_details(board.selected)
-
-func can_start_move_from_settlement(settlement: Settlement) -> bool:
-	if settlement.faction != Faction.Type.DWARF:
-		return false
-
-	return mode == "march" and march_moves_remaining > 0

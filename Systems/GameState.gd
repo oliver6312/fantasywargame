@@ -52,6 +52,15 @@ var current_season: int = SEASON_ORDER[0]
 
 var current_faction_controller: FactionController
 
+var dwarf_gold_action_assignments := {
+	40: "",
+	80: "",
+	120: "",
+	200: "",
+	320: "",
+	520: ""
+}
+
 func _ready() -> void:
 	set_gold(Faction.Type.ORC, 10)
 	set_gold(Faction.Type.ELF, 10)
@@ -122,3 +131,12 @@ func add_gold(faction: Faction.Type, amount: int) -> void:
 
 func add_armor(faction: Faction.Type, amount: int) -> void:
 	set_armor(faction, get_armor(faction) + amount)
+
+func get_dwarf_gold_action_assignment(threshold: int) -> String:
+	return dwarf_gold_action_assignments.get(threshold, "")
+
+func set_dwarf_gold_action_assignment(threshold: int, action_type: String) -> void:
+	dwarf_gold_action_assignments[threshold] = action_type
+
+func clear_dwarf_gold_action_assignment(threshold: int) -> void:
+	dwarf_gold_action_assignments[threshold] = ""

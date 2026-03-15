@@ -52,7 +52,7 @@ soldiers = 2
 position = Vector2(931, 560)
 settlement_name = "DwarfTown"
 faction = 3
-soldiers = 1
+soldiers = 20
 neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
 building_slot_count = 2
 

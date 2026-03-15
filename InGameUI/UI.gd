@@ -1,39 +1,58 @@
 extends CanvasLayer
 class_name BoardUI
 
-@onready var next_turn_button: Button = $LeftPanel/HBoxContainerBottom/VBoxContainer/NextTurnButton
-@onready var turn_label: Label = $LeftPanel/HBoxContainerTop/VBoxContainer/TurnLabel
+signal action_requested(action_id: String)
+signal dwarf_build_requested(building_name: String)
+signal dwarf_gold_action_chosen(threshold: int, action_type: String)
+signal dwarf_gold_assignment_requested(threshold: int)
 
+# =========================
+# Top / turn UI
+# =========================
+@onready var next_turn_button: Button = %NextTurnButton
+@onready var turn_label: Label = %TurnLabel
+@onready var round_label: Label = %RoundLabel
+@onready var season_button: Button = %SeasonButton
+@onready var season_dialog: Window = %SeasonDialog
+
+# =========================
+# Movement / dialogs
+# =========================
 @onready var move_dialog: AcceptDialog = %MoveDialog
 @onready var amount_edit: LineEdit = %AmountEdit
 @onready var prompt_label: Label = %PromptLabel
 @onready var deselect_button: Button = %DeselectButton
 
+@onready var attacker_armor_label: Label = %AttackerArmorLabel
+@onready var attacker_armor_edit: LineEdit = %AttackerArmorEdit
+@onready var defender_armor_label: Label = %DefenderArmorLabel
+@onready var defender_armor_edit: LineEdit = %DefenderArmorEdit
+
+# =========================
+# Settings
+# =========================
 @onready var settings_button: Button = %SettingsButton
 @onready var settings_dialog: Window = %SettingsDialog
 @onready var quit_button: Button = %QuitButton
 
-@onready var round_label: Label = %RoundLabel
-
+# =========================
+# Settlement details
+# =========================
 @onready var settlement_panel: Control = %SettlementDetailPanel
 @onready var settlement_name: Label = %SettlementNameLabel
 @onready var settlement_faction: Label = %SettlementFactionLabel
 @onready var settlement_soldiers: Label = %SettlementSoldiersLabel
+@onready var mercenary_button: Button = %MercenaryButton
 
-@onready var orc_gold_label: Label = %OrcGoldLabel
-@onready var orc_armor_label: Label = %OrcArmorLabel
-@onready var elf_gold_label: Label = %ElfGoldLabel
-@onready var elf_armor_label: Label = %ElfArmorLabel
-@onready var dwarf_gold_label: Label = %DwarfGoldLabel
-@onready var dwarf_armor_label: Label = %DwarfArmorLabel
+@onready var building_slot_buttons: Array[Button] = [
+	%BuildingSlotButton1,
+	%BuildingSlotButton2,
+	%BuildingSlotButton3
+]
 
-@onready var season_button: Button = %SeasonButton
-@onready var season_dialog: Window = %SeasonDialog
-
-@onready var building_slot_button_1: Button = %BuildingSlotButton1
-@onready var building_slot_button_2: Button = %BuildingSlotButton2
-@onready var building_slot_button_3: Button = %BuildingSlotButton3
-
+# =========================
+# Resources / trade
+# =========================
 @onready var trade_button: Button = %TradeButton
 @onready var trade_dialog: AcceptDialog = %TradeDialog
 @onready var target_faction_option: OptionButton = %TargetFactionOption
@@ -41,125 +60,109 @@ class_name BoardUI
 @onready var trade_armor_edit: LineEdit = %ArmorEdit
 @onready var trade_info_label: Label = %TradeInfoLabel
 
-@onready var attacker_armor_label: Label = %AttackerArmorLabel
-@onready var attacker_armor_edit: LineEdit = %AttackerArmorEdit
-@onready var defender_armor_label: Label = %DefenderArmorLabel
-@onready var defender_armor_edit: LineEdit = %DefenderArmorEdit
+# Store resource labels in dictionaries instead of separate functions
+var gold_labels: Dictionary = {}
+var armor_labels: Dictionary = {}
 
-@onready var mercenary_button: Button = %MercenaryButton
-
-var current_settlement: Settlement = null
-
-signal action_requested(action_id: String)
-
+# =========================
+# Faction action panel
+# =========================
 @onready var faction_actions_container: VBoxContainer = %FactionActionsContainer
 
-signal dwarf_build_requested(building_name: String)
-
+# =========================
+# Dwarf build UI
+# =========================
+@onready var dwarf_building_menu: Panel = %DwarfBuildingMenu
 @onready var armor_smith_button: Button = %"Armor Smith"
 @onready var goat_stable_button: Button = %"Goat Stable"
 @onready var gold_mine_button: Button = %"Gold Mine"
 @onready var training_grounds_button: Button = %"Training Grounds"
-@onready var dwarf_building_menu: Panel = %DwarfBuildingMenu
 
-signal dwarf_gold_action_chosen(threshold: int, action_type: String)
-signal dwarf_gold_assignment_requested(threshold: int)
+# =========================
+# Dwarf hoard UI
+# =========================
+@onready var dwarf_hoard_panel: Control = %DwarfGoldHoard
+@onready var hoard_buttons: Dictionary = {
+	40: %ThresholdButton40,
+	80: %ThresholdButton80,
+	120: %ThresholdButton120,
+	200: %ThresholdButton200,
+	320: %ThresholdButton320,
+	520: %ThresholdButton520
+}
 
-@onready var hoard_button_40: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer/ThresholdButton40
-@onready var hoard_button_80: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer2/ThresholdButton80
-@onready var hoard_button_120: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer3/ThresholdButton120
-@onready var hoard_button_200: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer4/ThresholdButton200
-@onready var hoard_button_320: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer5/ThresholdButton320
-@onready var hoard_button_520: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer6/ThresholdButton520
+var current_settlement: Settlement = null
 
 func _ready() -> void:
-	next_turn_button.pressed.connect(_on_next_turn_pressed)
+	_setup_resource_label_maps()
+	_connect_global_signals()
+	_connect_button_signals()
+	_initialize_ui()
+
+# =========================
+# Setup
+# =========================
+
+func _setup_resource_label_maps() -> void:
+	gold_labels = {
+		Faction.Type.ORC: %OrcGoldLabel,
+		Faction.Type.ELF: %ElfGoldLabel,
+		Faction.Type.DWARF: %DwarfGoldLabel
+	}
+
+	armor_labels = {
+		Faction.Type.ORC: %OrcArmorLabel,
+		Faction.Type.ELF: %ElfArmorLabel,
+		Faction.Type.DWARF: %DwarfArmorLabel
+	}
+
+func _connect_global_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
+	TurnState.round_changed.connect(_on_round_changed)
+	TurnState.resources_changed.connect(_on_resources_changed)
+	TurnState.season_changed.connect(_on_season_changed)
+
+func _connect_button_signals() -> void:
+	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	settings_button.pressed.connect(_open_settings)
 	quit_button.pressed.connect(_quit_game)
-
-	# Initialize label immediately
-	_on_turn_changed(TurnState.current_turn)
-
-	TurnState.round_changed.connect(_on_round_changed)
-
-	round_label.text = "Round %d" % TurnState.round
-	
-	TurnState.resources_changed.connect(_update_resource_labels)
-	_update_resource_labels()
-	
 	season_button.pressed.connect(_on_season_button_pressed)
-	TurnState.season_changed.connect(_on_season_changed)
-	_on_season_changed(TurnState.current_season)
-
 	trade_button.pressed.connect(_on_trade_button_pressed)
 	trade_dialog.confirmed.connect(_on_trade_confirmed)
-	
-	_populate_trade_targets()
-	
 	mercenary_button.pressed.connect(_on_mercenary_button_pressed)
-	
-	TurnState.resources_changed.connect(_on_resources_changed)
-	
-	dwarf_build_requested.connect(_on_dwarf_build_requested)
-	
-	dwarf_gold_action_chosen
-	
-	hoard_button_40.pressed.connect(func(): dwarf_gold_assignment_requested.emit(40))
-	hoard_button_80.pressed.connect(func(): dwarf_gold_assignment_requested.emit(80))
-	hoard_button_120.pressed.connect(func(): dwarf_gold_assignment_requested.emit(120))
-	hoard_button_200.pressed.connect(func(): dwarf_gold_assignment_requested.emit(200))
-	hoard_button_320.pressed.connect(func(): dwarf_gold_assignment_requested.emit(320))
-	hoard_button_520.pressed.connect(func(): dwarf_gold_assignment_requested.emit(520))
 
-func show_dwarf_gold_assignment_picker(threshold: int) -> void:
+	# Dwarf build buttons
+	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
+	goat_stable_button.pressed.connect(func(): dwarf_build_requested.emit("Goat Stable"))
+	gold_mine_button.pressed.connect(func(): dwarf_build_requested.emit("Gold Mine"))
+	training_grounds_button.pressed.connect(func(): dwarf_build_requested.emit("Training Grounds"))
 
-	var dialog := AcceptDialog.new()
-	dialog.title = "Assign Gold Action (" + str(threshold) + ")"
+	# Dwarf hoard buttons
+	for threshold in hoard_buttons.keys():
+		var t: int = threshold
+		var button: Button = hoard_buttons[t]
+		button.pressed.connect(func(): dwarf_gold_assignment_requested.emit(t))
 
-	var container := VBoxContainer.new()
+func _initialize_ui() -> void:
+	_on_turn_changed(TurnState.current_turn)
+	_on_round_changed(TurnState.round)
+	_on_season_changed(TurnState.current_season)
+	_update_resource_labels()
+	_populate_trade_targets()
 
-	dialog.add_child(container)
+	settlement_panel.visible = false
+	dwarf_building_menu.visible = false
 
-	var actions = ["build", "march", "train", "mine", "smith"]
+# =========================
+# General helpers
+# =========================
 
-	for action in actions:
-		var button := Button.new()
-		button.text = action.capitalize()
-
-		button.pressed.connect(func():
-			dwarf_gold_action_chosen.emit(threshold, action)
-			dialog.queue_free()
-		)
-
-		container.add_child(button)
-
-	add_child(dialog)
-
-	dialog.popup_centered()
-
-func update_dwarf_hoard_panel(controller: DwarfController) -> void:
-	_update_hoard_button(40, hoard_button_40, controller)
-	_update_hoard_button(80, hoard_button_80, controller)
-	_update_hoard_button(120, hoard_button_120, controller)
-	_update_hoard_button(200, hoard_button_200, controller)
-	_update_hoard_button(320, hoard_button_320, controller)
-	_update_hoard_button(520, hoard_button_520, controller)
-
-func _update_hoard_button(threshold: int, button: Button, controller: DwarfController) -> void:
-	if not controller.is_gold_threshold_active(threshold):
-		button.text = "?"
-		button.disabled = true
-		return
-
-	var assigned := controller.get_gold_assignment(threshold)
-
-	if assigned == "":
-		button.text = "Assign"
-		button.disabled = false
-	else:
-		button.text = _pretty_action_name(assigned)
-		button.disabled = true
+func _faction_name(faction: int) -> String:
+	match faction:
+		Faction.Type.ORC: return "Orc"
+		Faction.Type.ELF: return "Elf"
+		Faction.Type.DWARF: return "Dwarf"
+		_: return "Neutral"
 
 func _pretty_action_name(action_type: String) -> String:
 	match action_type:
@@ -168,73 +171,97 @@ func _pretty_action_name(action_type: String) -> String:
 		"train": return "Train"
 		"mine": return "Mine"
 		"smith": return "Smith"
-		_: return action_type
+		_: return action_type.capitalize()
 
-func _on_dwarf_build_requested(building_name: String) -> void:
-	if TurnState.current_faction_controller is DwarfController:
-		TurnState.current_faction_controller.finish_build(building_name)
+func _set_faction_label(label: Label, faction: int, prefix: String) -> void:
+	label.text = "%s: %s" % [prefix, _faction_name(faction)]
 
-func show_dwarf_build_options() -> void:
-	dwarf_building_menu.visible = true
-	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
-	goat_stable_button.pressed.connect(func(): dwarf_build_requested.emit("Goat Stable"))
-	gold_mine_button.pressed.connect(func(): dwarf_build_requested.emit("Gold Mine"))
-	training_grounds_button.pressed.connect(func(): dwarf_build_requested.emit("Training Grounds"))
-	pass
+# =========================
+# Turn / round / season UI
+# =========================
 
-func hide_dwarf_build_options():
-	dwarf_building_menu.visible = false
+func _on_next_turn_pressed() -> void:
+	TurnState.next_turn()
 
-func show_faction_actions(actions: Array) -> void:
-	for child in faction_actions_container.get_children():
-		child.queue_free()
+func _on_turn_changed(_new_turn: Faction.Type) -> void:
+	turn_label.text = "%s turn" % _faction_name(TurnState.current_turn)
+	_populate_trade_targets()
 
-	for action in actions:
-		var button := Button.new()
-		button.text = action.label
-		button.disabled = not action.enabled
-		button.pressed.connect(func(): emit_signal("action_requested", action.id))
-		faction_actions_container.add_child(button)
-
-func _on_resources_changed() -> void:
-	_update_resource_labels()
 	if current_settlement != null:
 		show_settlement_details(current_settlement)
 
-func _on_mercenary_button_pressed() -> void:
-	if current_settlement == null:
-		return
+func _on_round_changed(new_round: int) -> void:
+	round_label.text = "Round %d" % new_round
 
-	var success := current_settlement.hire_mercenaries()
-	if success:
+func _on_season_button_pressed() -> void:
+	season_dialog.popup_centered()
+
+func _on_season_changed(new_season: int) -> void:
+	season_button.text = TurnState.get_season_name(new_season)
+
+# =========================
+# Settings UI
+# =========================
+
+func _open_settings() -> void:
+	settings_dialog.popup_centered()
+
+func _quit_game() -> void:
+	get_tree().quit()
+
+# =========================
+# Resource / trade UI
+# =========================
+
+func _on_resources_changed() -> void:
+	_update_resource_labels()
+
+	if current_settlement != null:
 		show_settlement_details(current_settlement)
-	else:
-		print("Could not hire mercenaries.")
 
-func _update_mercenary_button(s: Settlement) -> void:
-	var cost := s.get_mercenary_gold_cost()
-	var gain := s.get_mercenary_soldier_gain()
+func _update_resource_labels() -> void:
+	for faction in gold_labels.keys():
+		var gold_label: Label = gold_labels[faction]
+		var armor_label: Label = armor_labels[faction]
 
-	mercenary_button.text = "Hire Mercenaries (+%d soldiers, %d gold)" % [gain, cost]
+		gold_label.text = "%s Gold: %d" % [
+			_faction_name(faction),
+			TurnState.get_gold(faction)
+		]
 
-	if s.faction != TurnState.current_turn:
-		mercenary_button.disabled = true
-	elif s.mercenaries_hired_this_turn:
-		mercenary_button.disabled = true
-	elif TurnState.get_gold(s.faction) < cost:
-		mercenary_button.disabled = true
-	else:
-		mercenary_button.disabled = false
+		armor_label.text = "%s Armor: %d" % [
+			_faction_name(faction),
+			TurnState.get_armor(faction)
+		]
+
+func _populate_trade_targets() -> void:
+	target_faction_option.clear()
+
+	var current: Faction.Type = TurnState.current_turn
+	var factions := [
+		Faction.Type.ORC,
+		Faction.Type.ELF,
+		Faction.Type.DWARF
+	]
+
+	for faction in factions:
+		if faction == current:
+			continue
+		target_faction_option.add_item(_faction_name(faction), faction)
+
+func _on_trade_button_pressed() -> void:
+	_populate_trade_targets()
+	trade_gold_edit.text = ""
+	trade_armor_edit.text = ""
+	trade_info_label.text = "Send resources to another faction."
+	trade_dialog.popup_centered()
 
 func _on_trade_confirmed() -> void:
-	var sender : int = TurnState.current_turn
+	var sender: int = TurnState.current_turn
 	var receiver := target_faction_option.get_selected_id()
 
-	var gold_amount := int(trade_gold_edit.text)
-	var armor_amount := int(trade_armor_edit.text)
-
-	gold_amount = max(0, gold_amount)
-	armor_amount = max(0, armor_amount)
+	var gold_amount :int = max(0, int(trade_gold_edit.text))
+	var armor_amount : int = max(0, int(trade_armor_edit.text))
 
 	if gold_amount > TurnState.get_gold(sender):
 		print("Not enough gold.")
@@ -257,111 +284,141 @@ func _on_trade_confirmed() -> void:
 		_faction_name(receiver)
 	])
 
-func _on_trade_button_pressed() -> void:
-	_populate_trade_targets()
-	trade_gold_edit.text = ""
-	trade_armor_edit.text = ""
-	trade_info_label.text = "Send resources to another faction."
-	trade_dialog.popup_centered()
+# =========================
+# Settlement UI
+# =========================
 
-func _faction_name(faction: int) -> String:
-	match faction:
-		Faction.Type.ORC: return "Orc"
-		Faction.Type.ELF: return "Elf"
-		Faction.Type.DWARF: return "Dwarf"
-		_: return "Neutral"
-
-func _populate_trade_targets() -> void:
-	target_faction_option.clear()
-
-	var current: Faction.Type = TurnState.current_turn
-	var factions := [
-		Faction.Type.ORC,
-		Faction.Type.ELF,
-		Faction.Type.DWARF
-	]
-
-	for faction in factions:
-		if faction == current:
-			continue
-
-		target_faction_option.add_item(_faction_name(faction), faction)
-
-func _update_building_slot_buttons(s: Settlement) -> void:
-	var buttons := [
-		building_slot_button_1,
-		building_slot_button_2,
-		building_slot_button_3
-	]
-
-	for i in range(3):
-		if i < s.building_slot_count:
-			buttons[i].visible = true
-			buttons[i].text = s.get_building_slot_display_name(i)
-		else:
-			buttons[i].visible = false
-
-func _on_season_button_pressed() -> void:
-	season_dialog.popup_centered()
-
-func _on_season_changed(new_season: int) -> void:
-	season_button.text = TurnState.get_season_name(new_season)
-
-func _update_resource_labels() -> void:
-	orc_gold_label.text = "Orc Gold: %d" % TurnState.get_gold(Faction.Type.ORC)
-	orc_armor_label.text = "Orc Armor: %d" % TurnState.get_armor(Faction.Type.ORC)
-
-	elf_gold_label.text = "Elf Gold: %d" % TurnState.get_gold(Faction.Type.ELF)
-	elf_armor_label.text = "Elf Armor: %d" % TurnState.get_armor(Faction.Type.ELF)
-
-	dwarf_gold_label.text = "Dwarf Gold: %d" % TurnState.get_gold(Faction.Type.DWARF)
-	dwarf_armor_label.text = "Dwarf Armor: %d" % TurnState.get_armor(Faction.Type.DWARF)
-
-func show_settlement_details(s:Settlement):
+func show_settlement_details(s: Settlement) -> void:
 	current_settlement = s
 	settlement_panel.visible = true
 
 	settlement_name.text = s.get_display_name()
 	settlement_soldiers.text = "Soldiers: %d" % s.soldiers
-
-	match s.faction:
-		Faction.Type.ORC:
-			settlement_faction.text = "Faction: Orc"
-		Faction.Type.ELF:
-			settlement_faction.text = "Faction: Elf"
-		Faction.Type.DWARF:
-			settlement_faction.text = "Faction: Dwarf"
-		_:
-			settlement_faction.text = "Faction: Neutral"
+	settlement_faction.text = "Faction: %s" % _faction_name(s.faction)
 
 	_update_building_slot_buttons(s)
 	_update_mercenary_button(s)
 
-func _on_round_changed(new_round:int):
-	round_label.text = "Round %d" % new_round
-
-func _open_settings():
-	settings_dialog.popup_centered()
-
-func hide_settlement_details():
+func hide_settlement_details() -> void:
 	current_settlement = null
 	settlement_panel.visible = false
 
-func _quit_game():
-	get_tree().quit()
+func _update_building_slot_buttons(s: Settlement) -> void:
+	for i in range(building_slot_buttons.size()):
+		var button := building_slot_buttons[i]
 
-func _on_next_turn_pressed() -> void:
-	TurnState.next_turn()
+		if i < s.building_slot_count:
+			button.visible = true
+			button.text = s.get_building_slot_display_name(i)
+		else:
+			button.visible = false
 
-func _on_turn_changed(new_turn: Faction.Type) -> void:
-	turn_label.text = "%s turn" % _faction_name(TurnState.current_turn)
-	_populate_trade_targets()
-	if current_settlement != null:
+func _on_mercenary_button_pressed() -> void:
+	if current_settlement == null:
+		return
+
+	var success := current_settlement.hire_mercenaries()
+	if success:
 		show_settlement_details(current_settlement)
+	else:
+		print("Could not hire mercenaries.")
 
-func _turn_name(t: Faction.Type) -> String:
-	match t:
-		Faction.Type.ORC: return "Orc"
-		Faction.Type.ELF: return "Elf"
-		Faction.Type.DWARF: return "Dwarf"
-		_: return "Unknown"
+func _update_mercenary_button(s: Settlement) -> void:
+	var cost := s.get_mercenary_gold_cost()
+	var gain := s.get_mercenary_soldier_gain()
+
+	mercenary_button.text = "Hire 
+	Mercenaries 
+	(+%d soldiers, %d gold)" % [gain, cost]
+
+	if s.faction != TurnState.current_turn:
+		mercenary_button.disabled = true
+	elif s.mercenaries_hired_this_turn:
+		mercenary_button.disabled = true
+	elif TurnState.get_gold(s.faction) < cost:
+		mercenary_button.disabled = true
+	else:
+		mercenary_button.disabled = false
+
+# =========================
+# Faction action UI
+# =========================
+
+func show_faction_actions(actions: Array) -> void:
+	for child in faction_actions_container.get_children():
+		child.queue_free()
+
+	for action in actions:
+		var button := Button.new()
+		var action_id : String = action.id
+
+		button.text = action.label
+		button.disabled = not action.enabled
+		button.pressed.connect(func(): action_requested.emit(action_id))
+
+		faction_actions_container.add_child(button)
+
+# =========================
+# Dwarf build UI
+# =========================
+
+func show_dwarf_build_options() -> void:
+	dwarf_building_menu.visible = true
+
+func hide_dwarf_build_options() -> void:
+	dwarf_building_menu.visible = false
+
+func show_dwarf_hoard_panel() -> void:
+	dwarf_hoard_panel.visible = true
+
+func hide_dwarf_hoard_panel() -> void:
+	dwarf_hoard_panel.visible = false
+
+# =========================
+# Dwarf hoard UI
+# =========================
+
+func show_dwarf_gold_assignment_picker(threshold: int) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "Assign Gold Action (%d)" % threshold
+
+	var container := VBoxContainer.new()
+	dialog.add_child(container)
+
+	var actions = ["build", "march", "train", "mine", "smith"]
+
+	for action in actions:
+		var action_id : String = action
+		var button := Button.new()
+
+		button.text = _pretty_action_name(action_id)
+		button.pressed.connect(func():
+			dwarf_gold_action_chosen.emit(threshold, action_id)
+			dialog.queue_free()
+		)
+
+		container.add_child(button)
+
+	add_child(dialog)
+	dialog.popup_centered()
+
+func update_dwarf_hoard_panel(controller: DwarfController) -> void:
+	for threshold in hoard_buttons.keys():
+		var t: int = threshold
+		var button: Button = hoard_buttons[t]
+		_update_hoard_button(t, button, controller)
+
+func _update_hoard_button(threshold: int, button: Button, controller: DwarfController) -> void:
+	if not controller.is_gold_threshold_active(threshold):
+		button.text = "?"
+		button.disabled = true
+		return
+
+	var assigned := controller.get_gold_assignment(threshold)
+
+	if assigned == "":
+		button.text = "Assign"
+		button.disabled = false
+	else:
+		button.text = _pretty_action_name(assigned)
+		button.disabled = true

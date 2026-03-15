@@ -37,6 +37,11 @@ func _ready() -> void:
 	_on_turn_changed(TurnState.current_turn)
 	ui.dwarf_gold_action_chosen.connect(_on_dwarf_gold_action_chosen)
 	ui.dwarf_gold_assignment_requested.connect(_on_dwarf_gold_assignment_requested)
+	ui.dwarf_build_requested.connect(_on_dwarf_build_requested)
+
+func _on_dwarf_build_requested(building_name: String) -> void:
+	if TurnState.current_faction_controller is DwarfController:
+		TurnState.current_faction_controller.finish_build(building_name)
 
 func _on_dwarf_gold_assignment_requested(threshold: int) -> void:
 	if TurnState.current_faction_controller is DwarfController:
