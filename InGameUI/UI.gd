@@ -102,7 +102,7 @@ func show_dwarf_build_options() -> void:
 	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
 	goat_stable_button.pressed.connect(func(): dwarf_build_requested.emit("Goat Stable"))
 	gold_mine_button.pressed.connect(func(): dwarf_build_requested.emit("Gold Mine"))
-	training_grounds_button.pressed.connect(func(): dwarf_build_requested.emit("Training Ground"))
+	training_grounds_button.pressed.connect(func(): dwarf_build_requested.emit("Training Grounds"))
 	pass
 
 func hide_dwarf_build_options():
