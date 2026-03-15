@@ -52,6 +52,16 @@ var current_settlement: Settlement = null
 
 signal action_requested(action_id: String)
 
+@onready var faction_actions_container: VBoxContainer = %FactionActionsContainer
+
+signal dwarf_build_requested(building_name: String)
+
+@onready var armor_smith_button: Button = %"Armor Smith"
+@onready var goat_stable_button: Button = %"Goat Stable"
+@onready var gold_mine_button: Button = %"Gold Mine"
+@onready var training_grounds_button: Button = %"Training Grounds"
+@onready var dwarf_building_menu: Panel = %DwarfBuildingMenu
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -80,12 +90,34 @@ func _ready() -> void:
 	mercenary_button.pressed.connect(_on_mercenary_button_pressed)
 	
 	TurnState.resources_changed.connect(_on_resources_changed)
+	
+	dwarf_build_requested.connect(_on_dwarf_build_requested)
+
+func _on_dwarf_build_requested(building_name: String) -> void:
+	if TurnState.current_faction_controller is DwarfController:
+		TurnState.current_faction_controller.finish_build(building_name)
+
+func show_dwarf_build_options() -> void:
+	dwarf_building_menu.visible = true
+	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
+	goat_stable_button.pressed.connect(func(): dwarf_build_requested.emit("Goat Stable"))
+	gold_mine_button.pressed.connect(func(): dwarf_build_requested.emit("Gold Mine"))
+	training_grounds_button.pressed.connect(func(): dwarf_build_requested.emit("Training Ground"))
+	pass
+
+func hide_dwarf_build_options():
+	dwarf_building_menu.visible = false
 
 func show_faction_actions(actions: Array) -> void:
-	# clear old buttons
-	# create one button per ActionDefinition
-	# connect button to emit action_requested(action_id)
-	pass
+	for child in faction_actions_container.get_children():
+		child.queue_free()
+
+	for action in actions:
+		var button := Button.new()
+		button.text = action.label
+		button.disabled = not action.enabled
+		button.pressed.connect(func(): emit_signal("action_requested", action.id))
+		faction_actions_container.add_child(button)
 
 func _on_resources_changed() -> void:
 	_update_resource_labels()

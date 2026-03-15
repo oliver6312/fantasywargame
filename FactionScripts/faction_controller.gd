@@ -5,6 +5,9 @@ var faction: int
 var board
 var ui
 
+func on_settlement_selected(_settlement: Settlement) -> void:
+	pass
+
 func setup(_faction: int, _board, _ui) -> void:
 	faction = _faction
 	board = _board

@@ -32,7 +32,15 @@ func _ready() -> void:
 	move_dialog.canceled.connect(_on_move_canceled)
 	deselect_button.pressed.connect(_on_deselect_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
+	ui.action_requested.connect(_on_action_requested)
 	_show_deselect_button(false)
+	_on_turn_changed(TurnState.current_turn)
+
+func _on_action_requested(action_id: String) -> void:
+	if TurnState.current_faction_controller == null:
+		return
+
+	TurnState.current_faction_controller.handle_action(action_id)
 
 func _build_faction_controller(faction: int) -> FactionController:
 	var controller: FactionController
@@ -152,6 +160,10 @@ func _select(s: Settlement) -> void:
 	_apply_selection_visuals()
 	ui.show_settlement_details(s)
 	print("Selected: %s (%s soldiers)" % [selected.name, selected.soldiers])
+
+	if TurnState.current_faction_controller != null:
+		TurnState.current_faction_controller.on_settlement_selected(s)
+	
 	_show_deselect_button(true)
 
 func _deselect() -> void:
