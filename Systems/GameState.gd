@@ -55,7 +55,7 @@ var current_faction_controller: FactionController
 func _ready() -> void:
 	set_gold(Faction.Type.ORC, 10)
 	set_gold(Faction.Type.ELF, 10)
-	set_gold(Faction.Type.DWARF, 10)
+	set_gold(Faction.Type.DWARF, 120)
 
 	set_armor(Faction.Type.ORC, 5)
 	set_armor(Faction.Type.ELF, 5)

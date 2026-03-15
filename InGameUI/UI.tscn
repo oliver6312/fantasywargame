@@ -19,7 +19,94 @@ unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
+offset_bottom = 8.0
 grow_horizontal = 2
+
+[node name="Button" type="Button" parent="RightPanel/FactionActionsContainer" unique_id=1389410698]
+layout_mode = 2
+
+[node name="DwarfGoldHoard" type="Panel" parent="RightPanel" unique_id=798197370]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_bottom = 193.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="RightPanel/DwarfGoldHoard" unique_id=1232515209]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GoldHoardLabel" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=904825651]
+layout_mode = 2
+text = "Gold Hoard"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=1362257096]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ThresholdLabel40" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer" unique_id=1155586086]
+layout_mode = 2
+
+[node name="ThresholdButton40" type="Button" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer" unique_id=1862613888]
+layout_mode = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=1025499007]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ThresholdLabel80" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer2" unique_id=884116561]
+layout_mode = 2
+
+[node name="ThresholdButton80" type="Button" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer2" unique_id=864049844]
+layout_mode = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=1030165295]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ThresholdLabel120" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer3" unique_id=1505533008]
+layout_mode = 2
+
+[node name="ThresholdButton120" type="Button" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer3" unique_id=640959031]
+layout_mode = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=1405162741]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ThresholdLabel200" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer4" unique_id=136719794]
+layout_mode = 2
+
+[node name="ThresholdButton200" type="Button" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer4" unique_id=128654263]
+layout_mode = 2
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=405762182]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ThresholdLabel320" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer5" unique_id=123699558]
+layout_mode = 2
+
+[node name="ThresholdButton320" type="Button" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer5" unique_id=2138968318]
+layout_mode = 2
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="RightPanel/DwarfGoldHoard/VBoxContainer" unique_id=775475102]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ThresholdLabel520" type="Label" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer6" unique_id=1773805751]
+layout_mode = 2
+
+[node name="ThresholdButton520" type="Button" parent="RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer6" unique_id=1705813315]
+layout_mode = 2
 
 [node name="LeftPanel" type="Panel" parent="." unique_id=1982825963]
 anchors_preset = 9
@@ -300,10 +387,10 @@ Winder does:
 [node name="DwarfBuildingMenu" type="Panel" parent="." unique_id=1795424472]
 unique_name_in_owner = true
 visible = false
-offset_left = 330.0
-offset_top = 150.0
-offset_right = 538.0
-offset_bottom = 359.0
+offset_left = 132.0
+offset_top = 218.0
+offset_right = 340.0
+offset_bottom = 427.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DwarfBuildingMenu" unique_id=2035067856]
 layout_mode = 1

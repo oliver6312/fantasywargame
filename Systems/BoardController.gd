@@ -35,6 +35,20 @@ func _ready() -> void:
 	ui.action_requested.connect(_on_action_requested)
 	_show_deselect_button(false)
 	_on_turn_changed(TurnState.current_turn)
+	ui.dwarf_gold_action_chosen.connect(_on_dwarf_gold_action_chosen)
+	ui.dwarf_gold_assignment_requested.connect(_on_dwarf_gold_assignment_requested)
+
+func _on_dwarf_gold_assignment_requested(threshold: int) -> void:
+	if TurnState.current_faction_controller is DwarfController:
+		TurnState.current_faction_controller.request_gold_assignment(threshold)
+
+func _on_dwarf_gold_action_chosen(threshold: int, action_type: String) -> void:
+
+	if TurnState.current_faction_controller == null:
+		return
+
+	if TurnState.current_faction_controller is DwarfController:
+		TurnState.current_faction_controller.assign_gold_action(threshold, action_type)
 
 func _on_action_requested(action_id: String) -> void:
 	if TurnState.current_faction_controller == null:

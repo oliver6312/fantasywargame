@@ -62,6 +62,16 @@ signal dwarf_build_requested(building_name: String)
 @onready var training_grounds_button: Button = %"Training Grounds"
 @onready var dwarf_building_menu: Panel = %DwarfBuildingMenu
 
+signal dwarf_gold_action_chosen(threshold: int, action_type: String)
+signal dwarf_gold_assignment_requested(threshold: int)
+
+@onready var hoard_button_40: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer/ThresholdButton40
+@onready var hoard_button_80: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer2/ThresholdButton80
+@onready var hoard_button_120: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer3/ThresholdButton120
+@onready var hoard_button_200: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer4/ThresholdButton200
+@onready var hoard_button_320: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer5/ThresholdButton320
+@onready var hoard_button_520: Button = $RightPanel/DwarfGoldHoard/VBoxContainer/HBoxContainer6/ThresholdButton520
+
 func _ready() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -92,6 +102,73 @@ func _ready() -> void:
 	TurnState.resources_changed.connect(_on_resources_changed)
 	
 	dwarf_build_requested.connect(_on_dwarf_build_requested)
+	
+	dwarf_gold_action_chosen
+	
+	hoard_button_40.pressed.connect(func(): dwarf_gold_assignment_requested.emit(40))
+	hoard_button_80.pressed.connect(func(): dwarf_gold_assignment_requested.emit(80))
+	hoard_button_120.pressed.connect(func(): dwarf_gold_assignment_requested.emit(120))
+	hoard_button_200.pressed.connect(func(): dwarf_gold_assignment_requested.emit(200))
+	hoard_button_320.pressed.connect(func(): dwarf_gold_assignment_requested.emit(320))
+	hoard_button_520.pressed.connect(func(): dwarf_gold_assignment_requested.emit(520))
+
+func show_dwarf_gold_assignment_picker(threshold: int) -> void:
+
+	var dialog := AcceptDialog.new()
+	dialog.title = "Assign Gold Action (" + str(threshold) + ")"
+
+	var container := VBoxContainer.new()
+
+	dialog.add_child(container)
+
+	var actions = ["build", "march", "train", "mine", "smith"]
+
+	for action in actions:
+		var button := Button.new()
+		button.text = action.capitalize()
+
+		button.pressed.connect(func():
+			dwarf_gold_action_chosen.emit(threshold, action)
+			dialog.queue_free()
+		)
+
+		container.add_child(button)
+
+	add_child(dialog)
+
+	dialog.popup_centered()
+
+func update_dwarf_hoard_panel(controller: DwarfController) -> void:
+	_update_hoard_button(40, hoard_button_40, controller)
+	_update_hoard_button(80, hoard_button_80, controller)
+	_update_hoard_button(120, hoard_button_120, controller)
+	_update_hoard_button(200, hoard_button_200, controller)
+	_update_hoard_button(320, hoard_button_320, controller)
+	_update_hoard_button(520, hoard_button_520, controller)
+
+func _update_hoard_button(threshold: int, button: Button, controller: DwarfController) -> void:
+	if not controller.is_gold_threshold_active(threshold):
+		button.text = "?"
+		button.disabled = true
+		return
+
+	var assigned := controller.get_gold_assignment(threshold)
+
+	if assigned == "":
+		button.text = "Assign"
+		button.disabled = false
+	else:
+		button.text = _pretty_action_name(assigned)
+		button.disabled = true
+
+func _pretty_action_name(action_type: String) -> String:
+	match action_type:
+		"build": return "Build"
+		"march": return "March"
+		"train": return "Train"
+		"mine": return "Mine"
+		"smith": return "Smith"
+		_: return action_type
 
 func _on_dwarf_build_requested(building_name: String) -> void:
 	if TurnState.current_faction_controller is DwarfController:

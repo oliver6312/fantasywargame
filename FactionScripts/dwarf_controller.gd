@@ -14,9 +14,90 @@ const BUILDING_TRAINING_GROUNDS := "Training Grounds"
 var march_moves_remaining: int = 0
 var march_source: Settlement = null
 
+const HOARD_THRESHOLDS := [40, 80, 120, 200, 320, 520]
+
+var gold_action_assignments := {
+	40: "",
+	80: "",
+	120: "",
+	200: "",
+	320: "",
+	520: ""
+}
+
+var used_gold_action_thresholds_this_turn := {
+	40: false,
+	80: false,
+	120: false,
+	200: false,
+	320: false,
+	520: false
+}
+
 func start_turn() -> void:
 	normal_actions_remaining = 2
 	print("Dwarf turn begins with 2 actions")
+	
+	for threshold in HOARD_THRESHOLDS:
+		used_gold_action_thresholds_this_turn[threshold] = false
+
+	_refresh_gold_hoard_assignments()
+#	_prompt_for_unassigned_gold_actions_if_needed()
+	_refresh_ui()
+
+func _spend_action(action_type: String) -> bool:
+	for threshold in HOARD_THRESHOLDS:
+		if _is_threshold_active(threshold):
+			if gold_action_assignments[threshold] == action_type and not used_gold_action_thresholds_this_turn[threshold]:
+				used_gold_action_thresholds_this_turn[threshold] = true
+				return true
+
+	if normal_actions_remaining > 0:
+		normal_actions_remaining -= 1
+		return true
+
+	return false
+
+func is_gold_threshold_active(threshold: int) -> bool:
+	return _is_threshold_active(threshold)
+
+func get_gold_assignment(threshold: int) -> String:
+	return gold_action_assignments.get(threshold, "")
+
+func assign_gold_action(threshold: int, action_type: String) -> void:
+	if not _is_threshold_active(threshold):
+		return
+
+	gold_action_assignments[threshold] = action_type
+	print("Assigned threshold %d to %s" % [threshold, action_type])
+
+#	_prompt_for_unassigned_gold_actions_if_needed()
+	_refresh_ui()
+
+func request_gold_assignment(threshold: int) -> void:
+	if not _is_threshold_active(threshold):
+		return
+
+	if gold_action_assignments[threshold] != "":
+		return
+
+	ui.show_dwarf_gold_assignment_picker(threshold)
+
+func _get_unassigned_active_thresholds() -> Array:
+	var result := []
+	for threshold in HOARD_THRESHOLDS:
+		if _is_threshold_active(threshold) and gold_action_assignments[threshold] == "":
+			result.append(threshold)
+	return result
+
+func _is_threshold_active(threshold: int) -> bool:
+	return TurnState.get_gold(Faction.Type.DWARF) >= threshold
+
+func _refresh_gold_hoard_assignments() -> void:
+	for threshold in HOARD_THRESHOLDS:
+		if not _is_threshold_active(threshold):
+			gold_action_assignments[threshold] = ""
+			used_gold_action_thresholds_this_turn[threshold] = false
 
 func on_settlement_selected(settlement: Settlement) -> void:
 	if mode == "build_choose_settlement":
@@ -89,14 +170,27 @@ func finish_build(building_name: String) -> void:
 	_refresh_ui()
 	ui.hide_dwarf_build_options()
 
+func _get_available_uses(action_type: String) -> int:
+	var total := 0
+
+	if normal_actions_remaining > 0:
+		total += normal_actions_remaining
+
+	for threshold in HOARD_THRESHOLDS:
+		if _is_threshold_active(threshold):
+			if gold_action_assignments[threshold] == action_type and not used_gold_action_thresholds_this_turn[threshold]:
+				total += 1
+
+	return total
+
 func get_action_list() -> Array:
 	var actions: Array = []
 
-	actions.append(_make_action("build", "Build"))
-	actions.append(_make_action("mine", "Mine"))
-	actions.append(_make_action("smith", "Smith"))
-	actions.append(_make_action("train", "Train"))
-	actions.append(_make_action("march", "March"))
+	actions.append(_make_action("build", "Build (%d)" % _get_available_uses("build")))
+	actions.append(_make_action("mine", "Mine (%d)" % _get_available_uses("mine")))
+	actions.append(_make_action("smith", "Smith (%d)" % _get_available_uses("smith")))
+	actions.append(_make_action("train", "Train (%d)" % _get_available_uses("train")))
+	actions.append(_make_action("march", "March (%d)" % _get_available_uses("march")))
 
 	return actions
 
