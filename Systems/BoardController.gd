@@ -1,4 +1,5 @@
 extends Node
+const CombatResolver = preload("res://Systems/combat_resolver.gd")
 
 @export_node_path("BoardUI") var ui_path
 @onready var ui: BoardUI = get_node(ui_path)
@@ -8,80 +9,62 @@ extends Node
 @onready var prompt_label: Label = ui.prompt_label
 @onready var deselect_button: Button = ui.deselect_button
 
-var selected: Settlement = null
-var pending_target: Settlement = null
-
-var rng := RandomNumberGenerator.new()
-
-var pending_is_attack: bool = false
-
-#ui.action_requested.connect(_on_action_requested)
-
 @onready var attacker_armor_edit: LineEdit = ui.attacker_armor_edit
 @onready var defender_armor_edit: LineEdit = ui.defender_armor_edit
 @onready var attacker_armor_label: Label = ui.attacker_armor_label
 @onready var defender_armor_label: Label = ui.defender_armor_label
 
+var selected: Settlement = null
+var pending_target: Settlement = null
+var pending_is_attack: bool = false
+
+var rng := RandomNumberGenerator.new()
+
 func _ready() -> void:
 	rng.randomize()
-	# Connect all settlements
-	for s in get_tree().get_nodes_in_group("settlements"):
-		s.clicked.connect(_on_settlement_clicked)
+	_connect_settlement_signals()
+	_connect_ui_signals()
+	_connect_game_signals()
 
+	_show_deselect_button(false)
+	_on_turn_changed(TurnState.current_turn)
+
+# =========================
+# Setup
+# =========================
+
+func _connect_settlement_signals() -> void:
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		settlement.clicked.connect(_on_settlement_clicked)
+
+func _connect_ui_signals() -> void:
 	move_dialog.confirmed.connect(_on_move_confirmed)
 	move_dialog.canceled.connect(_on_move_canceled)
 	deselect_button.pressed.connect(_on_deselect_pressed)
-	TurnState.turn_changed.connect(_on_turn_changed)
+
 	ui.action_requested.connect(_on_action_requested)
-	_show_deselect_button(false)
-	_on_turn_changed(TurnState.current_turn)
 	ui.dwarf_gold_action_chosen.connect(_on_dwarf_gold_action_chosen)
 	ui.dwarf_gold_assignment_requested.connect(_on_dwarf_gold_assignment_requested)
 	ui.dwarf_build_requested.connect(_on_dwarf_build_requested)
 	ui.war_meeting_finished.connect(_on_war_meeting_finished)
-	TurnState.resources_changed.connect(_on_resources_changed)
 	ui.building_delete_requested.connect(_on_building_delete_requested)
 
-func _on_building_delete_requested(slot_index: int) -> void:
-	if selected == null:
-		return
+func _connect_game_signals() -> void:
+	TurnState.turn_changed.connect(_on_turn_changed)
+	TurnState.resources_changed.connect(_on_resources_changed)
 
-	if TurnState.current_faction_controller == null:
-		return
+# =========================
+# Controller helpers
+# =========================
 
-	if TurnState.current_faction_controller is DwarfController:
-		TurnState.current_faction_controller.delete_building(selected, slot_index)
+func _controller() -> FactionController:
+	return TurnState.current_faction_controller
 
-func _on_resources_changed() -> void:
-	if TurnState.current_faction_controller is DwarfController:
-		TurnState.current_faction_controller.on_resources_changed()
-
-func _on_war_meeting_finished() -> void:
-	if TurnState.current_faction_controller != null:
-		TurnState.current_faction_controller.finish_war_meeting()
-		ui.hide_war_meeting_button()
-
-func _on_dwarf_build_requested(building_name: String) -> void:
-	if TurnState.current_faction_controller is DwarfController:
-		TurnState.current_faction_controller.finish_build(building_name)
-
-func _on_dwarf_gold_assignment_requested(threshold: int) -> void:
-	if TurnState.current_faction_controller is DwarfController:
-		TurnState.current_faction_controller.request_gold_assignment(threshold)
-
-func _on_dwarf_gold_action_chosen(threshold: int, action_type: String) -> void:
-
-	if TurnState.current_faction_controller == null:
-		return
-
-	if TurnState.current_faction_controller is DwarfController:
-		TurnState.current_faction_controller.assign_gold_action(threshold, action_type)
-
-func _on_action_requested(action_id: String) -> void:
-	if TurnState.current_faction_controller == null:
-		return
-
-	TurnState.current_faction_controller.handle_action(action_id)
+func _dwarf_controller() -> DwarfController:
+	var controller := _controller()
+	if controller is DwarfController:
+		return controller
+	return null
 
 func _build_faction_controller(faction: int) -> FactionController:
 	var controller: FactionController
@@ -99,30 +82,6 @@ func _build_faction_controller(faction: int) -> FactionController:
 	controller.setup(faction, self, ui)
 	return controller
 
-func _make_command_context() -> CommandContext:
-	var ctx := CommandContext.new()
-	ctx.current_faction = TurnState.current_turn
-	ctx.board = self
-	ctx.ui = ui
-	return ctx
-
-func _on_turn_changed(new_turn: int) -> void:
-	TurnState.current_faction_controller = _build_faction_controller(new_turn)
-	TurnState.current_faction_controller.start_turn()
-	ui.show_faction_actions(TurnState.current_faction_controller.get_action_list())
-
-	for s in get_tree().get_nodes_in_group("settlements"):
-		if s.faction == new_turn:
-			s.reset_turn_limited_actions()
-
-	if selected != null and ui != null:
-		ui.show_settlement_details(selected)
-
-	if TurnState.current_faction_controller.is_in_war_meeting():
-		ui.show_war_meeting_button()
-	else:
-		ui.hide_war_meeting_button()
-
 func _faction_name(faction: int) -> String:
 	match faction:
 		Faction.Type.ORC: return "Orc"
@@ -130,14 +89,75 @@ func _faction_name(faction: int) -> String:
 		Faction.Type.DWARF: return "Dwarf"
 		_: return "Neutral"
 
-func _apply_season_effect_to_movement(amount: int) -> int:
-	if TurnState.current_season == TurnState.Season.WINTER:
-		var loss := rng.randi_range(1, 6)
-		loss = min(loss, amount)
-		print("Winter effect: lost %d soldiers to the cold." % loss)
-		return amount - loss
+# =========================
+# Turn / resource updates
+# =========================
 
-	return amount
+func _on_turn_changed(new_turn: int) -> void:
+	TurnState.current_faction_controller = _build_faction_controller(new_turn)
+
+	var controller := _controller()
+	controller.start_turn()
+	ui.show_faction_actions(controller.get_action_list())
+
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		if settlement.faction == new_turn:
+			settlement.reset_turn_limited_actions()
+
+	if selected != null:
+		ui.show_settlement_details(selected)
+
+	if controller.is_in_war_meeting():
+		ui.show_war_meeting_button()
+	else:
+		ui.hide_war_meeting_button()
+
+func _on_resources_changed() -> void:
+	var dwarf := _dwarf_controller()
+	if dwarf != null:
+		dwarf.on_resources_changed()
+
+# =========================
+# UI action routing
+# =========================
+
+func _on_action_requested(action_id: String) -> void:
+	var controller := _controller()
+	if controller != null:
+		controller.handle_action(action_id)
+
+func _on_war_meeting_finished() -> void:
+	var controller := _controller()
+	if controller != null:
+		controller.finish_war_meeting()
+		ui.hide_war_meeting_button()
+
+func _on_dwarf_build_requested(building_name: String) -> void:
+	var dwarf := _dwarf_controller()
+	if dwarf != null:
+		dwarf.finish_build(building_name)
+
+func _on_dwarf_gold_assignment_requested(threshold: int) -> void:
+	var dwarf := _dwarf_controller()
+	if dwarf != null:
+		dwarf.request_gold_assignment(threshold)
+
+func _on_dwarf_gold_action_chosen(threshold: int, action_type: String) -> void:
+	var dwarf := _dwarf_controller()
+	if dwarf != null:
+		dwarf.assign_gold_action(threshold, action_type)
+
+func _on_building_delete_requested(slot_index: int) -> void:
+	if selected == null:
+		return
+
+	var dwarf := _dwarf_controller()
+	if dwarf != null:
+		dwarf.delete_building(selected, slot_index)
+
+# =========================
+# Input / selection
+# =========================
 
 func _unhandled_input(event: InputEvent) -> void:
 	if selected == null:
@@ -154,9 +174,9 @@ func _show_deselect_button(show: bool) -> void:
 	deselect_button.visible = show
 
 func _clear_all_highlights() -> void:
-	for s in get_tree().get_nodes_in_group("settlements"):
-		s.set_selected(false)
-		s.set_available(false)
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		settlement.set_selected(false)
+		settlement.set_available(false)
 
 func _apply_selection_visuals() -> void:
 	_clear_all_highlights()
@@ -166,62 +186,73 @@ func _apply_selection_visuals() -> void:
 
 	selected.set_selected(true)
 
-	for n in selected.neighbors:
-		if n != null:
-			n.set_available(true)
+	for neighbor in selected.neighbors:
+		if neighbor != null:
+			neighbor.set_available(true)
 
-func _on_settlement_clicked(s: Settlement) -> void:
-	# First click selects
-	if selected == null:
-		_select(s)
-		return
-
-	# Clicking same settlement just re-selects (or could deselect)
-	if s == selected:
-		_select(s)
-		return
-
-	# If not adjacent, switch selection
-	if not selected.is_adjacent_to(s):
-		_select(s)
-		return
-
-	# Adjacent: prompt for amount to send
-	# Optional rule (very recommended): only move from current turn’s faction
-	if selected.faction != TurnState.current_turn:
-		print("Not your turn to move that faction.")
-		_select(s) # or keep selection; your choice
-		return
-	if TurnState.current_faction_controller != null:
-		if not TurnState.current_faction_controller.can_start_move_from_settlement(selected):
-			print("You cannot move from that settlement right now.")
-			return
-
-	# Must have soldiers to send
-	if selected.soldiers <= 0:
-		print("No soldiers to move.")
-		return
-
-	pending_target = s
-	_open_move_dialog(selected, pending_target)
-
-func _select(s: Settlement) -> void:
-	selected = s
+func _select(settlement: Settlement) -> void:
+	selected = settlement
 	_apply_selection_visuals()
-	ui.show_settlement_details(s)
+	ui.show_settlement_details(settlement)
+
 	print("Selected: %s (%s soldiers)" % [selected.name, selected.soldiers])
 
-	if TurnState.current_faction_controller != null:
-		TurnState.current_faction_controller.on_settlement_selected(s)
-	
+	var controller := _controller()
+	if controller != null:
+		controller.on_settlement_selected(settlement)
+
 	_show_deselect_button(true)
 
 func _deselect() -> void:
 	selected = null
 	pending_target = null
+	pending_is_attack = false
+
 	_clear_all_highlights()
 	ui.hide_settlement_details()
 	_show_deselect_button(false)
+
+func _on_settlement_clicked(settlement: Settlement) -> void:
+	if selected == null:
+		_select(settlement)
+		return
+
+	if settlement == selected:
+		_select(settlement)
+		return
+
+	if not selected.is_adjacent_to(settlement):
+		_select(settlement)
+		return
+
+	if not _can_start_move_from_selected():
+		return
+
+	if selected.soldiers <= 0:
+		print("No soldiers to move.")
+		return
+
+	pending_target = settlement
+	_open_move_dialog(selected, pending_target)
+
+func _can_start_move_from_selected() -> bool:
+	if selected == null:
+		return false
+
+	if selected.faction != TurnState.current_turn:
+		print("Not your turn to move that faction.")
+		return false
+
+	var controller := _controller()
+	if controller != null and not controller.can_start_move_from_settlement(selected):
+		print("You cannot move from that settlement right now.")
+		return false
+
+	return true
+
+# =========================
+# Move dialog
+# =========================
 
 func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	var max_send := source.soldiers
@@ -229,10 +260,11 @@ func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 
 	pending_is_attack = is_attack
 
-	if prompt_label:
-		prompt_label.text = "Send how many soldiers from %s to %s? (1-%d)" % [
-			source.get_display_name(), target.get_display_name(), max_send
-		]
+	prompt_label.text = "Send how many soldiers from %s to %s? (1-%d)" % [
+		source.get_display_name(),
+		target.get_display_name(),
+		max_send
+	]
 
 	amount_edit.text = ""
 	amount_edit.placeholder_text = "1-%d" % max_send
@@ -243,27 +275,19 @@ func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	attacker_armor_label.text = "%s's armor used" % _faction_name(source.faction)
 	defender_armor_label.text = "%s's armor used" % _faction_name(target.faction)
 
-	if is_attack:
-		attacker_armor_label.visible = true
-		attacker_armor_edit.visible = true
+	var defender_has_armor := is_attack and target.faction != Faction.Type.NEUTRAL
 
-		if target.faction == Faction.Type.NEUTRAL:
-			defender_armor_label.visible = false
-			defender_armor_edit.visible = false
-		else:
-			defender_armor_label.visible = true
-			defender_armor_edit.visible = true
-	else:
-		attacker_armor_label.visible = false
-		attacker_armor_edit.visible = false
-		defender_armor_label.visible = false
-		defender_armor_edit.visible = false
+	attacker_armor_label.visible = is_attack
+	attacker_armor_edit.visible = is_attack
+	defender_armor_label.visible = defender_has_armor
+	defender_armor_edit.visible = defender_has_armor
 
 	amount_edit.grab_focus()
 	move_dialog.popup_centered()
 
 func _on_move_canceled() -> void:
 	pending_target = null
+	pending_is_attack = false
 
 func _on_move_confirmed() -> void:
 	if selected == null or pending_target == null:
@@ -271,12 +295,14 @@ func _on_move_confirmed() -> void:
 
 	var source := selected
 	var target := pending_target
+
 	pending_target = null
 
 	var amount := int(amount_edit.text)
 	if amount < 1:
 		print("Must send at least 1.")
 		return
+
 	if amount > source.soldiers:
 		print("Cannot send more than you have.")
 		return
@@ -289,10 +315,7 @@ func _on_move_confirmed() -> void:
 
 		if target.faction != Faction.Type.NEUTRAL:
 			defender_armor = max(0, int(defender_armor_edit.text))
-		else:
-			defender_armor = 0
 
-		# Only check against armor stockpile here
 		if attacker_armor > TurnState.get_armor(source.faction):
 			print("Not enough attacker armor.")
 			return
@@ -303,14 +326,24 @@ func _on_move_confirmed() -> void:
 
 	var arriving_amount := _apply_season_effect_to_movement(amount)
 
-	# Clamp armor AFTER winter / soldier changes
 	if pending_is_attack:
 		attacker_armor = min(attacker_armor, arriving_amount)
 		defender_armor = min(defender_armor, target.soldiers)
-
 		_execute_attack(source, target, arriving_amount, amount, attacker_armor, defender_armor)
 	else:
 		_execute_move(source, target, arriving_amount, amount)
+
+# =========================
+# Move / combat resolution
+# =========================
+
+func _apply_season_effect_to_movement(amount: int) -> int:
+	if TurnState.current_season == TurnState.Season.WINTER:
+		var loss : int = min(rng.randi_range(1, 6), amount)
+		print("Winter effect: lost %d soldiers to the cold." % loss)
+		return amount - loss
+
+	return amount
 
 func _execute_move(source: Settlement, target: Settlement, arriving_amount: int, original_amount: int) -> void:
 	source.set_soldiers(source.soldiers - original_amount)
@@ -318,7 +351,6 @@ func _execute_move(source: Settlement, target: Settlement, arriving_amount: int,
 	if target.faction == source.faction:
 		target.set_soldiers(target.soldiers + arriving_amount)
 	else:
-		# Neutral capture / regular no-resistance behavior, adjust if you want
 		var result := target.soldiers - arriving_amount
 
 		if result > 0:
@@ -328,10 +360,7 @@ func _execute_move(source: Settlement, target: Settlement, arriving_amount: int,
 		else:
 			target.set_garrison(source.faction, -result)
 
-	if TurnState.current_faction_controller != null:
-		TurnState.current_faction_controller.after_successful_move(source, target)
-
-	_deselect()
+	_finish_successful_move(source, target)
 
 func _execute_attack(
 	source: Settlement,
@@ -339,61 +368,46 @@ func _execute_attack(
 	attacking_soldiers_after_season: int,
 	original_sent_amount: int,
 	attacker_armor_used: int,
-	defender_armor_used: int
-	) -> void:
-	# Remove the originally sent soldiers from the source no matter what
+	defender_armor_used: int) -> void:
 	source.set_soldiers(source.soldiers - original_sent_amount)
 
-	# Spend armor from both factions' pools
 	if attacker_armor_used > 0:
 		TurnState.add_armor(source.faction, -attacker_armor_used)
 
 	if target.faction != Faction.Type.NEUTRAL and defender_armor_used > 0:
 		TurnState.add_armor(target.faction, -defender_armor_used)
 
-	# Battle values
-	var atk_armor := attacker_armor_used
-	var atk_soldiers := attacking_soldiers_after_season
+	var result: Dictionary = CombatResolver.resolve_battle(
+	source.faction,
+	target.faction,
+	attacking_soldiers_after_season,
+	target.soldiers,
+	attacker_armor_used,
+	defender_armor_used)
 
-	var def_armor := defender_armor_used
-	var def_soldiers := target.soldiers
+	var winning_faction: int = int(result["winning_faction"])
+	var settlement_soldiers: int = result["settlement_soldiers"]
+	var atk_remaining: int = result["attacker_remaining_soldiers"]
+	var def_remaining: int = result["defender_remaining_soldiers"]
 
-	# Defender damage taken from attacker:
-	var attacker_power := atk_armor + atk_soldiers
-	def_armor -= attacker_power
-
-	if def_armor < 0:
-		def_soldiers += def_armor # def_armor is negative, so this subtracts from soldiers
-		def_armor = 0
-
-	# Attacker damage taken from defender:
-	var defender_power := defender_armor_used + target.soldiers
-	atk_armor -= defender_power
-
-	if atk_armor < 0:
-		atk_soldiers += atk_armor # atk_armor is negative, so this subtracts from soldiers
-		atk_armor = 0
-
-	atk_soldiers = max(0, atk_soldiers)
-	def_soldiers = max(0, def_soldiers)
-
-	# Resolve result based on remaining soldiers only
-	if def_soldiers > 0 and atk_soldiers <= 0:
-		target.set_soldiers(def_soldiers)
-	elif atk_soldiers > 0 and def_soldiers <= 0:
-		target.set_garrison(source.faction, atk_soldiers)
-	elif atk_soldiers <= 0 and def_soldiers <= 0:
-		target.set_soldiers(0)
+	if winning_faction == source.faction:
+		target.set_garrison(source.faction, settlement_soldiers)
 	else:
-		# This should not normally happen with simultaneous resolution,
-		# but keep the defender if both somehow still have soldiers.
-		target.set_soldiers(def_soldiers)
+		if settlement_soldiers == 0:
+			target.set_soldiers(0)
+		else:
+			target.set_soldiers(settlement_soldiers)
 
 	print("Attack resolved. Attacker remaining soldiers: %d, Defender remaining soldiers: %d" % [
-		atk_soldiers, def_soldiers
+		atk_remaining,
+		def_remaining
 	])
 
-	if TurnState.current_faction_controller != null:
-		TurnState.current_faction_controller.after_successful_move(source, target)
+	_finish_successful_move(source, target)
+
+func _finish_successful_move(source: Settlement, target: Settlement) -> void:
+	var controller := _controller()
+	if controller != null:
+		controller.after_successful_move(source, target)
 
 	_deselect()
