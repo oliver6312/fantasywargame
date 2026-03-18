@@ -354,12 +354,20 @@ func _on_move_confirmed() -> void:
 
 	var arriving_amount := _apply_season_effect_to_movement(amount)
 
+	var cmd := MoveCommand.new()
+	cmd.source = source
+	cmd.target = target
+	cmd.soldiers = amount
+	cmd.is_attack = pending_is_attack
+
 	if pending_is_attack:
-		attacker_armor = min(attacker_armor, arriving_amount)
-		defender_armor = min(defender_armor, target.soldiers)
-		_execute_attack(source, target, arriving_amount, amount, attacker_armor, defender_armor)
-	else:
-		_execute_move(source, target, arriving_amount, amount)
+		cmd.attacker_armor = attacker_armor
+		cmd.defender_armor = defender_armor
+
+	if not _run_command(cmd):
+		return
+
+	_deselect()
 
 # =========================
 # Move / combat resolution
@@ -373,7 +381,13 @@ func _apply_season_effect_to_movement(amount: int) -> int:
 
 	return amount
 
-func _execute_move(source: Settlement, target: Settlement, arriving_amount: int, original_amount: int) -> void:
+func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
+	var source := cmd.source
+	var target := cmd.target
+
+	var original_amount := cmd.soldiers
+	var arriving_amount := _apply_season_effect_to_movement(original_amount)
+
 	source.set_soldiers(source.soldiers - original_amount)
 
 	if target.faction == source.faction:
@@ -390,33 +404,39 @@ func _execute_move(source: Settlement, target: Settlement, arriving_amount: int,
 
 	_finish_successful_move(source, target)
 
-func _execute_attack(
-	source: Settlement,
-	target: Settlement,
-	attacking_soldiers_after_season: int,
-	original_sent_amount: int,
-	attacker_armor_used: int,
-	defender_armor_used: int) -> void:
-	source.set_soldiers(source.soldiers - original_sent_amount)
+func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
+	var source := cmd.source
+	var target := cmd.target
 
-	if attacker_armor_used > 0:
-		TurnState.add_armor(source.faction, -attacker_armor_used)
+	var original_amount := cmd.soldiers
+	var arriving_amount := _apply_season_effect_to_movement(original_amount)
 
-	if target.faction != Faction.Type.NEUTRAL and defender_armor_used > 0:
-		TurnState.add_armor(target.faction, -defender_armor_used)
+	var attacker_armor := cmd.attacker_armor
+	var defender_armor := cmd.defender_armor
 
-	var result: Dictionary = CombatResolver.resolve_battle(
-	source.faction,
-	target.faction,
-	attacking_soldiers_after_season,
-	target.soldiers,
-	attacker_armor_used,
-	defender_armor_used)
+	# Clamp AFTER winter
+	attacker_armor = min(attacker_armor, arriving_amount)
+	defender_armor = min(defender_armor, target.soldiers)
 
-	var winning_faction: int = int(result["winning_faction"])
-	var settlement_soldiers: int = result["settlement_soldiers"]
-	var atk_remaining: int = result["attacker_remaining_soldiers"]
-	var def_remaining: int = result["defender_remaining_soldiers"]
+	source.set_soldiers(source.soldiers - original_amount)
+
+	if attacker_armor > 0:
+		context.turn_state.add_armor(source.faction, -attacker_armor)
+
+	if target.faction != Faction.Type.NEUTRAL and defender_armor > 0:
+		context.turn_state.add_armor(target.faction, -defender_armor)
+
+	var result := CombatResolver.resolve_battle(
+		source.faction,
+		target.faction,
+		arriving_amount,
+		target.soldiers,
+		attacker_armor,
+		defender_armor
+	)
+
+	var winning_faction : int = result["winning_faction"]
+	var settlement_soldiers : int = result["settlement_soldiers"]
 
 	if winning_faction == source.faction:
 		target.set_garrison(source.faction, settlement_soldiers)
@@ -426,10 +446,7 @@ func _execute_attack(
 		else:
 			target.set_soldiers(settlement_soldiers)
 
-	print("Attack resolved. Attacker remaining soldiers: %d, Defender remaining soldiers: %d" % [
-		atk_remaining,
-		def_remaining
-	])
+	print("Attack resolved.")
 
 	_finish_successful_move(source, target)
 
