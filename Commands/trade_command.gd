@@ -3,24 +3,50 @@ class_name TradeCommand
 
 var sender_faction: int
 var receiver_faction: int
-var gold: int = 0
-var armor: int = 0
+var gold_amount: int = 0
+var armor_amount: int = 0
 
-func can_execute(context) -> bool:
+func validate(context: CommandContext) -> bool:
 	if sender_faction != context.current_faction:
 		return false
+
 	if receiver_faction == sender_faction:
 		return false
-	if gold < 0 or armor < 0:
+
+	if gold_amount < 0 or armor_amount < 0:
 		return false
-	if gold > TurnState.get_gold(sender_faction):
+
+	if gold_amount > context.turn_state.get_gold(sender_faction):
 		return false
-	if armor > TurnState.get_armor(sender_faction):
+
+	if armor_amount > context.turn_state.get_armor(sender_faction):
 		return false
+
 	return true
 
-func execute(_context) -> void:
-	TurnState.add_gold(sender_faction, -gold)
-	TurnState.add_gold(receiver_faction, gold)
-	TurnState.add_armor(sender_faction, -armor)
-	TurnState.add_armor(receiver_faction, armor)
+func get_error(context: CommandContext) -> String:
+	if sender_faction != context.current_faction:
+		return "It is not that faction's turn."
+	if receiver_faction == sender_faction:
+		return "Cannot trade to the same faction."
+	if gold_amount < 0 or armor_amount < 0:
+		return "Trade amounts cannot be negative."
+	if gold_amount > context.turn_state.get_gold(sender_faction):
+		return "Not enough gold."
+	if armor_amount > context.turn_state.get_armor(sender_faction):
+		return "Not enough armor."
+	return "Trade failed."
+
+func execute(context: CommandContext) -> void:
+	context.turn_state.add_gold(sender_faction, -gold_amount)
+	context.turn_state.add_gold(receiver_faction, gold_amount)
+
+	context.turn_state.add_armor(sender_faction, -armor_amount)
+	context.turn_state.add_armor(receiver_faction, armor_amount)
+
+	print("%s sent %d gold and %d armor to %s." % [
+		context.turn_state.get_faction_name(sender_faction),
+		gold_amount,
+		armor_amount,
+		context.turn_state.get_faction_name(receiver_faction)
+	])

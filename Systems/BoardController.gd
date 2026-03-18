@@ -42,6 +42,7 @@ func _connect_ui_signals() -> void:
 	move_dialog.canceled.connect(_on_move_canceled)
 	deselect_button.pressed.connect(_on_deselect_pressed)
 
+	ui.trade_requested.connect(_on_trade_requested)
 	ui.action_requested.connect(_on_action_requested)
 	ui.dwarf_gold_action_chosen.connect(_on_dwarf_gold_action_chosen)
 	ui.dwarf_gold_assignment_requested.connect(_on_dwarf_gold_assignment_requested)
@@ -53,9 +54,27 @@ func _connect_game_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
 	TurnState.resources_changed.connect(_on_resources_changed)
 
+func _make_command_context() -> CommandContext:
+	var context := CommandContext.new()
+	context.board = self
+	context.ui = ui
+	context.turn_state = TurnState
+	context.current_faction = TurnState.current_turn
+	return context
+
 # =========================
 # Controller helpers
 # =========================
+
+func _run_command(command: GameCommand) -> bool:
+	var context := _make_command_context()
+
+	if not command.validate(context):
+		print(command.get_error(context))
+		return false
+
+	command.execute(context)
+	return true
 
 func _controller() -> FactionController:
 	return TurnState.current_faction_controller
@@ -116,6 +135,15 @@ func _on_resources_changed() -> void:
 	var dwarf := _dwarf_controller()
 	if dwarf != null:
 		dwarf.on_resources_changed()
+
+func _on_trade_requested(receiver_faction: int, gold_amount: int, armor_amount: int) -> void:
+	var command := TradeCommand.new()
+	command.sender_faction = TurnState.current_turn
+	command.receiver_faction = receiver_faction
+	command.gold_amount = gold_amount
+	command.armor_amount = armor_amount
+
+	_run_command(command)
 
 # =========================
 # UI action routing

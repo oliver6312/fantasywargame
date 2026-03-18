@@ -94,8 +94,13 @@ func assign_gold_action(threshold: int, action_type: String) -> void:
 	if not _is_threshold_active(threshold):
 		return
 
-	TurnState.set_dwarf_gold_action_assignment(threshold, action_type)
-	print("Assigned threshold %d to %s" % [threshold, action_type])
+	var command := AssignDwarfGoldActionCommand.new()
+	command.faction = DWARF_FACTION
+	command.threshold = threshold
+	command.action_type = action_type
+
+	if not board._run_command(command):
+		return
 
 	_refresh_ui()
 
@@ -230,12 +235,16 @@ func finish_build(building_name: String) -> void:
 		print("No Build actions remaining.")
 		return
 
-	build_selected_settlement.set_building_in_slot(empty_index, building_name)
+	var command := BuildCommand.new()
+	command.settlement = build_selected_settlement
+	command.slot_index = empty_index
+	command.building_name = building_name
+	if not board._run_command(command):
+		return
 
 	mode = MODE_NONE
 	build_selected_settlement = null
 
-	print("Built %s" % building_name)
 	ui.hide_dwarf_build_options()
 	_refresh_ui()
 
@@ -279,9 +288,13 @@ func _action_mine() -> void:
 	var mines := _count_buildings(BUILDING_GOLD_MINE)
 	var gain := mines * 20
 
-	TurnState.add_gold(DWARF_FACTION, gain)
+	var command := MineCommand.new()
+	command.faction = DWARF_FACTION
+	command.amount = gain
 
-	print("Dwarves mined %d gold" % gain)
+	if not board._run_command(command):
+		return
+
 	_refresh_ui()
 
 func _action_smith() -> void:
@@ -289,12 +302,13 @@ func _action_smith() -> void:
 		print("No Smith actions remaining.")
 		return
 
-	var smiths := _count_buildings(BUILDING_ARMOR_SMITH)
-	var gain := smiths * 2
+	var command := TrainCommand.new()
+	command.faction = DWARF_FACTION
+	command.building_name = BUILDING_TRAINING_GROUNDS
 
-	TurnState.add_armor(DWARF_FACTION, gain)
+	if not board._run_command(command):
+		return
 
-	print("Dwarves forged %d armor" % gain)
 	_refresh_ui()
 
 func _action_train() -> void:
@@ -388,23 +402,12 @@ func _get_first_empty_building_slot(settlement: Settlement) -> int:
 	return -1
 
 func delete_building(settlement: Settlement, slot_index: int) -> void:
-	if settlement == null:
+	var command := DeleteBuildingCommand.new()
+	command.settlement = settlement
+	command.slot_index = slot_index
+	if not board._run_command(command):
 		return
-
-	if settlement.faction != DWARF_FACTION:
-		print("You can only delete buildings in dwarf settlements.")
-		return
-
-	if slot_index < 0 or slot_index >= settlement.building_slot_count:
-		return
-
-	if settlement.building_slots[slot_index] == "":
-		print("That slot is already empty.")
-		return
-
-	settlement.set_building_in_slot(slot_index, "")
-	print("Deleted building from slot %d" % slot_index)
-
+	
 	_refresh_ui()
 
 # =========================

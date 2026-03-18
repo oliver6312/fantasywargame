@@ -7,6 +7,7 @@ signal action_requested(action_id: String)
 signal dwarf_build_requested(building_name: String)
 signal dwarf_gold_action_chosen(threshold: int, action_type: String)
 signal dwarf_gold_assignment_requested(threshold: int)
+signal trade_requested(receiver_faction: int, gold_amount: int, armor_amount: int)
 
 # =========================
 # Top / turn UI
@@ -281,32 +282,11 @@ func _on_trade_button_pressed() -> void:
 	trade_dialog.popup_centered()
 
 func _on_trade_confirmed() -> void:
-	var sender: int = TurnState.current_turn
 	var receiver := target_faction_option.get_selected_id()
-
-	var gold_amount :int = max(0, int(trade_gold_edit.text))
+	var gold_amount : int = max(0, int(trade_gold_edit.text))
 	var armor_amount : int = max(0, int(trade_armor_edit.text))
 
-	if gold_amount > TurnState.get_gold(sender):
-		print("Not enough gold.")
-		return
-
-	if armor_amount > TurnState.get_armor(sender):
-		print("Not enough armor.")
-		return
-
-	TurnState.add_gold(sender, -gold_amount)
-	TurnState.add_gold(receiver, gold_amount)
-
-	TurnState.add_armor(sender, -armor_amount)
-	TurnState.add_armor(receiver, armor_amount)
-
-	print("%s sent %d gold and %d armor to %s." % [
-		_faction_name(sender),
-		gold_amount,
-		armor_amount,
-		_faction_name(receiver)
-	])
+	trade_requested.emit(receiver, gold_amount, armor_amount)
 
 # =========================
 # Settlement UI
