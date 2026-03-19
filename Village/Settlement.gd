@@ -6,7 +6,7 @@ signal clicked(settlement: Settlement)
 @onready var selection_circle: Sprite2D = $SelectionCircle
 @onready var available_circle: Sprite2D = $AvailableCircle
 
-@export var settlement_id: String = ""  # optional, useful later
+@export var settlement_id: String = ""  
 
 @export var settlement_name: String = ""
 @onready var name_label: Label = $NameLabel
@@ -14,16 +14,12 @@ signal clicked(settlement: Settlement)
 @export var faction: Faction.Type = Faction.Type.NEUTRAL : set = set_faction
 @export var soldiers: int = 0 : set = set_soldiers
 
-# Connections: store references to other settlements.
-# We'll fill this in manually in the editor at first (simple + reliable).
 @export var neighbors: Array[Settlement] = []
 
 @onready var soldier_label: Label = $SoldierLabel
 
 @export_range(1, 3, 1) var building_slot_count: int = 1 : set = set_building_slot_count
 
-# For now, each slot just stores a string.
-# Empty string = no building in that slot.
 @export var building_slots: Array[String] = []
 
 @onready var building_slot_1: Sprite2D = $BuildingSlot1
@@ -31,6 +27,8 @@ signal clicked(settlement: Settlement)
 @onready var building_slot_3: Sprite2D = $BuildingSlot3
 
 var mercenaries_hired_this_turn: bool = false
+
+var infiltration_faction: int = Faction.Type.NEUTRAL
 
 func _ready() -> void:
 	name_label.text = get_display_name()
@@ -42,6 +40,18 @@ func _ready() -> void:
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
+
+func has_infiltration() -> bool:
+	return infiltration_faction != Faction.Type.NEUTRAL
+
+func has_enemy_infiltration_for(faction: int) -> bool:
+	return has_infiltration() and infiltration_faction != faction
+
+func set_infiltration(faction: int) -> void:
+	infiltration_faction = faction
+
+func clear_infiltration() -> void:
+	infiltration_faction = Faction.Type.NEUTRAL
 
 func can_hire_mercenaries() -> bool:
 	if faction != TurnState.current_turn:
@@ -127,10 +137,8 @@ func _input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
 		$SelectionCircle.show()
 
 func _make_neighbors_two_way() -> void:
-	# Ensure neighbor list has no nulls or self references
 	neighbors = neighbors.filter(func(n): return n != null and n != self)
 
-	# Ensure two-way
 	for n in neighbors:
 		if not n.neighbors.has(self):
 			n.neighbors.append(self)
@@ -166,5 +174,4 @@ func is_adjacent_to(other: Settlement) -> bool:
 	return neighbors.has(other)
 
 func can_receive_faction(incoming: Faction.Type) -> bool:
-	# Placeholder rule. You might later restrict neutral-only movement etc.
 	return true

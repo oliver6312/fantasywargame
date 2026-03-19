@@ -24,6 +24,19 @@ const TURN_ORDER := FACTIONS
 
 const DWARF_HOARD_THRESHOLDS := [40, 80, 120, 200, 320, 520]
 
+# =========================
+# Turn / Round
+# =========================
+
+var turn_index: int = 0
+var current_turn: Faction.Type = TURN_ORDER[0]
+
+var round: int = 1
+
+# =========================
+# Season
+# =========================
+
 enum Season {
 	SPRING,
 	SUMMER,
@@ -38,26 +51,16 @@ const SEASON_ORDER := [
 	Season.WINTER
 ]
 
-# =========================
-# Turn / Round
-# =========================
-
-var turn_index: int = 0
-var current_turn: Faction.Type = TURN_ORDER[0]
-
-var round: int = 1
-
-# =========================
-# Season
-# =========================
-
 var season_index: int = 0
 var current_season: int = SEASON_ORDER[0]
+var season_extended_this_round: bool = false
 
 # =========================
 # Resources
 # =========================
 
+var elf_serenity: int = 1
+var elf_magic: int = 0
 var gold := {}
 var armor := {}
 
@@ -118,7 +121,12 @@ func next_turn() -> void:
 		turn_index = 0
 		round += 1
 		round_changed.emit(round)
-		_advance_season()
+		_handle_end_of_round()
+
+		if not season_extended_this_round:
+			_advance_season()
+
+		season_extended_this_round = false
 
 	current_turn = TURN_ORDER[turn_index]
 	_emit_turn()
@@ -126,6 +134,10 @@ func next_turn() -> void:
 func _emit_turn() -> void:
 	print("%s turn" % get_faction_name(current_turn))
 	turn_changed.emit(current_turn)
+
+func _handle_end_of_round() -> void:
+	elf_serenity *= 2
+	resources_changed.emit()
 
 # =========================
 # Season
@@ -136,6 +148,9 @@ func _advance_season() -> void:
 	current_season = SEASON_ORDER[season_index]
 	season_changed.emit(current_season)
 
+	if current_season == Season.AUTUMN:
+		_deploy_elf_serenity()
+
 func get_season_name(season: int = current_season) -> String:
 	match season:
 		Season.SPRING: return "Spring"
@@ -143,6 +158,23 @@ func get_season_name(season: int = current_season) -> String:
 		Season.AUTUMN: return "Autumn"
 		Season.WINTER: return "Winter"
 		_: return "Unknown"
+
+func set_season_extended_this_round(value: bool) -> void:
+	season_extended_this_round = value
+
+func _deploy_elf_serenity() -> void:
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		if settlement.faction != Faction.Type.ELF:
+			continue
+
+		for slot in settlement.building_slots:
+			if slot == "Sacred Grove":
+				settlement.set_soldiers(settlement.soldiers + elf_serenity)
+				break
+
+	print("Elf Serenity deployed.")
+	elf_serenity = 1
+	resources_changed.emit()
 
 # =========================
 # Resource system
@@ -171,6 +203,26 @@ func add_gold(faction: Faction.Type, amount: int) -> void:
 
 func add_armor(faction: Faction.Type, amount: int) -> void:
 	set_armor(faction, get_armor(faction) + amount)
+
+func get_elf_serenity() -> int:
+	return elf_serenity
+
+func set_elf_serenity(value: int) -> void:
+	elf_serenity = max(1, value)
+	resources_changed.emit()
+
+func add_elf_serenity(amount: int) -> void:
+	set_elf_serenity(elf_serenity + amount)
+
+func get_elf_magic() -> int:
+	return elf_magic
+
+func set_elf_magic(value: int) -> void:
+	elf_magic = max(0, value)
+	resources_changed.emit()
+
+func add_elf_magic(amount: int) -> void:
+	set_elf_magic(elf_magic + amount)
 
 # =========================
 # Dwarf hoard system

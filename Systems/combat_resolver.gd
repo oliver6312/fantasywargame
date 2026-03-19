@@ -6,7 +6,9 @@ static func resolve_battle(
 	attacker_soldiers: int,
 	defender_soldiers: int,
 	attacker_armor: int,
-	defender_armor: int
+	defender_armor: int,
+	precombat_damage_to_attacker: int = 0,
+	precombat_damage_to_defender: int = 0
 ) -> Dictionary:
 	var atk_armor : int = max(0, attacker_armor)
 	var atk_soldiers : int = max(0, attacker_soldiers)

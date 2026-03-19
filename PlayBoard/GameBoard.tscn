@@ -32,7 +32,7 @@ neighbors = [NodePath("../OrcTown")]
 [node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(773, 660)
 faction = 2
-soldiers = 10
+soldiers = 40
 neighbors = [NodePath("../OrcTown")]
 building_slot_count = 3
 

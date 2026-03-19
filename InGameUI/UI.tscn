@@ -285,8 +285,8 @@ anchors_preset = 13
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -3.0
-offset_right = 3.0
+offset_left = -8.0
+offset_right = 8.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -295,6 +295,14 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="ElfArmorLabel" type="Label" parent="TopPanel/MiddleHBoxContainer" unique_id=1097984600]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ElfMagicLabel" type="Label" parent="TopPanel/MiddleHBoxContainer" unique_id=1305229556]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="ElfSerenityLabel" type="Label" parent="TopPanel/MiddleHBoxContainer" unique_id=1820814165]
 unique_name_in_owner = true
 layout_mode = 2
 

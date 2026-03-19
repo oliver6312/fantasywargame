@@ -49,6 +49,7 @@ func _connect_ui_signals() -> void:
 	ui.dwarf_build_requested.connect(_on_dwarf_build_requested)
 	ui.war_meeting_finished.connect(_on_war_meeting_finished)
 	ui.building_delete_requested.connect(_on_building_delete_requested)
+	ui.next_turn_requested.connect(_on_next_turn_requested)
 
 func _connect_game_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -182,6 +183,13 @@ func _on_building_delete_requested(slot_index: int) -> void:
 	var dwarf := _dwarf_controller()
 	if dwarf != null:
 		dwarf.delete_building(selected, slot_index)
+
+func _on_next_turn_requested() -> void:
+	var controller := _controller()
+	if controller != null:
+		controller.end_turn()
+
+	TurnState.next_turn()
 
 # =========================
 # Input / selection
@@ -352,7 +360,7 @@ func _on_move_confirmed() -> void:
 			print("Not enough defender armor.")
 			return
 
-	var arriving_amount := _apply_season_effect_to_movement(amount)
+	var arriving_amount := _apply_season_effect_to_movement(amount, source.faction)
 
 	var cmd := MoveCommand.new()
 	cmd.source = source
@@ -373,7 +381,10 @@ func _on_move_confirmed() -> void:
 # Move / combat resolution
 # =========================
 
-func _apply_season_effect_to_movement(amount: int) -> int:
+func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
+	if moving_faction == Faction.Type.ELF:
+		return amount
+
 	if TurnState.current_season == TurnState.Season.WINTER:
 		var loss : int = min(rng.randi_range(1, 6), amount)
 		print("Winter effect: lost %d soldiers to the cold." % loss)
@@ -386,7 +397,7 @@ func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
 	var target := cmd.target
 
 	var original_amount := cmd.soldiers
-	var arriving_amount := _apply_season_effect_to_movement(original_amount)
+	var arriving_amount := _apply_season_effect_to_movement(original_amount, source.faction)
 
 	source.set_soldiers(source.soldiers - original_amount)
 
@@ -409,7 +420,7 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 	var target := cmd.target
 
 	var original_amount := cmd.soldiers
-	var arriving_amount := _apply_season_effect_to_movement(original_amount)
+	var arriving_amount := _apply_season_effect_to_movement(original_amount, source.faction)
 
 	var attacker_armor := cmd.attacker_armor
 	var defender_armor := cmd.defender_armor

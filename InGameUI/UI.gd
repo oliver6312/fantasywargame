@@ -8,9 +8,10 @@ signal dwarf_build_requested(building_name: String)
 signal dwarf_gold_action_chosen(threshold: int, action_type: String)
 signal dwarf_gold_assignment_requested(threshold: int)
 signal trade_requested(receiver_faction: int, gold_amount: int, armor_amount: int)
+signal next_turn_requested
 
 # =========================
-# Top / turn UI
+# Right Panel UI
 # =========================
 @onready var next_turn_button: Button = %NextTurnButton
 @onready var turn_label: Label = %TurnLabel
@@ -68,9 +69,12 @@ signal building_delete_requested(slot_index: int)
 @onready var trade_armor_edit: LineEdit = %ArmorEdit
 @onready var trade_info_label: Label = %TradeInfoLabel
 
-# Store resource labels in dictionaries instead of separate functions
 var gold_labels: Dictionary = {}
 var armor_labels: Dictionary = {}
+
+@onready var elf_magic_label: Label = %ElfMagicLabel
+@onready var elf_serenity_label: Label = %ElfSerenityLabel
+
 
 # =========================
 # Faction action panel
@@ -196,7 +200,8 @@ func _set_faction_label(label: Label, faction: int, prefix: String) -> void:
 # =========================
 
 func _on_next_turn_pressed() -> void:
-	TurnState.next_turn()
+	next_turn_requested.emit()
+	print("next turn signal emited")
 
 func _on_turn_changed(new_turn: Faction.Type) -> void:
 	turn_label.text = "%s turn" % _faction_name(new_turn)
@@ -258,6 +263,9 @@ func _update_resource_labels() -> void:
 			_faction_name(faction),
 			TurnState.get_armor(faction)
 		]
+	
+	elf_magic_label.text = "Elf Magic: %d" % TurnState.get_elf_magic()
+	elf_serenity_label.text = "Elf Serenity: %d" % TurnState.get_elf_serenity()
 
 func _populate_trade_targets() -> void:
 	target_faction_option.clear()

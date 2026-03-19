@@ -36,3 +36,6 @@ func get_action_list() -> Array:
 
 func handle_action(_action_id: String) -> void:
 	pass
+
+func end_turn() -> void:
+	pass
