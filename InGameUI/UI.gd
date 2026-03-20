@@ -359,12 +359,18 @@ func _on_mercenary_button_pressed() -> void:
 		print("Could not hire mercenaries.")
 
 func _update_mercenary_button(s: Settlement) -> void:
+	var is_orc_turn := TurnState.current_turn == Faction.Type.ORC
+
+	if not is_orc_turn:
+		mercenary_button.visible = false
+		return
+
+	mercenary_button.visible = true
+
 	var cost := s.get_mercenary_gold_cost()
 	var gain := s.get_mercenary_soldier_gain()
 
-	mercenary_button.text = "Hire 
-	Mercenaries 
-	(+%d soldiers, %d gold)" % [gain, cost]
+	mercenary_button.text = "Hire Mercenaries (+%d soldiers, %d gold)" % [gain, cost]
 
 	if s.faction != TurnState.current_turn:
 		mercenary_button.disabled = true

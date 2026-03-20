@@ -137,7 +137,18 @@ func _emit_turn() -> void:
 
 func _handle_end_of_round() -> void:
 	elf_serenity *= 2
+	_spawn_orcs_from_gruesome_effigies()
 	resources_changed.emit()
+
+func _spawn_orcs_from_gruesome_effigies() -> void:
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		if settlement.faction != Faction.Type.ORC:
+			continue
+
+		for slot in settlement.building_slots:
+			if slot == "Gruesome Effigy":
+				settlement.set_soldiers(settlement.soldiers + 2)
+				break
 
 # =========================
 # Season

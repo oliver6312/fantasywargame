@@ -63,7 +63,6 @@ func _update_infiltration_visual() -> void:
 	
 	infiltration_token.visible = true
 
-
 func can_hire_mercenaries() -> bool:
 	if faction != TurnState.current_turn:
 		return false
