@@ -53,6 +53,7 @@ texture = ExtResource("5_bykt4")
 unique_name_in_owner = true
 visible = false
 position = Vector2(32, -32)
+scale = Vector2(2, 2)
 texture = ExtResource("6_b32a8")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]

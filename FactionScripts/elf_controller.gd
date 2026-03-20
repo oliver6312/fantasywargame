@@ -152,8 +152,13 @@ func convert_gold_to_magic(gold_amount: int) -> void:
 	_refresh_ui()
 
 func _do_extend_season() -> void:
+	var season_change_magic_cost = -1
+
 	if not in_war_meeting:
 		return
+	if not TurnState.get_elf_magic():
+		return
+	TurnState.add_elf_magic(season_change_magic_cost)
 
 	if extend_season_used_this_turn:
 		print("Extend Season has already been used this turn.")
