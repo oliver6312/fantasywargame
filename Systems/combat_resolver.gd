@@ -1,4 +1,20 @@
 extends RefCounted
+class_name CombatResolver
+
+static func _apply_precombat_damage(soldiers: int, armor: int, damage: int) -> Dictionary:
+	var remaining_armor := armor - damage
+	var remaining_soldiers := soldiers
+
+	if remaining_armor < 0:
+		remaining_soldiers += remaining_armor
+		remaining_armor = 0
+
+	remaining_soldiers = max(0, remaining_soldiers)
+
+	return {
+		"soldiers": remaining_soldiers,
+		"armor": remaining_armor
+	}
 
 static func resolve_battle(
 	attacker_faction: int,
@@ -16,8 +32,19 @@ static func resolve_battle(
 	var def_armor : int = max(0, defender_armor)
 	var def_soldiers : int = max(0, defender_soldiers)
 
-	var attacker_power : int = atk_armor + atk_soldiers
-	var defender_power : int = def_armor + def_soldiers
+	if precombat_damage_to_attacker > 0:
+		var atk_result := _apply_precombat_damage(atk_soldiers, atk_armor, precombat_damage_to_attacker)
+		atk_soldiers = atk_result["soldiers"]
+		atk_armor = atk_result["armor"]
+
+	if precombat_damage_to_defender > 0:
+		var def_result := _apply_precombat_damage(def_soldiers, def_armor, precombat_damage_to_defender)
+		def_soldiers = def_result["soldiers"]
+		def_armor = def_result["armor"]
+
+	# If precombat wipes one side, combat may still continue if the other side survives.
+	var attacker_power := atk_armor + atk_soldiers
+	var defender_power := def_armor + def_soldiers
 
 	def_armor -= attacker_power
 	if def_armor < 0:

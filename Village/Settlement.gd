@@ -30,7 +30,7 @@ var mercenaries_hired_this_turn: bool = false
 
 var infiltration_faction: int = Faction.Type.NEUTRAL
 
-@onready var infiltration_icon: Sprite2D = $InfiltrationIcon
+@onready var infiltration_icon: Sprite2D = $InfiltrationToken
 
 func _ready() -> void:
 	name_label.text = get_display_name()
@@ -48,6 +48,7 @@ func has_infiltration() -> bool:
 
 func has_enemy_infiltration_for(faction: int) -> bool:
 	return has_infiltration() and infiltration_faction != faction
+	infiltration_icon.visible = true
 
 func set_infiltration(faction: int) -> void:
 	infiltration_faction = faction

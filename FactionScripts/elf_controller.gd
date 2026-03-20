@@ -47,10 +47,13 @@ func finish_war_meeting() -> void:
 	_refresh_ui()
 
 func cancel_current_mode() -> void:
+	if mode == MODE_NONE:
+		return
+
 	mode = MODE_NONE
 	shadow_source_settlement = null
+	print("Elf ritual cancelled.")
 	_refresh_ui()
-	print("Elf special action cancelled.")
 
 func get_action_list() -> Array:
 	var actions: Array = []
@@ -90,6 +93,9 @@ func on_settlement_selected(settlement: Settlement) -> void:
 			_handle_shadow_target_selected(settlement)
 		MODE_REMOVE_INFILTRATION:
 			_handle_remove_infiltration_selected(settlement)
+
+func is_in_special_selection_mode() -> bool:
+	return mode != MODE_NONE
 
 func can_start_move_from_settlement(settlement: Settlement) -> bool:
 	# Elves have unlimited actions and normal movement.

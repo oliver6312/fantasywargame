@@ -109,6 +109,17 @@ func _faction_name(faction: int) -> String:
 		Faction.Type.DWARF: return "Dwarf"
 		_: return "Neutral"
 
+func _settlement_has_building(settlement: Settlement, building_name: String) -> bool:
+	for slot in settlement.building_slots:
+		if slot == building_name:
+			return true
+	return false
+
+func _roll_superiority_die() -> int:
+	var roll := rng.randi_range(1, 6)
+	print("Superiority Die rolled: %d" % roll)
+	return roll
+
 # =========================
 # Turn / resource updates
 # =========================
@@ -253,6 +264,12 @@ func _deselect() -> void:
 	_show_deselect_button(false)
 
 func _on_settlement_clicked(settlement: Settlement) -> void:
+	var controller := _controller()
+
+	if controller != null and controller.is_in_special_selection_mode():
+		_select(settlement)
+		return
+
 	if selected == null:
 		_select(settlement)
 		return
@@ -396,6 +413,25 @@ func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
 
 	return amount
 
+func _get_elf_precombat_damage(source: Settlement, target: Settlement) -> Dictionary:
+	var damage_to_attacker := 0
+	var damage_to_defender := 0
+
+	# Elf attacker attacking a settlement with infiltration
+	if source.faction == Faction.Type.ELF:
+		if target.has_infiltration():
+			damage_to_defender += _roll_superiority_die()
+
+	# Elf defender defending in a Sacred Grove settlement
+	if target.faction == Faction.Type.ELF:
+		if _settlement_has_building(target, "Sacred Grove"):
+			damage_to_attacker += _roll_superiority_die()
+
+	return {
+		"damage_to_attacker": damage_to_attacker,
+		"damage_to_defender": damage_to_defender
+	}
+
 func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
 	var source := cmd.source
 	var target := cmd.target
@@ -441,14 +477,17 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 	if target.faction != Faction.Type.NEUTRAL and defender_armor > 0:
 		context.turn_state.add_armor(target.faction, -defender_armor)
 
+	var precombat := _get_elf_precombat_damage(source, target)
+
 	var result := CombatResolver.resolve_battle(
 		source.faction,
 		target.faction,
 		arriving_amount,
 		target.soldiers,
 		attacker_armor,
-		defender_armor
-	)
+		defender_armor,
+		precombat["damage_to_attacker"],
+		precombat["damage_to_defender"])
 
 	var winning_faction : int = result["winning_faction"]
 	var settlement_soldiers : int = result["settlement_soldiers"]
