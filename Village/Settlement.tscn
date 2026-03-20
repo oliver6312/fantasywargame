@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://pm3t1dv4oh4e" path="res://Village/SettlementGraphics/AvailableCircle.png" id="2_u8w44"]
 [ext_resource type="Texture2D" uid="uid://blw1w1urbg48p" path="res://Village/SettlementGraphics/SettlementCircle.png" id="4_u8w44"]
 [ext_resource type="Texture2D" uid="uid://dixcc4r2fumem" path="res://Village/SettlementGraphics/BuildingShell.png" id="5_bykt4"]
-
+[ext_resource type="Texture2D" uid="uid://dm1vwp7e162a6" path="res://Village/SettlementGraphics/EI.png" id="6_b32a8"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
@@ -48,6 +48,10 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(0, -32)
 texture = ExtResource("5_bykt4")
+
+[node name="InfiltrationToken" type="Sprite2D" parent="." unique_id=190414953]
+position = Vector2(32, -32)
+texture = ExtResource("6_b32a8")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
 anchors_preset = 15

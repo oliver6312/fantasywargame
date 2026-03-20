@@ -240,6 +240,10 @@ func _select(settlement: Settlement) -> void:
 	_show_deselect_button(true)
 
 func _deselect() -> void:
+	var controller := _controller()
+	if controller != null:
+		controller.cancel_current_mode()
+
 	selected = null
 	pending_target = null
 	pending_is_attack = false

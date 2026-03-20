@@ -13,10 +13,13 @@ var in_war_meeting: bool = true
 var mode: String = MODE_NONE
 var shadow_source_settlement: Settlement = null
 
+var extend_season_used_this_turn: bool = false
+
 func start_turn() -> void:
 	in_war_meeting = true
 	mode = MODE_NONE
 	shadow_source_settlement = null
+	extend_season_used_this_turn = false
 
 	_auto_build_sacred_groves()
 	_apply_infiltration_theft()
@@ -43,15 +46,21 @@ func finish_war_meeting() -> void:
 	print("Elf War Meeting ended")
 	_refresh_ui()
 
+func cancel_current_mode() -> void:
+	mode = MODE_NONE
+	shadow_source_settlement = null
+	_refresh_ui()
+	print("Elf special action cancelled.")
+
 func get_action_list() -> Array:
 	var actions: Array = []
 
 	if in_war_meeting:
-		actions.append(_make_action("root_of_all_evil", "Root of All Evil"))
-		actions.append(_make_action("extend_season", "Extend Season"))
-		actions.append(_make_action("shadow_ritual", "Shadow Ritual"))
+		actions.append(_make_action("root_of_all_evil", "Root of All Evil", true))
+		actions.append(_make_action("extend_season", "Extend Season", not extend_season_used_this_turn))
+		actions.append(_make_action("shadow_ritual", "Shadow Ritual", mode == MODE_NONE))
 	else:
-		actions.append(_make_action("remove_infiltration", "Remove Infiltration"))
+		actions.append(_make_action("remove_infiltration", "Remove Infiltration", mode == MODE_NONE))
 
 	return actions
 
@@ -140,7 +149,12 @@ func _do_extend_season() -> void:
 	if not in_war_meeting:
 		return
 
+	if extend_season_used_this_turn:
+		print("Extend Season has already been used this turn.")
+		return
+
 	TurnState.set_season_extended_this_round(true)
+	extend_season_used_this_turn = true
 	print("Elves will prevent the season from advancing this round.")
 	_refresh_ui()
 
@@ -272,11 +286,11 @@ func _get_first_empty_building_slot(settlement: Settlement) -> int:
 			return i
 	return -1
 
-func _make_action(id: String, label: String) -> ActionDefinition:
+func _make_action(id: String, label: String, enabled: bool = true) -> ActionDefinition:
 	var action := ActionDefinition.new()
 	action.id = id
 	action.label = label
-	action.enabled = true
+	action.enabled = enabled
 	return action
 
 func _refresh_ui() -> void:

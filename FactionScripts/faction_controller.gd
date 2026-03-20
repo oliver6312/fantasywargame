@@ -5,6 +5,9 @@ var faction: int
 var board
 var ui
 
+func cancel_current_mode() -> void:
+	pass
+
 func is_in_war_meeting() -> bool:
 	return false
 

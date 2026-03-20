@@ -30,6 +30,8 @@ var mercenaries_hired_this_turn: bool = false
 
 var infiltration_faction: int = Faction.Type.NEUTRAL
 
+@onready var infiltration_icon: Sprite2D = $InfiltrationIcon
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
