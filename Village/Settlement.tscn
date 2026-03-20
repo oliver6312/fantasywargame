@@ -50,6 +50,7 @@ position = Vector2(0, -32)
 texture = ExtResource("5_bykt4")
 
 [node name="InfiltrationToken" type="Sprite2D" parent="." unique_id=190414953]
+visible = false
 position = Vector2(32, -32)
 texture = ExtResource("6_b32a8")
 
