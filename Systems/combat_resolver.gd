@@ -25,40 +25,41 @@ static func resolve_battle(
 	defender_armor: int,
 	precombat_damage_to_attacker: int = 0,
 	precombat_damage_to_defender: int = 0,
-	orc_lord_strength_for_attacker: int = 0,
-	orc_lord_strength_for_defender: int = 0
+	attacker_lord_strength: int = 0,
+	defender_lord_strength: int = 0
 ) -> Dictionary:
 	var atk_armor : int = max(0, attacker_armor)
 	var atk_soldiers : int = max(0, attacker_soldiers)
+	var atk_lord : int = max(0, attacker_lord_strength)
 
 	var def_armor : int = max(0, defender_armor)
 	var def_soldiers : int = max(0, defender_soldiers)
+	var def_lord : int = max(0, defender_lord_strength)
 
 	if precombat_damage_to_attacker > 0:
-		var atk_result := _apply_precombat_damage(atk_soldiers, atk_armor, precombat_damage_to_attacker)
-		atk_soldiers = atk_result["soldiers"]
-		atk_armor = atk_result["armor"]
+		var atk_pre := _apply_damage_to_lord_armor_soldiers(atk_lord, atk_armor, atk_soldiers, precombat_damage_to_attacker)
+		atk_lord = atk_pre["lord_strength_remaining"]
+		atk_armor = atk_pre["armor"]
+		atk_soldiers = atk_pre["soldiers"]
 
 	if precombat_damage_to_defender > 0:
-		var def_result := _apply_precombat_damage(def_soldiers, def_armor, precombat_damage_to_defender)
-		def_soldiers = def_result["soldiers"]
-		def_armor = def_result["armor"]
+		var def_pre := _apply_damage_to_lord_armor_soldiers(def_lord, def_armor, def_soldiers, precombat_damage_to_defender)
+		def_lord = def_pre["lord_strength_remaining"]
+		def_armor = def_pre["armor"]
+		def_soldiers = def_pre["soldiers"]
 
-	var attacker_power := atk_armor + atk_soldiers
-	var defender_power := def_armor + def_soldiers
+	var attacker_power := atk_armor + atk_soldiers + atk_lord
+	var defender_power := def_armor + def_soldiers + def_lord
 
-	def_armor -= attacker_power
-	if def_armor < 0:
-		def_soldiers += def_armor
-		def_armor = 0
+	var def_result := _apply_damage_to_lord_armor_soldiers(def_lord, def_armor, def_soldiers, attacker_power)
+	def_lord = def_result["lord_strength_remaining"]
+	def_armor = def_result["armor"]
+	def_soldiers = def_result["soldiers"]
 
-	atk_armor -= defender_power
-	if atk_armor < 0:
-		atk_soldiers += atk_armor
-		atk_armor = 0
-
-	atk_soldiers = max(0, atk_soldiers)
-	def_soldiers = max(0, def_soldiers)
+	var atk_result := _apply_damage_to_lord_armor_soldiers(atk_lord, atk_armor, atk_soldiers, defender_power)
+	atk_lord = atk_result["lord_strength_remaining"]
+	atk_armor = atk_result["armor"]
+	atk_soldiers = atk_result["soldiers"]
 
 	var winning_faction := defender_faction
 	var settlement_soldiers := def_soldiers
@@ -77,27 +78,24 @@ static func resolve_battle(
 		"winning_faction": winning_faction,
 		"settlement_soldiers": settlement_soldiers,
 		"attacker_remaining_soldiers": atk_soldiers,
-		"defender_remaining_soldiers": def_soldiers,
-		"attacker_remaining_armor": atk_armor,
-		"defender_remaining_armor": def_armor
+		"defender_remaining_soldiers": def_soldiers
 	}
 
 static func _apply_damage_to_lord_armor_soldiers(
 	lord_strength: int,
 	armor: int,
 	soldiers: int,
-	damage: int) -> Dictionary:
+	damage: int
+) -> Dictionary:
 	var lord_remaining := lord_strength
 	var armor_remaining := armor
 	var soldiers_remaining := soldiers
 	var remaining_damage := damage
 
-	# Lord strength absorbs first
 	var lord_absorbed : int = min(lord_remaining, remaining_damage)
 	lord_remaining -= lord_absorbed
 	remaining_damage -= lord_absorbed
 
-	# Then armor
 	armor_remaining -= remaining_damage
 	if armor_remaining < 0:
 		soldiers_remaining += armor_remaining

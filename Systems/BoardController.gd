@@ -150,6 +150,17 @@ func _handle_orc_dark_lord_death_after_battle(source: Settlement, target: Settle
 			target.set_orc_dark_lord_present(false)
 			TurnState.kill_orc_dark_lord()
 
+func _handle_orc_dark_lord_after_settlement_result(settlement: Settlement) -> void:
+	if not settlement.has_orc_dark_lord():
+		return
+
+	if settlement.faction != Faction.Type.ORC:
+		print("The Orc Dark Lord has been slain.")
+		settlement.set_orc_dark_lord_present(false)
+		TurnState.kill_orc_dark_lord()
+
+
+
 # =========================
 # Turn / resource updates
 # =========================
@@ -445,6 +456,13 @@ func _on_move_confirmed() -> void:
 # Move / combat resolution
 # =========================
 
+func resolve_dark_lord_move(
+	source: Settlement,
+	target: Settlement,
+	soldiers: int,
+	armor: int) -> void:
+	return
+
 func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
 	if moving_faction == Faction.Type.ELF:
 		return amount
@@ -496,6 +514,7 @@ func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
 		else:
 			target.set_garrison(source.faction, -result)
 
+	_handle_orc_dark_lord_after_settlement_result(target)
 	_finish_successful_move(source, target)
 
 func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
@@ -545,6 +564,8 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 
 	print("Attack resolved.")
 
+	_handle_orc_dark_lord_after_settlement_result(target)
+	_handle_orc_dark_lord_after_settlement_result(source)
 	_finish_successful_move(source, target)
 
 func _finish_successful_move(source: Settlement, target: Settlement) -> void:
