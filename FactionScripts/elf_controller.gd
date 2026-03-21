@@ -95,7 +95,12 @@ func on_settlement_selected(settlement: Settlement) -> void:
 			_handle_remove_infiltration_selected(settlement)
 
 func is_in_special_selection_mode() -> bool:
-	return mode != MODE_NONE
+	return mode == MODE_SHADOW_SOURCE \
+		or mode == MODE_SHADOW_TARGET \
+		or mode == MODE_REMOVE_INFILTRATION
+
+func is_in_movement_mode() -> bool:
+	return not in_war_meeting and mode == MODE_NONE
 
 func can_start_move_from_settlement(settlement: Settlement) -> bool:
 	# Elves have unlimited actions and normal movement.

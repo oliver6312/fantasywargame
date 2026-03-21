@@ -37,6 +37,12 @@ func is_in_war_meeting() -> bool:
 func finish_war_meeting() -> void:
 	pass
 
+func is_in_movement_mode() -> bool:
+	return false
+
+func can_select_settlement_freely() -> bool:
+	return true
+
 func is_in_special_selection_mode() -> bool:
 	return false
 

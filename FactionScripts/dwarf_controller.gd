@@ -154,6 +154,9 @@ func after_successful_move(_source: Settlement, _target: Settlement) -> void:
 
 	_refresh_ui()
 
+func is_in_movement_mode() -> bool:
+	return mode == MODE_MARCH
+
 # =========================
 # Action list / action handling
 # =========================
@@ -396,6 +399,12 @@ func _settlement_has_building(settlement: Settlement, building_name: String) -> 
 	return false
 
 func _get_first_empty_building_slot(settlement: Settlement) -> int:
+	print(
+		settlement.name,
+		" count=", settlement.building_slot_count,
+		" slots=", settlement.building_slots,
+		" size=", settlement.building_slots.size())
+
 	for i in range(settlement.building_slots.size()):
 		if settlement.building_slots[i] == "":
 			return i

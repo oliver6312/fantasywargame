@@ -370,7 +370,10 @@ func _update_mercenary_button(s: Settlement) -> void:
 	var cost := s.get_mercenary_gold_cost()
 	var gain := s.get_mercenary_soldier_gain()
 
-	mercenary_button.text = "Hire Mercenaries (+%d soldiers, %d gold)" % [gain, cost]
+	mercenary_button.text = "Hire 
+	Mercenaries 
+	(+%d soldiers,
+	 %d gold)" % [gain, cost]
 
 	if s.faction != TurnState.current_turn:
 		mercenary_button.disabled = true

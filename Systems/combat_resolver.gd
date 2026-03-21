@@ -24,7 +24,9 @@ static func resolve_battle(
 	attacker_armor: int,
 	defender_armor: int,
 	precombat_damage_to_attacker: int = 0,
-	precombat_damage_to_defender: int = 0
+	precombat_damage_to_defender: int = 0,
+	orc_lord_strength_for_attacker: int = 0,
+	orc_lord_strength_for_defender: int = 0
 ) -> Dictionary:
 	var atk_armor : int = max(0, attacker_armor)
 	var atk_soldiers : int = max(0, attacker_soldiers)
@@ -42,7 +44,6 @@ static func resolve_battle(
 		def_soldiers = def_result["soldiers"]
 		def_armor = def_result["armor"]
 
-	# If precombat wipes one side, combat may still continue if the other side survives.
 	var attacker_power := atk_armor + atk_soldiers
 	var defender_power := def_armor + def_soldiers
 
@@ -79,4 +80,33 @@ static func resolve_battle(
 		"defender_remaining_soldiers": def_soldiers,
 		"attacker_remaining_armor": atk_armor,
 		"defender_remaining_armor": def_armor
+	}
+
+static func _apply_damage_to_lord_armor_soldiers(
+	lord_strength: int,
+	armor: int,
+	soldiers: int,
+	damage: int) -> Dictionary:
+	var lord_remaining := lord_strength
+	var armor_remaining := armor
+	var soldiers_remaining := soldiers
+	var remaining_damage := damage
+
+	# Lord strength absorbs first
+	var lord_absorbed : int = min(lord_remaining, remaining_damage)
+	lord_remaining -= lord_absorbed
+	remaining_damage -= lord_absorbed
+
+	# Then armor
+	armor_remaining -= remaining_damage
+	if armor_remaining < 0:
+		soldiers_remaining += armor_remaining
+		armor_remaining = 0
+
+	soldiers_remaining = max(0, soldiers_remaining)
+
+	return {
+		"lord_strength_remaining": lord_remaining,
+		"armor": armor_remaining,
+		"soldiers": soldiers_remaining
 	}

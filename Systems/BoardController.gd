@@ -120,6 +120,36 @@ func _roll_superiority_die() -> int:
 	print("Superiority Die rolled: %d" % roll)
 	return roll
 
+func _get_orc_dark_lord_strength_for_battle(source: Settlement, target: Settlement) -> Dictionary:
+	var attacker_strength := 0
+	var defender_strength := 0
+
+	if source.faction == Faction.Type.ORC and source.has_orc_dark_lord():
+		attacker_strength = TurnState.get_orc_dark_lord_strength()
+
+	if target.faction == Faction.Type.ORC and target.has_orc_dark_lord():
+		defender_strength = TurnState.get_orc_dark_lord_strength()
+
+	return {
+		"attacker_strength": attacker_strength,
+		"defender_strength": defender_strength
+	}
+
+func _handle_orc_dark_lord_death_after_battle(source: Settlement, target: Settlement, winning_faction: int) -> void:
+	# Orc attacker loses
+	if source.faction == Faction.Type.ORC and source.has_orc_dark_lord():
+		if winning_faction != Faction.Type.ORC:
+			print("The Orc Dark Lord has died in battle.")
+			source.set_orc_dark_lord_present(false)
+			TurnState.kill_orc_dark_lord()
+
+	# Orc defender loses settlement
+	if target.has_orc_dark_lord():
+		if winning_faction != Faction.Type.ORC:
+			print("The Orc Dark Lord has been slain as the settlement fell.")
+			target.set_orc_dark_lord_present(false)
+			TurnState.kill_orc_dark_lord()
+
 # =========================
 # Turn / resource updates
 # =========================
@@ -266,10 +296,17 @@ func _deselect() -> void:
 func _on_settlement_clicked(settlement: Settlement) -> void:
 	var controller := _controller()
 
+	# 1. Special faction selection modes always take priority
 	if controller != null and controller.is_in_special_selection_mode():
 		_select(settlement)
 		return
 
+	# 2. If movement mode is NOT active, just select normally
+	if controller == null or not controller.is_in_movement_mode():
+		_select(settlement)
+		return
+
+	# 3. Movement mode is active: use click flow as movement flow
 	if selected == null:
 		_select(settlement)
 		return
@@ -301,12 +338,18 @@ func _can_start_move_from_selected() -> bool:
 		return false
 
 	var controller := _controller()
-	if controller != null and not controller.can_start_move_from_settlement(selected):
+	if controller == null:
+		return false
+
+	if not controller.is_in_movement_mode():
+		print("Movement is not active right now.")
+		return false
+
+	if not controller.can_start_move_from_settlement(selected):
 		print("You cannot move from that settlement right now.")
 		return false
 
 	return true
-
 # =========================
 # Move dialog
 # =========================

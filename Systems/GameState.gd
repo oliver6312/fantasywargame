@@ -24,6 +24,21 @@ const TURN_ORDER := FACTIONS
 
 const DWARF_HOARD_THRESHOLDS := [40, 80, 120, 200, 320, 520]
 
+const ORC_LORD_NONE := ""
+const ORC_LORD_DRAGON := "Dragon"
+const ORC_LORD_WRAITH := "Wraith"
+const ORC_LORD_SORCERER := "Sorcerer"
+const ORC_LORD_BLACKSMITH := "Blacksmith"
+
+var orc_current_dark_lord: String = ORC_LORD_NONE
+
+var orc_dead_dark_lords := {
+	ORC_LORD_DRAGON: false,
+	ORC_LORD_WRAITH: false,
+	ORC_LORD_SORCERER: false,
+	ORC_LORD_BLACKSMITH: false
+}
+
 # =========================
 # Turn / Round
 # =========================
@@ -141,13 +156,18 @@ func _handle_end_of_round() -> void:
 	resources_changed.emit()
 
 func _spawn_orcs_from_gruesome_effigies() -> void:
+	var spawn_amount := 2
+
+	if get_orc_dark_lord() == ORC_LORD_SORCERER:
+		spawn_amount = 4
+
 	for settlement in get_tree().get_nodes_in_group("settlements"):
 		if settlement.faction != Faction.Type.ORC:
 			continue
 
 		for slot in settlement.building_slots:
 			if slot == "Gruesome Effigy":
-				settlement.set_soldiers(settlement.soldiers + 2)
+				settlement.set_soldiers(settlement.soldiers + spawn_amount)
 				break
 
 # =========================
@@ -254,6 +274,62 @@ func _refresh_dwarf_hoard_unlocks() -> void:
 	for threshold in DWARF_HOARD_THRESHOLDS:
 		if current_gold < threshold:
 			dwarf_gold_action_assignments[threshold] = ""
+
+# =========================
+# Orc Helpers
+# =========================
+
+func has_orc_dark_lord() -> bool:
+	return orc_current_dark_lord != ORC_LORD_NONE
+
+func get_orc_dark_lord() -> String:
+	return orc_current_dark_lord
+
+func set_orc_dark_lord(lord_name: String) -> void:
+	orc_current_dark_lord = lord_name
+
+func clear_orc_dark_lord() -> void:
+	orc_current_dark_lord = ORC_LORD_NONE
+
+func is_orc_dark_lord_dead(lord_name: String) -> bool:
+	# Wraith undtagelse er en del af orccontroller
+	return orc_dead_dark_lords.get(lord_name, false)
+
+func kill_orc_dark_lord() -> void:
+	if orc_current_dark_lord == ORC_LORD_NONE:
+		return
+
+	if orc_current_dark_lord != ORC_LORD_WRAITH:
+		orc_dead_dark_lords[orc_current_dark_lord] = true
+
+	orc_current_dark_lord = ORC_LORD_NONE
+
+func get_orc_dark_lord_strength() -> int:
+	match orc_current_dark_lord:
+		ORC_LORD_DRAGON:
+			return 16
+		ORC_LORD_WRAITH:
+			return 4
+		ORC_LORD_SORCERER:
+			return 12
+		ORC_LORD_BLACKSMITH:
+			return 8
+		_:
+			return 0
+
+func find_orc_dark_lord_settlement() -> Settlement:
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		if settlement.has_orc_dark_lord():
+			return settlement
+	return null
+
+func place_orc_dark_lord_in_settlement(settlement: Settlement) -> void:
+	var current := find_orc_dark_lord_settlement()
+	if current != null:
+		current.set_orc_dark_lord_present(false)
+
+	if settlement != null:
+		settlement.set_orc_dark_lord_present(true)
 
 # =========================
 # Utility

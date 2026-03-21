@@ -24,13 +24,9 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("4_uuge4")
 
-[node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1051, 667)
-soldiers = 5
-neighbors = [NodePath("../OrcTown")]
-
 [node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(773, 660)
+settlement_name = "Elf Village"
 faction = 2
 soldiers = 40
 neighbors = [NodePath("../OrcTown")]
@@ -40,21 +36,28 @@ building_slot_count = 3
 position = Vector2(890, 831)
 settlement_name = "OrcTown"
 faction = 1
-soldiers = 25
-neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
+soldiers = 250
+neighbors = [NodePath("../ElfVillage")]
 
 [node name="FarawayLand" parent="." unique_id=1631699824 instance=ExtResource("5_qpi8o")]
 position = Vector2(1598, 1084)
 settlement_name = "Faraway Land"
 soldiers = 2
 
-[node name="Area2D" parent="." unique_id=1422351740 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+[node name="DwarfTown" parent="." unique_id=1422351740 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(931, 560)
 settlement_name = "DwarfTown"
 faction = 3
-soldiers = 120
-neighbors = [NodePath("../ElfVillage"), NodePath("../NeutralPit")]
+soldiers = 20
+neighbors = [NodePath("../ElfVillage")]
 building_slot_count = 2
+
+[node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1026, 691)
+settlement_id = "NeutralPit"
+settlement_name = "NeutralPit"
+soldiers = 5
+neighbors = [NodePath("../OrcTown"), NodePath("../DwarfTown")]
 
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
 visible = false

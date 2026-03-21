@@ -19,7 +19,6 @@ signal clicked(settlement: Settlement)
 @onready var soldier_label: Label = $SoldierLabel
 
 @export_range(1, 3, 1) var building_slot_count: int = 1 : set = set_building_slot_count
-
 @export var building_slots: Array[String] = []
 
 @onready var building_slot_1: Sprite2D = $BuildingSlot1
@@ -32,6 +31,8 @@ var infiltration_faction: int = Faction.Type.NEUTRAL
 
 @onready var infiltration_token: Sprite2D = $InfiltrationToken
 
+var has_orc_dark_lord_token: bool = false
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
@@ -39,9 +40,16 @@ func _ready() -> void:
 	_refresh_visuals()
 	_refresh_building_slot_visuals()
 	_validate_neighbors()
+	_resize_building_slots()
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
+
+func has_orc_dark_lord() -> bool:
+	return has_orc_dark_lord_token
+
+func set_orc_dark_lord_present(value: bool) -> void:
+	has_orc_dark_lord_token = value
 
 func has_infiltration() -> bool:
 	return infiltration_faction != Faction.Type.NEUTRAL

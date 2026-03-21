@@ -16,20 +16,60 @@ const BUILDING_GRUESOME_EFFIGY := "Gruesome Effigy"
 var actions_remaining: int = 4
 var mode: String = MODE_NONE
 
+var in_war_meeting: bool = true
+
+const MODE_PICK_LORD_PLACE := "pick_lord_place"
+
+var pending_dark_lord_pick: String = TurnState.ORC_LORD_NONE
+
+const MODE_MOVE_LORD_SOURCE := "move_lord_source"
+const MODE_MOVE_LORD_TARGET := "move_lord_target"
+
+var move_lord_source_settlement: Settlement = null
+
+var rng := RandomNumberGenerator.new()
+
 func start_turn() -> void:
+	rng.randomize()
 	actions_remaining = 4
 	mode = MODE_NONE
+	in_war_meeting = true
+
 	_refresh_ui()
-	print("Orc turn begins with 4 actions")
+
+	if not TurnState.has_orc_dark_lord():
+		print("Orcs must choose a Dark Lord.")
+	else:
+		print("Orc War Meeting begins.")
 
 func end_turn() -> void:
-	pass
+	if TurnState.get_orc_dark_lord() == TurnState.ORC_LORD_DRAGON:
+		var lord_settlement := TurnState.find_orc_dark_lord_settlement()
+		if lord_settlement != null and lord_settlement.faction == ORC_FACTION:
+			var eaten : int = min(rng.randi_range(1, 6), lord_settlement.soldiers)
+			lord_settlement.set_soldiers(lord_settlement.soldiers - eaten)
+			print("The Dragon devoured %d Orcs." % eaten)
+
+	_refresh_ui()
 
 func is_in_war_meeting() -> bool:
-	return false
+	return in_war_meeting
+
+func finish_war_meeting() -> void:
+	# Orcs cannot leave War Meeting without a lord
+	if not TurnState.has_orc_dark_lord():
+		print("Choose a Dark Lord first.")
+		return
+
+	in_war_meeting = false
+	print("Orc War Meeting ended.")
+	_refresh_ui()
 
 func is_in_special_selection_mode() -> bool:
-	return mode != MODE_NONE
+	return mode == MODE_RAID or mode == MODE_BRUTALIZE
+
+func is_in_movement_mode() -> bool:
+	return mode == ACTION_MOVE
 
 func cancel_current_mode() -> void:
 	if mode == MODE_NONE:
@@ -42,13 +82,54 @@ func cancel_current_mode() -> void:
 func get_action_list() -> Array:
 	var actions: Array = []
 
+	if in_war_meeting and not TurnState.has_orc_dark_lord():
+		actions.append(_make_lord_pick_action(TurnState.ORC_LORD_DRAGON))
+		actions.append(_make_lord_pick_action(TurnState.ORC_LORD_WRAITH))
+		actions.append(_make_lord_pick_action(TurnState.ORC_LORD_SORCERER))
+		actions.append(_make_lord_pick_action(TurnState.ORC_LORD_BLACKSMITH))
+		return actions
+
+	if in_war_meeting:
+		actions.append(_make_action("move_lord", "Move Lord"))
+		return actions
+
 	actions.append(_make_action(ACTION_MOVE, "Move/Attack (%d)" % _get_available_uses(ACTION_MOVE)))
 	actions.append(_make_action(ACTION_RAID, "Raid (%d)" % _get_available_uses(ACTION_RAID)))
 	actions.append(_make_action(ACTION_BRUTALIZE, "Brutalize (%d)" % _get_available_uses(ACTION_BRUTALIZE)))
 
 	return actions
 
+func _make_lord_pick_action(lord_name: String) -> ActionDefinition:
+	var action := ActionDefinition.new()
+	action.id = "pick_lord_" + lord_name.to_lower()
+	action.label = lord_name
+
+	if lord_name == TurnState.ORC_LORD_WRAITH:
+		action.enabled = true
+	else:
+		action.enabled = not TurnState.is_orc_dark_lord_dead(lord_name)
+
+	return action
+
 func handle_action(action_id: String) -> void:
+	if in_war_meeting and not TurnState.has_orc_dark_lord():
+		match action_id:
+			"pick_lord_dragon":
+				_pick_dark_lord(TurnState.ORC_LORD_DRAGON)
+			"pick_lord_wraith":
+				_pick_dark_lord(TurnState.ORC_LORD_WRAITH)
+			"pick_lord_sorcerer":
+				_pick_dark_lord(TurnState.ORC_LORD_SORCERER)
+			"pick_lord_blacksmith":
+				_pick_dark_lord(TurnState.ORC_LORD_BLACKSMITH)
+		return
+
+	if in_war_meeting:
+		match action_id:
+			"move_lord":
+				_start_move_lord()
+		return
+
 	if _get_available_uses(action_id) <= 0:
 		print("No Orc uses remaining for action: %s" % action_id)
 		return
@@ -60,8 +141,26 @@ func handle_action(action_id: String) -> void:
 			_start_raid()
 		ACTION_BRUTALIZE:
 			_start_brutalize()
-		_:
-			print("Unknown Orc action: %s" % action_id)
+
+func _start_move_lord() -> void:
+	if not TurnState.has_orc_dark_lord():
+		print("There is no Dark Lord to move.")
+		return
+
+	mode = MODE_MOVE_LORD_SOURCE
+	move_lord_source_settlement = null
+	print("Select the settlement containing the Dark Lord.")
+	_refresh_ui()
+
+func _pick_dark_lord(lord_name: String) -> void:
+	if lord_name != TurnState.ORC_LORD_WRAITH and TurnState.is_orc_dark_lord_dead(lord_name):
+		print("That Dark Lord is dead and cannot be chosen again.")
+		return
+
+	pending_dark_lord_pick = lord_name
+	mode = MODE_PICK_LORD_PLACE
+	print("Choose an Orc settlement to place the %s." % lord_name)
+	_refresh_ui()
 
 func _get_available_uses(_action_type: String) -> int:
 	return actions_remaining
@@ -86,6 +185,51 @@ func on_settlement_selected(settlement: Settlement) -> void:
 			_handle_raid_selected(settlement)
 		MODE_BRUTALIZE:
 			_handle_brutalize_selected(settlement)
+	if mode == MODE_PICK_LORD_PLACE:
+		_handle_dark_lord_placement_selected(settlement)
+	elif mode == MODE_MOVE_LORD_SOURCE:
+		_handle_move_lord_source_selected(settlement)
+	elif mode == MODE_MOVE_LORD_TARGET:
+		_handle_move_lord_target_selected(settlement)
+
+func _handle_move_lord_source_selected(settlement: Settlement) -> void:
+	if not settlement.has_orc_dark_lord():
+		print("That settlement does not contain the Dark Lord.")
+		return
+
+	move_lord_source_settlement = settlement
+	mode = MODE_MOVE_LORD_TARGET
+	print("Now choose an adjacent settlement to move the Dark Lord into.")
+
+func _handle_move_lord_target_selected(settlement: Settlement) -> void:
+	if move_lord_source_settlement == null:
+		return
+
+	if not move_lord_source_settlement.is_adjacent_to(settlement):
+		print("The Dark Lord may only move to an adjacent settlement.")
+		return
+
+	TurnState.place_orc_dark_lord_in_settlement(settlement)
+
+	mode = MODE_NONE
+	move_lord_source_settlement = null
+
+	print("Dark Lord moved.")
+	_refresh_ui()
+
+func _handle_dark_lord_placement_selected(settlement: Settlement) -> void:
+	if settlement.faction != ORC_FACTION:
+		print("You must place the Dark Lord in an Orc settlement.")
+		return
+
+	TurnState.set_orc_dark_lord(pending_dark_lord_pick)
+	TurnState.place_orc_dark_lord_in_settlement(settlement)
+
+	mode = MODE_NONE
+	pending_dark_lord_pick = TurnState.ORC_LORD_NONE
+
+	print("Dark Lord chosen and placed.")
+	_refresh_ui()
 
 func can_start_move_from_settlement(settlement: Settlement) -> bool:
 	if settlement.faction != ORC_FACTION:
