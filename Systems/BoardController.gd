@@ -14,6 +14,9 @@ const CombatResolver = preload("res://Systems/combat_resolver.gd")
 @onready var attacker_armor_label: Label = ui.attacker_armor_label
 @onready var defender_armor_label: Label = ui.defender_armor_label
 
+var pending_dark_lord_source: Settlement = null
+var pending_dark_lord_target: Settlement = null
+
 var selected: Settlement = null
 var pending_target: Settlement = null
 var pending_is_attack: bool = false
@@ -50,6 +53,7 @@ func _connect_ui_signals() -> void:
 	ui.war_meeting_finished.connect(_on_war_meeting_finished)
 	ui.building_delete_requested.connect(_on_building_delete_requested)
 	ui.next_turn_requested.connect(_on_next_turn_requested)
+	ui.dark_lord_move_requested.connect(_on_dark_lord_move_requested)
 
 func _connect_game_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -452,9 +456,89 @@ func _on_move_confirmed() -> void:
 
 	_deselect()
 
+func open_dark_lord_move_dialog(source: Settlement, target: Settlement) -> void:
+	pending_dark_lord_source = source
+	pending_dark_lord_target = target
+	ui.open_dark_lord_move_dialog(source, target)
+
 # =========================
 # Move / combat resolution
 # =========================
+
+func resolve_dark_lord_attack(source: Settlement, target: Settlement, soldiers: int, armor: int) -> void:
+	if not source.has_orc_dark_lord():
+		return
+
+	if soldiers < 0 or soldiers > source.soldiers:
+		print("Invalid number of soldiers.")
+		return
+
+	if armor < 0 or armor > TurnState.get_armor(Faction.Type.ORC):
+		print("Not enough armor.")
+		return
+
+	source.set_soldiers(source.soldiers - soldiers)
+
+	if armor > 0:
+		TurnState.add_armor(Faction.Type.ORC, -armor)
+
+	var lord_strengths := _get_orc_dark_lord_strength_for_battle(source, target)
+	var precombat := _get_elf_precombat_damage(source, target)
+
+	var result := CombatResolver.resolve_battle(
+		source.faction,
+		target.faction,
+		soldiers,
+		target.soldiers,
+		armor,
+		0, # defender armor, if you later want dialog for that you can expand this
+		precombat["damage_to_attacker"],
+		precombat["damage_to_defender"],
+		lord_strengths["attacker_strength"],
+		lord_strengths["defender_strength"]
+	)
+
+	var winning_faction: int = result["winning_faction"]
+	var settlement_soldiers: int = result["settlement_soldiers"]
+
+	if winning_faction == Faction.Type.ORC:
+		target.set_garrison(Faction.Type.ORC, settlement_soldiers)
+		TurnState.place_orc_dark_lord_in_settlement(target)
+	else:
+		# Orcs lost, lord dies
+		source.set_orc_dark_lord_present(false)
+		TurnState.kill_orc_dark_lord()
+
+		if settlement_soldiers == 0:
+			target.set_soldiers(0)
+		else:
+			target.set_soldiers(settlement_soldiers)
+
+	_handle_orc_dark_lord_after_settlement_result(source)
+	_handle_orc_dark_lord_after_settlement_result(target)
+
+	var controller := _controller()
+	if controller != null:
+		controller.after_successful_move(source, target)
+
+	_deselect()
+
+func _on_dark_lord_move_requested(soldiers: int, armor: int) -> void:
+	print("BoardController received dark lord move request.")
+
+	if pending_dark_lord_source == null or pending_dark_lord_target == null:
+		print("Dark lord move failed: pending source or target is null.")
+		return
+
+	var orc := _controller()
+	if not (orc is OrcController):
+		print("Dark lord move failed: current controller is not OrcController.")
+		return
+
+	orc.resolve_dark_lord_move(pending_dark_lord_source, pending_dark_lord_target, soldiers, armor)
+
+	pending_dark_lord_source = null
+	pending_dark_lord_target = null
 
 func resolve_dark_lord_move(
 	source: Settlement,

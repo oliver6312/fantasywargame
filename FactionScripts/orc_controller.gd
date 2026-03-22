@@ -207,7 +207,7 @@ func _handle_move_lord_target_selected(settlement: Settlement) -> void:
 		return
 
 	move_lord_target_settlement = settlement
-	ui.open_dark_lord_move_dialog(move_lord_source_settlement, move_lord_target_settlement)
+	board.open_dark_lord_move_dialog(move_lord_source_settlement, move_lord_target_settlement)
 
 func _handle_dark_lord_placement_selected(settlement: Settlement) -> void:
 	if settlement.faction != ORC_FACTION:
@@ -322,6 +322,36 @@ func _handle_brutalize_selected(settlement: Settlement) -> void:
 
 	mode = MODE_NONE
 	print("Building brutalized into a Gruesome Effigy.")
+	_refresh_ui()
+
+func resolve_dark_lord_move(source: Settlement, target: Settlement, soldiers: int, armor: int) -> void:
+	if not source.has_orc_dark_lord():
+		print("Source does not contain the Dark Lord.")
+		return
+
+	if not source.is_adjacent_to(target):
+		print("Dark Lord can only move to an adjacent settlement.")
+		return
+
+	if soldiers < 0 or soldiers > source.soldiers:
+		print("Invalid number of soldiers.")
+		return
+
+	if armor < 0 or armor > TurnState.get_armor(ORC_FACTION):
+		print("Invalid amount of armor.")
+		return
+
+	if target.faction == ORC_FACTION:
+		source.set_soldiers(source.soldiers - soldiers)
+		TurnState.place_orc_dark_lord_in_settlement(target)
+		target.set_soldiers(target.soldiers + soldiers)
+		print("Dark Lord moved safely.")
+	else:
+		board.resolve_dark_lord_attack(source, target, soldiers, armor)
+
+	mode = MODE_NONE
+	move_lord_source_settlement = null
+	move_lord_target_settlement = null
 	_refresh_ui()
 
 func _refresh_ui() -> void:

@@ -9,6 +9,8 @@ signal dwarf_gold_action_chosen(threshold: int, action_type: String)
 signal dwarf_gold_assignment_requested(threshold: int)
 signal trade_requested(receiver_faction: int, gold_amount: int, armor_amount: int)
 signal next_turn_requested
+signal dark_lord_move_requested(soldiers: int, armor: int)
+
 
 # =========================
 # Right Panel UI
@@ -32,6 +34,10 @@ signal next_turn_requested
 @onready var defender_armor_label: Label = %DefenderArmorLabel
 @onready var defender_armor_edit: LineEdit = %DefenderArmorEdit
 
+@onready var dark_lord_move_dialog: AcceptDialog = %DarkLordMoveDialog
+@onready var dark_lord_move_prompt_label: Label = %DarkLordMovePromptLabel
+@onready var dark_lord_move_soldiers_edit: LineEdit = %DarkLordMoveSoldiersEdit
+@onready var dark_lord_move_armor_edit: LineEdit = %DarkLordMoveArmorEdit
 # =========================
 # Settings
 # =========================
@@ -153,6 +159,7 @@ func _connect_button_signals() -> void:
 	goat_stable_button.pressed.connect(func(): dwarf_build_requested.emit("Goat Stable"))
 	gold_mine_button.pressed.connect(func(): dwarf_build_requested.emit("Gold Mine"))
 	training_grounds_button.pressed.connect(func(): dwarf_build_requested.emit("Training Grounds"))
+	dark_lord_move_dialog.confirmed.connect(_on_dark_lord_move_confirmed)
 
 	# Dwarf hoard buttons
 	for threshold in hoard_buttons.keys():
@@ -194,6 +201,30 @@ func _pretty_action_name(action_type: String) -> String:
 
 func _set_faction_label(label: Label, faction: int, prefix: String) -> void:
 	label.text = "%s: %s" % [prefix, _faction_name(faction)]
+
+func open_dark_lord_move_dialog(source: Settlement, target: Settlement) -> void:
+	dark_lord_move_prompt_label.text = "%s (%d) moving from %s to %s" % [
+		TurnState.get_orc_dark_lord(),
+		TurnState.get_orc_dark_lord_strength(),
+		source.get_display_name(),
+		target.get_display_name()]
+
+	dark_lord_move_soldiers_edit.text = ""
+	dark_lord_move_soldiers_edit.placeholder_text = "Soldiers to bring (0-%d)" % source.soldiers
+
+	dark_lord_move_armor_edit.text = ""
+	dark_lord_move_armor_edit.placeholder_text = "Armor to bring (0-%d)" % TurnState.get_armor(Faction.Type.ORC)
+
+	dark_lord_move_dialog.popup_centered()
+	dark_lord_move_soldiers_edit.grab_focus()
+
+func _on_dark_lord_move_confirmed() -> void:
+	var soldiers :int = max(0, int(dark_lord_move_soldiers_edit.text))
+	var armor : int = max(0, int(dark_lord_move_armor_edit.text))
+
+	print("Dark Lord dialog confirmed. Soldiers: %d Armor: %d" % [soldiers, armor])
+
+	dark_lord_move_requested.emit(soldiers, armor)
 
 # =========================
 # Turn / round / season UI / phases
