@@ -56,7 +56,7 @@ building_slot_count = 2
 position = Vector2(1026, 691)
 settlement_id = "NeutralPit"
 settlement_name = "NeutralPit"
-soldiers = 5
+soldiers = 55
 neighbors = [NodePath("../OrcTown"), NodePath("../DwarfTown")]
 
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]

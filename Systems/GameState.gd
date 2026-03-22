@@ -303,6 +303,7 @@ func kill_orc_dark_lord() -> void:
 		orc_dead_dark_lords[orc_current_dark_lord] = true
 
 	orc_current_dark_lord = ORC_LORD_NONE
+	clear_all_orc_war_promises()
 
 func get_orc_dark_lord_strength() -> int:
 	match orc_current_dark_lord:
@@ -330,6 +331,35 @@ func place_orc_dark_lord_in_settlement(settlement: Settlement) -> void:
 
 	if settlement != null:
 		settlement.set_orc_dark_lord_present(true)
+
+func clear_all_orc_war_promises() -> void:
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		settlement.set_orc_war_promise(false)
+
+func get_orc_war_promise_settlements() -> Array:
+	var result := []
+	for settlement in get_tree().get_nodes_in_group("settlements"):
+		if settlement.has_orc_war_promise():
+			result.append(settlement)
+	return result
+
+func count_orc_owned_war_promises() -> int:
+	var total := 0
+	for settlement in get_orc_war_promise_settlements():
+		if settlement.faction == Faction.Type.ORC:
+			total += 1
+	return total
+
+func are_all_war_promises_orc_owned() -> bool:
+	var promises := get_orc_war_promise_settlements()
+	if promises.is_empty():
+		return false
+
+	for settlement in promises:
+		if settlement.faction != Faction.Type.ORC:
+			return false
+
+	return true
 
 # =========================
 # Utility

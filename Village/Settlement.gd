@@ -33,6 +33,8 @@ var infiltration_faction: int = Faction.Type.NEUTRAL
 
 var has_orc_dark_lord_token: bool = false
 
+var is_orc_war_promise: bool = false
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
@@ -44,6 +46,12 @@ func _ready() -> void:
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
+
+func set_orc_war_promise(value: bool) -> void:
+	is_orc_war_promise = value
+
+func has_orc_war_promise() -> bool:
+	return is_orc_war_promise
 
 func has_orc_dark_lord() -> bool:
 	return has_orc_dark_lord_token

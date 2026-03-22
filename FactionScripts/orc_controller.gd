@@ -13,7 +13,7 @@ const MODE_BRUTALIZE := "brutalize"
 
 const BUILDING_GRUESOME_EFFIGY := "Gruesome Effigy"
 
-var actions_remaining: int = 4
+var actions_remaining = 4 + TurnState.count_orc_owned_war_promises()
 var mode: String = MODE_NONE
 
 var in_war_meeting: bool = true
@@ -24,15 +24,17 @@ var pending_dark_lord_pick: String = TurnState.ORC_LORD_NONE
 
 const MODE_MOVE_LORD_SOURCE := "move_lord_source"
 const MODE_MOVE_LORD_TARGET := "move_lord_target"
+const ACTION_MOVE_LORD := "move_lord"
 
 var move_lord_source_settlement: Settlement = null
 var move_lord_target_settlement: Settlement = null
 
 var rng := RandomNumberGenerator.new()
 
+const MODE_PICK_WAR_PROMISE := "pick_war_promise"
+
 func start_turn() -> void:
-	rng.randomize()
-	actions_remaining = 4
+	actions_remaining = 4 + TurnState.count_orc_owned_war_promises()
 	mode = MODE_NONE
 	in_war_meeting = true
 
@@ -40,8 +42,63 @@ func start_turn() -> void:
 
 	if not TurnState.has_orc_dark_lord():
 		print("Orcs must choose a Dark Lord.")
-	else:
-		print("Orc War Meeting begins.")
+		return
+
+	if _needs_new_war_promise():
+		_start_pick_war_promise()
+		print("Orcs must make a War Promise")
+		return
+
+	print("Orc War Meeting begins.")
+
+func _start_pick_war_promise() -> void:
+	mode = MODE_PICK_WAR_PROMISE
+
+	var options := _get_top_3_enemy_settlements_by_soldiers()
+
+	if options.is_empty():
+		print("No valid enemy settlements for a War Promise.")
+		_refresh_ui()
+		return
+
+	print("Choose a War Promise.")
+	ui.show_orc_war_promise_picker(options)
+	_refresh_ui()
+
+func _get_top_3_enemy_settlements_by_soldiers() -> Array:
+	var enemies := []
+
+	for settlement in board.get_tree().get_nodes_in_group("settlements"):
+		if settlement.faction == ORC_FACTION:
+			continue
+		if settlement.faction == Faction.Type.NEUTRAL:
+			continue
+
+		enemies.append(settlement)
+
+	enemies.sort_custom(func(a, b): return a.soldiers > b.soldiers)
+
+	if enemies.size() > 3:
+		enemies = enemies.slice(0, 3)
+
+	return enemies
+
+func choose_war_promise(settlement: Settlement) -> void:
+	if mode != MODE_PICK_WAR_PROMISE:
+		return
+
+	if settlement == null:
+		return
+
+	if settlement.faction == ORC_FACTION or settlement.faction == Faction.Type.NEUTRAL:
+		print("War Promise must target an enemy settlement.")
+		return
+
+	settlement.set_orc_war_promise(true)
+	mode = MODE_NONE
+
+	print("War Promise chosen: %s" % settlement.get_display_name())
+	_refresh_ui()
 
 func end_turn() -> void:
 	if TurnState.get_orc_dark_lord() == TurnState.ORC_LORD_DRAGON:
@@ -53,6 +110,10 @@ func end_turn() -> void:
 
 	_refresh_ui()
 
+func _needs_new_war_promise() -> bool:
+	var promises := TurnState.get_orc_war_promise_settlements()
+	return promises.is_empty() or TurnState.are_all_war_promises_orc_owned()
+
 func is_in_war_meeting() -> bool:
 	return in_war_meeting
 
@@ -63,6 +124,10 @@ func finish_war_meeting() -> void:
 
 	if mode == MODE_PICK_LORD_PLACE:
 		print("Place the Dark Lord first.")
+		return
+
+	if mode == MODE_PICK_WAR_PROMISE:
+		print("Choose a War Promise first.")
 		return
 
 	in_war_meeting = false
@@ -97,9 +162,12 @@ func get_action_list() -> Array:
 	actions.append(_make_action(ACTION_MOVE, "Move/Attack (%d)" % _get_available_uses(ACTION_MOVE)))
 	actions.append(_make_action(ACTION_RAID, "Raid (%d)" % _get_available_uses(ACTION_RAID)))
 	actions.append(_make_action(ACTION_BRUTALIZE, "Brutalize (%d)" % _get_available_uses(ACTION_BRUTALIZE)))
-	actions.append(_make_action("move_lord", "Move Lord"))
+	actions.append(_make_action(ACTION_MOVE_LORD, "Move Lord (%d)" % _get_available_uses(ACTION_MOVE_LORD)))
 
 	return actions
+
+func spend_move_lord_action() -> bool:
+	return _spend_action(ACTION_MOVE_LORD)
 
 func _make_lord_pick_action(lord_name: String) -> ActionDefinition:
 	var action := ActionDefinition.new()
@@ -221,7 +289,11 @@ func _handle_dark_lord_placement_selected(settlement: Settlement) -> void:
 	pending_dark_lord_pick = TurnState.ORC_LORD_NONE
 
 	print("Dark Lord chosen and placed.")
-	_refresh_ui()
+
+	if _needs_new_war_promise():
+		_start_pick_war_promise()
+	else:
+		_refresh_ui()
 
 func can_start_move_from_settlement(settlement: Settlement) -> bool:
 	if settlement.faction != ORC_FACTION:

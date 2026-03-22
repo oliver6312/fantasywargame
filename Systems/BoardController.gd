@@ -54,6 +54,7 @@ func _connect_ui_signals() -> void:
 	ui.building_delete_requested.connect(_on_building_delete_requested)
 	ui.next_turn_requested.connect(_on_next_turn_requested)
 	ui.dark_lord_move_requested.connect(_on_dark_lord_move_requested)
+	ui.orc_war_promise_chosen.connect(_on_orc_war_promise_chosen)
 
 func _connect_game_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -123,6 +124,12 @@ func _roll_superiority_die() -> int:
 	var roll := rng.randi_range(1, 6)
 	print("Superiority Die rolled: %d" % roll)
 	return roll
+
+func _orc_controller() -> OrcController:
+	var controller := _controller()
+	if controller is OrcController:
+		return controller
+	return null
 
 func _get_orc_dark_lord_strength_for_battle(source: Settlement, target: Settlement) -> Dictionary:
 	var attacker_strength := 0
@@ -244,6 +251,11 @@ func _on_next_turn_requested() -> void:
 		controller.end_turn()
 
 	TurnState.next_turn()
+
+func _on_orc_war_promise_chosen(settlement: Settlement) -> void:
+	var orc := _orc_controller()
+	if orc != null:
+		orc.choose_war_promise(settlement)
 
 # =========================
 # Input / selection
@@ -543,7 +555,13 @@ func resolve_dark_lord_move(
 	target: Settlement,
 	soldiers: int,
 	armor: int) -> void:
-	return
+	var orc := _orc_controller()
+	if orc == null:
+		return
+
+	if not orc.spend_move_lord_action():
+		print("No Move Lord actions remaining.")
+		return
 
 func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
 	if moving_faction == Faction.Type.ELF:

@@ -10,7 +10,7 @@ signal dwarf_gold_assignment_requested(threshold: int)
 signal trade_requested(receiver_faction: int, gold_amount: int, armor_amount: int)
 signal next_turn_requested
 signal dark_lord_move_requested(soldiers: int, armor: int)
-
+signal orc_war_promise_chosen(settlement: Settlement)
 
 # =========================
 # Right Panel UI
@@ -80,7 +80,6 @@ var armor_labels: Dictionary = {}
 
 @onready var elf_magic_label: Label = %ElfMagicLabel
 @onready var elf_serenity_label: Label = %ElfSerenityLabel
-
 
 # =========================
 # Faction action panel
@@ -225,6 +224,33 @@ func _on_dark_lord_move_confirmed() -> void:
 	print("Dark Lord dialog confirmed. Soldiers: %d Armor: %d" % [soldiers, armor])
 
 	dark_lord_move_requested.emit(soldiers, armor)
+
+func show_orc_war_promise_picker(settlements: Array) -> void:
+	var dialog := AcceptDialog.new()
+	dialog.title = "Choose War Promise"
+
+	var container := VBoxContainer.new()
+	dialog.add_child(container)
+
+	var info_label := Label.new()
+	info_label.text = "Choose one enemy settlement to mark as a War Promise."
+	container.add_child(info_label)
+
+	for settlement in settlements:
+		var s: Settlement = settlement
+		var button := Button.new()
+		button.text = "%s (%d soldiers)" % [s.get_display_name(), s.soldiers]
+
+		button.pressed.connect(func():
+			orc_war_promise_chosen.emit(s)
+			dialog.queue_free()
+		)
+
+		container.add_child(button)
+
+	add_child(dialog)
+	dialog.popup_centered()
+
 
 # =========================
 # Turn / round / season UI / phases
