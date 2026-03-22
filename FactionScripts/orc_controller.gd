@@ -100,6 +100,8 @@ func choose_war_promise(settlement: Settlement) -> void:
 	print("War Promise chosen: %s" % settlement.get_display_name())
 	_refresh_ui()
 
+
+
 func end_turn() -> void:
 	if TurnState.get_orc_dark_lord() == TurnState.ORC_LORD_DRAGON:
 		var lord_settlement := TurnState.find_orc_dark_lord_settlement()

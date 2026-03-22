@@ -42,6 +42,8 @@ var is_orc_war_promise: bool = false
 
 const BUILDING_FARM := "Farm"
 
+@onready var war_promise_token: Sprite2D = $WarPromiseToken
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
@@ -58,6 +60,12 @@ func _ready() -> void:
 		var empty_index := _get_first_empty_building_slot()
 		if empty_index != -1 and not _has_any_building():
 			set_building_in_slot(empty_index, BUILDING_FARM)
+
+func _refresh_war_promise_visuals() -> void:
+	if war_promise_token == null:
+		return
+
+	war_promise_token.visible = is_orc_war_promise
 
 func _get_first_empty_building_slot() -> int:
 	for i in range(building_slots.size()):
@@ -101,6 +109,7 @@ func _refresh_dark_lord_token_visuals() -> void:
 
 func set_orc_war_promise(value: bool) -> void:
 	is_orc_war_promise = value
+	_refresh_war_promise_visuals()
 
 func has_orc_war_promise() -> bool:
 	return is_orc_war_promise
