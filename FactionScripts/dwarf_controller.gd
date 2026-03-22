@@ -411,12 +411,28 @@ func _get_first_empty_building_slot(settlement: Settlement) -> int:
 	return -1
 
 func delete_building(settlement: Settlement, slot_index: int) -> void:
-	var command := DeleteBuildingCommand.new()
-	command.settlement = settlement
-	command.slot_index = slot_index
-	if not board._run_command(command):
+	if settlement == null:
 		return
-	
+
+	if settlement.faction != DWARF_FACTION:
+		print("You can only delete buildings in dwarf settlements.")
+		return
+
+	if slot_index < 0 or slot_index >= settlement.building_slot_count:
+		return
+
+	if settlement.building_slots[slot_index] == "":
+		print("That slot is already empty.")
+		return
+
+	if normal_actions_remaining <= 0:
+		print("No actions remaining.")
+		return
+
+	normal_actions_remaining -= 1
+	settlement.set_building_in_slot(slot_index, "")
+	print("Deleted building from slot %d" % slot_index)
+
 	_refresh_ui()
 
 # =========================
