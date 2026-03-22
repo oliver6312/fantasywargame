@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
 [ext_resource type="Script" uid="uid://c51s4b4na5btf" path="res://PlayBoard/camera_2d.gd" id="1_y7hph"]
-[ext_resource type="Texture2D" uid="uid://cc2ievfcyitj0" path="res://PlayBoard/Top1.2.0.png" id="2_pusjj"]
+[ext_resource type="Texture2D" uid="uid://b5ktwwk1o5fyx" path="res://PlayBoard/Bridge1.3.3.png" id="2_y7hph"]
 [ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://InGameUI/UI.tscn" id="3_8mygu"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://PlayBoard/connection_drawer.gd" id="4_uuge4"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village/Settlement.tscn" id="5_qpi8o"]
@@ -16,7 +16,7 @@ script = ExtResource("1_y7hph")
 map_path = NodePath("../Map")
 
 [node name="Map" type="Sprite2D" parent="." unique_id=1727819468]
-texture = ExtResource("2_pusjj")
+texture = ExtResource("2_y7hph")
 centered = false
 
 [node name="UI" parent="." unique_id=1769323019 instance=ExtResource("3_8mygu")]
@@ -24,40 +24,193 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("4_uuge4")
 
-[node name="ElfVillage" parent="." unique_id=730403027 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(773, 660)
-settlement_name = "Elf Village"
-faction = 2
-soldiers = 40
-neighbors = [NodePath("../OrcTown")]
-building_slot_count = 3
-
-[node name="OrcTown" parent="." unique_id=1386872374 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(890, 831)
-settlement_name = "OrcTown"
-faction = 1
-soldiers = 250
-neighbors = [NodePath("../ElfVillage")]
-
-[node name="FarawayLand" parent="." unique_id=1631699824 instance=ExtResource("5_qpi8o")]
-position = Vector2(1598, 1084)
-settlement_name = "Faraway Land"
-soldiers = 2
-
-[node name="DwarfTown" parent="." unique_id=1422351740 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(931, 560)
-settlement_name = "DwarfTown"
-faction = 3
-soldiers = 20
-neighbors = [NodePath("../ElfVillage")]
+[node name="Riderhill" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1529, 938)
+settlement_id = "Riderhill"
+settlement_name = "Riderhill"
+soldiers = 8
+neighbors = [NodePath("../Clayton")]
 building_slot_count = 2
 
-[node name="NeutralPit" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1026, 691)
-settlement_id = "NeutralPit"
-settlement_name = "NeutralPit"
-soldiers = 55
-neighbors = [NodePath("../OrcTown"), NodePath("../DwarfTown")]
+[node name="Cobble" parent="." unique_id=444437974 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(670, 1108)
+settlement_id = "Cobble"
+settlement_name = "Cobble"
+soldiers = 4
+neighbors = [NodePath("../Green Run"), NodePath("../Salt Town")]
+
+[node name="Green Run" parent="." unique_id=1724693327 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(840, 901)
+settlement_id = "Green Run"
+settlement_name = "Green Run"
+faction = 2
+soldiers = 8
+neighbors = [NodePath("../Wood Heart"), NodePath("../Gold Leaf")]
+
+[node name="Wood Heart" parent="." unique_id=116253196 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1193, 699)
+settlement_id = "Wood Heart"
+settlement_name = "Wood Heart"
+faction = 2
+soldiers = 16
+neighbors = [NodePath("../Gold Leaf")]
+building_slot_count = 2
+
+[node name="Gold Leaf" parent="." unique_id=287751448 instance=ExtResource("5_qpi8o")]
+position = Vector2(797, 532)
+settlement_id = "Gold Leaf"
+settlement_name = "Gold Leaf"
+faction = 2
+soldiers = 8
+
+[node name="Pine Breath" parent="." unique_id=131119424 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1379, 1849)
+settlement_id = "Pine Breath"
+settlement_name = "Pine Breath"
+soldiers = 4
+neighbors = [NodePath("../Long Port"), NodePath("../Gold Field")]
+
+[node name="Skar" parent="." unique_id=1939415052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2213, 631)
+settlement_id = "Skar"
+settlement_name = "Skar"
+soldiers = 8
+neighbors = [NodePath("../Umber Hill"), NodePath("../Tributary")]
+building_slot_count = 2
+
+[node name="Salt Town" parent="." unique_id=744811377 instance=ExtResource("5_qpi8o")]
+position = Vector2(875, 1318)
+settlement_id = "Salt Town"
+settlement_name = "Salt Town"
+faction = 1
+soldiers = 8
+
+[node name="Clayton" parent="." unique_id=1828953428 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1224, 1188)
+settlement_id = "Clayton"
+settlement_name = "Clayton"
+faction = 1
+soldiers = 16
+neighbors = [NodePath("../Salt Town")]
+building_slot_count = 2
+
+[node name="Fresh Hill" parent="." unique_id=684773324 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1625, 1407)
+settlement_id = "Fresh Hill"
+settlement_name = "Fresh Hill"
+faction = 1
+soldiers = 8
+neighbors = [NodePath("../Clayton")]
+
+[node name="Umber Hill" parent="." unique_id=1801318711 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1694, 690)
+settlement_id = "Umber Hill"
+settlement_name = "Umber Hill"
+soldiers = 12
+neighbors = [NodePath("../Riderhill"), NodePath("../Wood Heart")]
+building_slot_count = 3
+
+[node name="Wolf Wood" parent="." unique_id=986927980 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1704, 449)
+settlement_id = "Wolf Wood"
+settlement_name = "Wolf Wood"
+soldiers = 8
+neighbors = [NodePath("../Umber Hill"), NodePath("../Wood Heart"), NodePath("../Skar")]
+building_slot_count = 2
+
+[node name="Runt" parent="." unique_id=889847606 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2370, 977)
+settlement_id = "Runt"
+settlement_name = "Runt"
+soldiers = 8
+neighbors = [NodePath("../Queens Mark"), NodePath("../Tributary"), NodePath("../Steel Gate")]
+building_slot_count = 2
+
+[node name="Queens Mark" parent="." unique_id=1096459392 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1892, 951)
+settlement_id = "Queens Mark"
+settlement_name = "Queens Mark"
+soldiers = 8
+neighbors = [NodePath("../Umber Hill"), NodePath("../Riderhill")]
+building_slot_count = 2
+
+[node name="Tributary" parent="." unique_id=1918958883 instance=ExtResource("5_qpi8o")]
+position = Vector2(2739, 781)
+settlement_id = "Tributary "
+settlement_name = "Tributary"
+soldiers = 12
+building_slot_count = 3
+
+[node name="Greydam" parent="." unique_id=418652468 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2944, 1022)
+settlement_id = "Greydam"
+settlement_name = "Greydam"
+soldiers = 8
+neighbors = [NodePath("../Tributary"), NodePath("../Steel Gate"), NodePath("../White Peak")]
+building_slot_count = 2
+
+[node name="White Peak" parent="." unique_id=760052721 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(3287, 608)
+settlement_id = "White Peak"
+settlement_name = "White Peak"
+soldiers = 4
+neighbors = [NodePath("../Tributary")]
+
+[node name="Cold Pass" parent="." unique_id=1505649274 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2564, 1361)
+settlement_id = "Cold Pass"
+settlement_name = "Cold Pass"
+faction = 3
+soldiers = 8
+neighbors = [NodePath("../Steel Gate")]
+
+[node name="Steel Gate" parent="." unique_id=1688737800 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2661, 1176)
+settlement_id = "Steel Gate"
+settlement_name = "Steel Gate"
+faction = 3
+soldiers = 8
+neighbors = [NodePath("../Mother Mountain")]
+
+[node name="Mother Mountain" parent="." unique_id=199316682 instance=ExtResource("5_qpi8o")]
+position = Vector2(2991, 1251)
+settlement_id = "Mother Mountain"
+settlement_name = "Mother Mountain"
+faction = 3
+soldiers = 16
+building_slot_count = 2
+
+[node name="Irondeep" parent="." unique_id=1876696750 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2130, 1301)
+settlement_id = "Irondeep"
+settlement_name = "Irondeep"
+soldiers = 8
+neighbors = [NodePath("../Cold Pass"), NodePath("../Fresh Hill")]
+building_slot_count = 2
+
+[node name="Long Port" parent="." unique_id=878208882 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1250, 1525)
+settlement_id = "Long Port"
+settlement_name = "Long Port"
+soldiers = 12
+neighbors = [NodePath("../Fresh Hill"), NodePath("../Clayton"), NodePath("../Salt Town")]
+building_slot_count = 3
+
+[node name="Freshet" parent="." unique_id=284754980 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(2243, 1601)
+settlement_id = "Freshet"
+settlement_name = "Freshet"
+soldiers = 8
+neighbors = [NodePath("../Cold Pass"), NodePath("../Gold Field"), NodePath("../Irondeep")]
+building_slot_count = 2
+
+[node name="Gold Field" parent="." unique_id=1445636770 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
+position = Vector2(1748, 1681)
+settlement_id = "Gold Field"
+settlement_name = "Gold Field"
+soldiers = 8
+neighbors = [NodePath("../Fresh Hill")]
+building_slot_count = 2
 
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
 visible = false
