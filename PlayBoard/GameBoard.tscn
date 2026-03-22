@@ -192,7 +192,8 @@ building_slot_count = 2
 position = Vector2(1250, 1525)
 settlement_id = "Long Port"
 settlement_name = "Long Port"
-soldiers = 4
+faction = 1
+soldiers = 8
 neighbors = [NodePath("../Fresh Hill"), NodePath("../Clayton")]
 
 [node name="Freshet" parent="." unique_id=284754980 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
