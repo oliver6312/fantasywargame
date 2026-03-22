@@ -55,6 +55,7 @@ func _connect_ui_signals() -> void:
 	ui.next_turn_requested.connect(_on_next_turn_requested)
 	ui.dark_lord_move_requested.connect(_on_dark_lord_move_requested)
 	ui.orc_war_promise_chosen.connect(_on_orc_war_promise_chosen)
+	ui.infiltration_remove_requested.connect(_on_infiltration_remove_requested)
 
 func _connect_game_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -256,6 +257,16 @@ func _on_orc_war_promise_chosen(settlement: Settlement) -> void:
 	var orc := _orc_controller()
 	if orc != null:
 		orc.choose_war_promise(settlement)
+
+func _on_infiltration_remove_requested() -> void:
+	if selected == null:
+		return
+
+	var controller := _controller()
+	if controller == null:
+		return
+
+	controller.remove_infiltration_from_settlement(selected)
 
 # =========================
 # Input / selection

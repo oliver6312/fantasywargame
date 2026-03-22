@@ -12,6 +12,10 @@ signal next_turn_requested
 signal dark_lord_move_requested(soldiers: int, armor: int)
 signal orc_war_promise_chosen(settlement: Settlement)
 
+signal infiltration_remove_requested()
+
+@onready var remove_infiltration_button: Button = %RemoveInfiltrationButton
+
 # =========================
 # Right Panel UI
 # =========================
@@ -152,6 +156,7 @@ func _connect_button_signals() -> void:
 		var slot_index := i
 		building_slot_buttons[i].pressed.connect(func(): _on_building_slot_button_pressed(slot_index))
 	delete_building_button.pressed.connect(_on_delete_building_button_pressed)
+	remove_infiltration_button.pressed.connect(func(): infiltration_remove_requested.emit())
 
 	# Dwarf build buttons
 	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))
@@ -250,7 +255,6 @@ func show_orc_war_promise_picker(settlements: Array) -> void:
 
 	add_child(dialog)
 	dialog.popup_centered()
-
 
 # =========================
 # Turn / round / season UI / phases
@@ -367,9 +371,28 @@ func show_settlement_details(s: Settlement) -> void:
 
 	_update_building_slot_buttons(s)
 	_update_mercenary_button(s)
+	_update_remove_infiltration_button(s)
 	
 	selected_building_slot_index = -1
 	delete_building_button.visible = false
+
+func _update_remove_infiltration_button(s: Settlement) -> void:
+	var controller := TurnState.current_faction_controller
+
+	if controller == null:
+		remove_infiltration_button.visible = false
+		return
+
+	if not s.has_infiltration():
+		remove_infiltration_button.visible = false
+		return
+
+	if not controller.can_remove_infiltration():
+		remove_infiltration_button.visible = false
+		return
+
+	remove_infiltration_button.visible = true
+	remove_infiltration_button.disabled = false
 
 func hide_settlement_details() -> void:
 	current_settlement = null
