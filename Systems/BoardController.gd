@@ -163,8 +163,6 @@ func _handle_orc_dark_lord_after_settlement_result(settlement: Settlement) -> vo
 		settlement.set_orc_dark_lord_present(false)
 		TurnState.kill_orc_dark_lord()
 
-
-
 # =========================
 # Turn / resource updates
 # =========================
@@ -611,7 +609,6 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 	var attacker_armor := cmd.attacker_armor
 	var defender_armor := cmd.defender_armor
 
-	# Clamp AFTER winter
 	attacker_armor = min(attacker_armor, arriving_amount)
 	defender_armor = min(defender_armor, target.soldiers)
 
@@ -624,16 +621,18 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 		context.turn_state.add_armor(target.faction, -defender_armor)
 
 	var precombat := _get_elf_precombat_damage(source, target)
-
+	var lord_strengths := _get_orc_dark_lord_strength_for_battle(source, target)
 	var result := CombatResolver.resolve_battle(
-		source.faction,
-		target.faction,
-		arriving_amount,
-		target.soldiers,
-		attacker_armor,
-		defender_armor,
-		precombat["damage_to_attacker"],
-		precombat["damage_to_defender"])
+	source.faction,
+	target.faction,
+	arriving_amount,
+	target.soldiers,
+	attacker_armor,
+	defender_armor,
+	precombat["damage_to_attacker"],
+	precombat["damage_to_defender"],
+	lord_strengths["attacker_strength"],
+	lord_strengths["defender_strength"])
 
 	var winning_faction : int = result["winning_faction"]
 	var settlement_soldiers : int = result["settlement_soldiers"]

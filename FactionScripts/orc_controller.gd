@@ -325,6 +325,14 @@ func _handle_brutalize_selected(settlement: Settlement) -> void:
 	_refresh_ui()
 
 func resolve_dark_lord_move(source: Settlement, target: Settlement, soldiers: int, armor: int) -> void:
+	if soldiers < 1:
+		print("The Dark Lord must move with at least 1 soldier.")
+		return
+
+	if soldiers > source.soldiers:
+		print("Not enough soldiers.")
+		return
+
 	if not source.has_orc_dark_lord():
 		print("Source does not contain the Dark Lord.")
 		return
