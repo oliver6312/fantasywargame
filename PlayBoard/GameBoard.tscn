@@ -67,7 +67,8 @@ soldiers = 8
 position = Vector2(1379, 1849)
 settlement_id = "Pine Breath"
 settlement_name = "Pine Breath"
-soldiers = 4
+faction = 1
+soldiers = 8
 neighbors = [NodePath("../Long Port"), NodePath("../Gold Field")]
 
 [node name="Skar" parent="." unique_id=1939415052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
@@ -89,8 +90,7 @@ neighbors = [NodePath("../Queens Mark"), NodePath("../Irondeep")]
 position = Vector2(1158, 1180)
 settlement_id = "Clayton"
 settlement_name = "Clayton"
-faction = 1
-soldiers = 16
+soldiers = 8
 neighbors = [NodePath("../Cobble")]
 building_slot_count = 2
 
@@ -98,9 +98,9 @@ building_slot_count = 2
 position = Vector2(1625, 1407)
 settlement_id = "Fresh Hill"
 settlement_name = "Fresh Hill"
-faction = 1
-soldiers = 8
+soldiers = 12
 neighbors = [NodePath("../Clayton")]
+building_slot_count = 3
 
 [node name="Umber Hill" parent="." unique_id=1801318711 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(1694, 690)

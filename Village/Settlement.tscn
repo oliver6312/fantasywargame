@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://blw1w1urbg48p" path="res://Village/SettlementGraphics/SettlementCircle.png" id="4_u8w44"]
 [ext_resource type="Texture2D" uid="uid://dixcc4r2fumem" path="res://Village/SettlementGraphics/BuildingShell.png" id="5_bykt4"]
 [ext_resource type="Texture2D" uid="uid://dm1vwp7e162a6" path="res://Village/SettlementGraphics/EI.png" id="6_b32a8"]
+[ext_resource type="Texture2D" uid="uid://dkvldq3yu20un" path="res://Village/SettlementGraphics/DL.png" id="7_gi5vt"]
+[ext_resource type="Texture2D" uid="uid://bnbs7oqkypkfl" path="res://Village/SettlementGraphics/WP.png" id="8_oj6me"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
@@ -25,7 +27,7 @@ texture = ExtResource("2_5erx4")
 
 [node name="Circle" type="Sprite2D" parent="." unique_id=1562593096]
 position = Vector2(4.7683716e-07, 1.1920929e-07)
-scale = Vector2(0.60937494, 0.60937494)
+scale = Vector2(0.75, 0.75)
 texture = ExtResource("4_u8w44")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
@@ -34,27 +36,42 @@ shape = SubResource("CircleShape2D_hx6cv")
 [node name="BuildingSlot1" type="Sprite2D" parent="." unique_id=2116025175]
 unique_name_in_owner = true
 visible = false
-position = Vector2(32, 32)
+position = Vector2(0, 64)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("5_bykt4")
 
 [node name="BuildingSlot2" type="Sprite2D" parent="." unique_id=5456342]
 unique_name_in_owner = true
 visible = false
-position = Vector2(-32, 32)
+position = Vector2(-55.43, 32)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("5_bykt4")
 
 [node name="BuildingSlot3" type="Sprite2D" parent="." unique_id=1546745769]
 unique_name_in_owner = true
 visible = false
-position = Vector2(0, -32)
+position = Vector2(55.43, 32)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("5_bykt4")
 
 [node name="InfiltrationToken" type="Sprite2D" parent="." unique_id=190414953]
 unique_name_in_owner = true
 visible = false
-position = Vector2(32, -32)
-scale = Vector2(2, 2)
+position = Vector2(55.43, -32)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("6_b32a8")
+
+[node name="DarkLordToken" type="Sprite2D" parent="." unique_id=1636260996]
+visible = false
+position = Vector2(-55.43, -32)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("7_gi5vt")
+
+[node name="WarPromiseToken" type="Sprite2D" parent="." unique_id=1952302830]
+visible = false
+position = Vector2(0, -64)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("8_oj6me")
 
 [node name="SoldierLabel" type="Label" parent="." unique_id=2097102523]
 anchors_preset = 15

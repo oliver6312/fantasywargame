@@ -115,11 +115,11 @@ func _initialize_resources() -> void:
 
 	set_gold(Faction.Type.ORC, 10)
 	set_gold(Faction.Type.ELF, 10)
-	set_gold(Faction.Type.DWARF, 120)
+	set_gold(Faction.Type.DWARF, 20)
 
 	set_armor(Faction.Type.ORC, 5)
 	set_armor(Faction.Type.ELF, 5)
-	set_armor(Faction.Type.DWARF, 5)
+	set_armor(Faction.Type.DWARF, 10)
 
 func _initialize_dwarf_data() -> void:
 	for threshold in DWARF_HOARD_THRESHOLDS:
@@ -308,13 +308,13 @@ func kill_orc_dark_lord() -> void:
 func get_orc_dark_lord_strength() -> int:
 	match orc_current_dark_lord:
 		ORC_LORD_DRAGON:
-			return 16
-		ORC_LORD_WRAITH:
-			return 4
-		ORC_LORD_SORCERER:
-			return 12
-		ORC_LORD_BLACKSMITH:
 			return 8
+		ORC_LORD_WRAITH:
+			return 2
+		ORC_LORD_SORCERER:
+			return 3
+		ORC_LORD_BLACKSMITH:
+			return 5
 		_:
 			return 0
 
