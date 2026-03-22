@@ -48,3 +48,9 @@ func is_in_special_selection_mode() -> bool:
 
 func cancel_current_mode() -> void:
 	pass
+
+func can_remove_infiltration() -> bool:
+	return false
+
+func remove_infiltration_from_settlement(_settlement: Settlement) -> void:
+	pass

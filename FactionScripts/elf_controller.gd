@@ -237,6 +237,20 @@ func _handle_remove_infiltration_selected(settlement: Settlement) -> void:
 	print("Infiltration removed.")
 	_refresh_ui()
 
+func can_remove_infiltration() -> bool:
+	return not in_war_meeting
+
+func remove_infiltration_from_settlement(settlement: Settlement) -> void:
+	if settlement == null:
+		return
+	if not settlement.has_infiltration():
+		print("That settlement has no infiltration.")
+		return
+
+	settlement.clear_infiltration()
+	print("Infiltration removed.")
+	_refresh_ui()
+
 # =========================
 # Start-of-turn effects
 # =========================

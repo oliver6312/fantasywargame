@@ -436,3 +436,27 @@ func _refresh_ui() -> void:
 
 	if board.selected != null:
 		ui.show_settlement_details(board.selected)
+
+# =========================
+# Remove Infiltration
+# =========================
+
+func can_remove_infiltration() -> bool:
+	return true
+
+func remove_infiltration_from_settlement(settlement: Settlement) -> void:
+	if settlement == null:
+		return
+	if not settlement.has_infiltration():
+		print("That settlement has no infiltration.")
+		return
+
+	if normal_actions_remaining <= 0:
+		print("No actions remaining.")
+		return
+
+	normal_actions_remaining -= 1
+	settlement.clear_infiltration()
+
+	print("Infiltration removed.")
+	_refresh_ui()

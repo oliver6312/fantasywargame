@@ -40,6 +40,8 @@ var is_orc_war_promise: bool = false
 @onready var sorcerer_token: Sprite2D = $SorcererToken
 @onready var blacksmith_token: Sprite2D = $BlacksmithToken
 
+const BUILDING_FARM := "Farm"
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
@@ -52,6 +54,28 @@ func _ready() -> void:
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
+	if faction == Faction.Type.NEUTRAL:
+		var empty_index := _get_first_empty_building_slot()
+		if empty_index != -1 and not _has_any_building():
+			set_building_in_slot(empty_index, BUILDING_FARM)
+
+func _get_first_empty_building_slot() -> int:
+	for i in range(building_slots.size()):
+		if building_slots[i] == "":
+			return i
+	return -1
+
+func _has_any_building() -> bool:
+	for building in building_slots:
+		if building != "":
+			return true
+	return false
+
+func _refresh_infiltration_visuals() -> void:
+	if infiltration_token == null:
+		return
+
+	infiltration_token.visible = has_infiltration()
 
 func _refresh_dark_lord_token_visuals() -> void:
 	if dragon_token == null:
