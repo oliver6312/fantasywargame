@@ -8,6 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://dm1vwp7e162a6" path="res://Village/SettlementGraphics/EI.png" id="6_b32a8"]
 [ext_resource type="Texture2D" uid="uid://dkvldq3yu20un" path="res://Village/SettlementGraphics/DL.png" id="7_gi5vt"]
 [ext_resource type="Texture2D" uid="uid://bnbs7oqkypkfl" path="res://Village/SettlementGraphics/WP.png" id="8_oj6me"]
+[ext_resource type="Texture2D" uid="uid://dorngc6n4on6h" path="res://Village/SettlementGraphics/WL.png" id="8_vpbmy"]
+[ext_resource type="Texture2D" uid="uid://crdkf2y0dboc1" path="res://Village/SettlementGraphics/BL.png" id="9_iemt1"]
+[ext_resource type="Texture2D" uid="uid://dbr4m2v3ays73" path="res://Village/SettlementGraphics/SL.png" id="10_tiqj1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_hx6cv"]
 radius = 42.0119
@@ -61,13 +64,36 @@ position = Vector2(55.43, -32)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("6_b32a8")
 
-[node name="DarkLordToken" type="Sprite2D" parent="." unique_id=1636260996]
+[node name="DragonToken" type="Sprite2D" parent="." unique_id=1636260996]
+unique_name_in_owner = true
 visible = false
 position = Vector2(-55.43, -32)
 scale = Vector2(1.5, 1.5)
 texture = ExtResource("7_gi5vt")
 
+[node name="WraithToken" type="Sprite2D" parent="." unique_id=382695799]
+unique_name_in_owner = true
+visible = false
+position = Vector2(-55.43, -32)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("8_vpbmy")
+
+[node name="BlacksmithToken" type="Sprite2D" parent="." unique_id=880449146]
+unique_name_in_owner = true
+visible = false
+position = Vector2(-55.43, -32)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("9_iemt1")
+
+[node name="SorcererToken" type="Sprite2D" parent="." unique_id=1069540384]
+unique_name_in_owner = true
+visible = false
+position = Vector2(-55.43, -32)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("10_tiqj1")
+
 [node name="WarPromiseToken" type="Sprite2D" parent="." unique_id=1952302830]
+unique_name_in_owner = true
 visible = false
 position = Vector2(0, -64)
 scale = Vector2(1.5, 1.5)

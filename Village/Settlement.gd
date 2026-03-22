@@ -35,6 +35,11 @@ var has_orc_dark_lord_token: bool = false
 
 var is_orc_war_promise: bool = false
 
+@onready var dragon_token: Sprite2D = $DragonToken
+@onready var wraith_token: Sprite2D = $WraithToken
+@onready var sorcerer_token: Sprite2D = $SorcererToken
+@onready var blacksmith_token: Sprite2D = $BlacksmithToken
+
 func _ready() -> void:
 	name_label.text = get_display_name()
 	add_to_group("settlements")
@@ -43,9 +48,32 @@ func _ready() -> void:
 	_refresh_building_slot_visuals()
 	_validate_neighbors()
 	_resize_building_slots()
+	_refresh_dark_lord_token_visuals()
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
+
+func _refresh_dark_lord_token_visuals() -> void:
+	if dragon_token == null:
+		return
+
+	dragon_token.visible = false
+	wraith_token.visible = false
+	sorcerer_token.visible = false
+	blacksmith_token.visible = false
+
+	if not has_orc_dark_lord():
+		return
+
+	match TurnState.get_orc_dark_lord():
+		TurnState.ORC_LORD_DRAGON:
+			dragon_token.visible = true
+		TurnState.ORC_LORD_WRAITH:
+			wraith_token.visible = true
+		TurnState.ORC_LORD_SORCERER:
+			sorcerer_token.visible = true
+		TurnState.ORC_LORD_BLACKSMITH:
+			blacksmith_token.visible = true
 
 func set_orc_war_promise(value: bool) -> void:
 	is_orc_war_promise = value
@@ -58,6 +86,7 @@ func has_orc_dark_lord() -> bool:
 
 func set_orc_dark_lord_present(value: bool) -> void:
 	has_orc_dark_lord_token = value
+	_refresh_dark_lord_token_visuals()
 
 func has_infiltration() -> bool:
 	return infiltration_faction != Faction.Type.NEUTRAL

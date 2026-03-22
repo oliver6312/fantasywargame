@@ -305,6 +305,8 @@ func kill_orc_dark_lord() -> void:
 	orc_current_dark_lord = ORC_LORD_NONE
 	clear_all_orc_war_promises()
 
+
+
 func get_orc_dark_lord_strength() -> int:
 	match orc_current_dark_lord:
 		ORC_LORD_DRAGON:
