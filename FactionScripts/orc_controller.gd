@@ -270,10 +270,6 @@ func _start_raid() -> void:
 	_refresh_ui()
 
 func _handle_raid_selected(settlement: Settlement) -> void:
-	if settlement.faction != ORC_FACTION:
-		print("You can only raid buildings in Orc-controlled settlements.")
-		return
-
 	var slot_index := _get_first_non_empty_non_effigy_slot(settlement)
 	if slot_index == -1:
 		print("That settlement has no building to raid.")
@@ -283,16 +279,16 @@ func _handle_raid_selected(settlement: Settlement) -> void:
 		print("No Raid actions remaining.")
 		return
 
-	if TurnState.get_orc_dark_lord() == TurnState.ORC_LORD_BLACKSMITH:
-		TurnState.add_armor(ORC_FACTION, 10)
-		print("Blacksmith bonus: +10 Armor.")
+	var cmd := RaidCommand.new()
+	cmd.settlement = settlement
+	cmd.slot_index = slot_index
+	cmd.raiding_faction = ORC_FACTION
+	cmd.blacksmith_bonus = TurnState.get_orc_dark_lord() == TurnState.ORC_LORD_BLACKSMITH
 
-	settlement.set_building_in_slot(slot_index, "")
-	settlement.set_soldiers(settlement.soldiers + 10)
-	TurnState.add_gold(ORC_FACTION, 10)
+	if not board._run_command(cmd):
+		return
 
 	mode = MODE_NONE
-	print("Raided building. +10 Orcs, +10 Gold.")
 	_refresh_ui()
 
 func _start_brutalize() -> void:
@@ -305,10 +301,6 @@ func _start_brutalize() -> void:
 	_refresh_ui()
 
 func _handle_brutalize_selected(settlement: Settlement) -> void:
-	if settlement.faction != ORC_FACTION:
-		print("You can only raid buildings in Orc-controlled settlements.")
-		return
-
 	var slot_index := _get_first_non_empty_non_effigy_slot(settlement)
 	if slot_index == -1:
 		print("That settlement has no building to brutalize.")
@@ -318,10 +310,15 @@ func _handle_brutalize_selected(settlement: Settlement) -> void:
 		print("No Brutalize actions remaining.")
 		return
 
-	settlement.set_building_in_slot(slot_index, BUILDING_GRUESOME_EFFIGY)
+	var cmd := BrutalizeCommand.new()
+	cmd.settlement = settlement
+	cmd.slot_index = slot_index
+	cmd.brutalizing_faction = ORC_FACTION
+
+	if not board._run_command(cmd):
+		return
 
 	mode = MODE_NONE
-	print("Building brutalized into a Gruesome Effigy.")
 	_refresh_ui()
 
 func resolve_dark_lord_move(source: Settlement, target: Settlement, soldiers: int, armor: int) -> void:
