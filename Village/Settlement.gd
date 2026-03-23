@@ -31,6 +31,18 @@ const BUILDING_FARM := "Farm"
 @onready var blacksmith_token: Sprite2D = $BlacksmithToken
 @onready var war_promise_token: Sprite2D = $WarPromiseToken
 
+@export var farm_texture: Texture2D 
+@export var gold_mine_texture: Texture2D
+@export var armor_smith_texture: Texture2D
+@export var goat_stable_texture: Texture2D
+@export var training_grounds_texture: Texture2D
+@export var sacred_grove_texture: Texture2D
+@export var gruesome_effigy_texture: Texture2D
+
+@onready var building_icon_1: Sprite2D = $BuildingIcon1
+@onready var building_icon_2: Sprite2D = $BuildingIcon2
+@onready var building_icon_3: Sprite2D = $BuildingIcon3
+
 var mercenaries_hired_this_turn: bool = false
 
 var infiltration_faction: int = Faction.Type.NEUTRAL
@@ -57,12 +69,54 @@ func _ready() -> void:
 	_refresh_war_promise_visuals()
 	_validate_neighbors()
 
+	_refresh_building_slot_visuals()
+	_refresh_building_icons()
+
 	selection_circle.visible = false
 	available_circle.visible = false
 	name_label.visible = false
 
 func get_display_name() -> String:
 	return settlement_name if settlement_name != "" else name
+
+func _get_building_texture(building_name: String) -> Texture2D:
+	match building_name:
+		"Farm":
+			return farm_texture
+		"Gold Mine":
+			return gold_mine_texture
+		"Armor Smith":
+			return armor_smith_texture
+		"Goat Stable":
+			return goat_stable_texture
+		"Training Grounds":
+			return training_grounds_texture
+		"Sacred Grove":
+			return sacred_grove_texture
+		"Gruesome Effigy":
+			return gruesome_effigy_texture
+		_:
+			return null
+
+func _refresh_building_icons() -> void:
+	var icons := [building_icon_1, building_icon_2, building_icon_3]
+
+	for i in range(icons.size()):
+		var icon: Sprite2D = icons[i]
+
+		if i >= building_slot_count:
+			icon.visible = false
+			icon.texture = null
+			continue
+
+		var building_name := building_slots[i]
+		if building_name == "":
+			icon.visible = false
+			icon.texture = null
+			continue
+
+		icon.texture = _get_building_texture(building_name)
+		icon.visible = icon.texture != null
 
 # =========================
 # Selection / click
@@ -139,6 +193,7 @@ func set_building_in_slot(index: int, building_name: String) -> void:
 		return
 
 	building_slots[index] = building_name
+	_refresh_building_icons()
 
 func get_building_slot_display_name(index: int) -> String:
 	var building := get_building_in_slot(index)
