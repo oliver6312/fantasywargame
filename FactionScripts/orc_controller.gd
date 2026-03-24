@@ -121,7 +121,6 @@ func get_action_list() -> Array:
 	actions.append(_make_action(ACTION_MOVE, "Move/Attack (%d)" % _get_available_uses(ACTION_MOVE)))
 	actions.append(_make_action(ACTION_RAID, "Raid (%d)" % _get_available_uses(ACTION_RAID)))
 	actions.append(_make_action(ACTION_BRUTALIZE, "Brutalize (%d)" % _get_available_uses(ACTION_BRUTALIZE)))
-	actions.append(_make_action(ACTION_MOVE_LORD, "Move Lord (%d)" % _get_available_uses(ACTION_MOVE_LORD)))
 
 	return actions
 
@@ -163,8 +162,6 @@ func on_settlement_selected(settlement: Settlement) -> void:
 			_handle_dark_lord_placement_selected(settlement)
 		MODE_MOVE_LORD_SOURCE:
 			_handle_move_lord_source_selected(settlement)
-		MODE_MOVE_LORD_TARGET:
-			_handle_move_lord_target_selected(settlement)
 		_:
 			pass
 
@@ -412,17 +409,6 @@ func _handle_move_lord_source_selected(settlement: Settlement) -> void:
 	mode = MODE_MOVE_LORD_TARGET
 	print("Now choose an adjacent settlement to move the Dark Lord into.")
 	_refresh_ui()
-
-func _handle_move_lord_target_selected(settlement: Settlement) -> void:
-	if move_lord_source_settlement == null:
-		return
-
-	if not move_lord_source_settlement.is_adjacent_to(settlement):
-		print("The Dark Lord may only move to an adjacent settlement.")
-		return
-
-	move_lord_target_settlement = settlement
-	board.open_dark_lord_move_dialog(move_lord_source_settlement, move_lord_target_settlement)
 
 func _handle_dark_lord_placement_selected(settlement: Settlement) -> void:
 	if settlement.faction != ORC_FACTION:
