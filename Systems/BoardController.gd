@@ -226,9 +226,14 @@ func _on_building_delete_requested(slot_index: int) -> void:
 	if selected == null:
 		return
 
-	var dwarf := _dwarf_controller()
-	if dwarf != null:
-		dwarf.delete_building(selected, slot_index)
+	var controller := _controller()
+	if controller == null:
+		return
+
+	if not controller.can_delete_buildings():
+		return
+
+	controller.delete_building(selected, slot_index)
 
 func _on_next_turn_requested() -> void:
 	var controller := _controller()

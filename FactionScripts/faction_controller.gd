@@ -54,3 +54,9 @@ func can_remove_infiltration() -> bool:
 
 func remove_infiltration_from_settlement(_settlement: Settlement) -> void:
 	pass
+
+func can_delete_buildings() -> bool:
+	return false
+
+func delete_building(_settlement: Settlement, _slot_index: int) -> void:
+	pass

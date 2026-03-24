@@ -26,6 +26,7 @@ func execute(context: CommandContext) -> void:
 	for settlement in context.board.get_tree().get_nodes_in_group("settlements"):
 		if settlement.faction != faction:
 			continue
+			print("i love cher")
 
 		if _settlement_has_building(settlement, building_name):
 			settlement.set_soldiers(settlement.soldiers + 1)

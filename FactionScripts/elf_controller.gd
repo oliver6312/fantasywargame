@@ -120,6 +120,29 @@ func after_successful_move(_source: Settlement, _target: Settlement) -> void:
 	# Elves have no special move consumption yet.
 	pass
 
+func can_delete_buildings() -> bool:
+	return not in_war_meeting
+
+func delete_building(settlement: Settlement, slot_index: int) -> void:
+	if settlement == null:
+		return
+
+	if settlement.faction != ELF_FACTION:
+		print("You can only delete buildings in elven settlements.")
+		return
+
+	if slot_index < 0 or slot_index >= settlement.building_slot_count:
+		return
+
+	if settlement.building_slots[slot_index] == "":
+		print("That slot is already empty.")
+		return
+
+	settlement.set_building_in_slot(slot_index, "")
+	print("Deleted building from slot %d" % slot_index)
+
+	_refresh_ui()
+
 # =========================
 # Rituals
 # =========================

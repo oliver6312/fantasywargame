@@ -481,6 +481,30 @@ func _handle_brutalize_selected(settlement: Settlement) -> void:
 	mode = MODE_NONE
 	_refresh_ui()
 
+func can_delete_buildings() -> bool:
+	return not in_war_meeting
+
+func delete_building(settlement: Settlement, slot_index: int) -> void:
+	if settlement == null:
+		return
+
+	if settlement.faction != ORC_FACTION:
+		print("You can only delete buildings in orc settlements.")
+		return
+
+	if slot_index < 0 or slot_index >= settlement.building_slot_count:
+		return
+
+	if settlement.building_slots[slot_index] == "":
+		print("That slot is already empty.")
+		return
+
+	settlement.set_building_in_slot(slot_index, "")
+	print("Deleted building from slot %d" % slot_index)
+
+	_refresh_ui()
+
+
 func _refresh_ui() -> void:
 	ui.show_faction_actions(get_action_list())
 

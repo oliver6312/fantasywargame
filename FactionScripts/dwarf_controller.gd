@@ -321,7 +321,7 @@ func _action_train() -> void:
 
 	for settlement in _get_owned_settlements():
 		if _settlement_has_building(settlement, BUILDING_TRAINING_GROUNDS):
-			settlement.set_soldiers(settlement.soldiers + 2)
+			settlement.set_soldiers(settlement.soldiers + 1)
 
 	print("Dwarves trained soldiers")
 	_refresh_ui()
