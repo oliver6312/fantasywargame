@@ -1,7 +1,7 @@
 extends Node
 const CombatResolver = preload("res://Systems/combat_resolver.gd")
 
-@export_node_path("BoardUI") var ui_path
+@export_node_path("BoardUI") var ui_path 
 @onready var ui: BoardUI = get_node(ui_path)
 
 @onready var move_dialog: AcceptDialog = ui.move_dialog
@@ -13,9 +13,7 @@ const CombatResolver = preload("res://Systems/combat_resolver.gd")
 @onready var defender_armor_edit: LineEdit = ui.defender_armor_edit
 @onready var attacker_armor_label: Label = ui.attacker_armor_label
 @onready var defender_armor_label: Label = ui.defender_armor_label
-
-var pending_dark_lord_source: Settlement = null
-var pending_dark_lord_target: Settlement = null
+@onready var bring_dark_lord_checkbox: CheckBox = ui.bring_dark_lord_checkbox
 
 var selected: Settlement = null
 var pending_target: Settlement = null
@@ -53,7 +51,6 @@ func _connect_ui_signals() -> void:
 	ui.war_meeting_finished.connect(_on_war_meeting_finished)
 	ui.building_delete_requested.connect(_on_building_delete_requested)
 	ui.next_turn_requested.connect(_on_next_turn_requested)
-	ui.dark_lord_move_requested.connect(_on_dark_lord_move_requested)
 	ui.orc_war_promise_chosen.connect(_on_orc_war_promise_chosen)
 	ui.infiltration_remove_requested.connect(_on_infiltration_remove_requested)
 	ui.move_half_requested.connect(_on_move_half_requested)
@@ -94,6 +91,12 @@ func _dwarf_controller() -> DwarfController:
 		return controller
 	return null
 
+func _orc_controller() -> OrcController:
+	var controller := _controller()
+	if controller is OrcController:
+		return controller
+	return null
+
 func _build_faction_controller(faction: int) -> FactionController:
 	var controller: FactionController
 
@@ -128,17 +131,11 @@ func _roll_superiority_die() -> int:
 	print("Superiority Die rolled: %d" % roll)
 	return roll
 
-func _orc_controller() -> OrcController:
-	var controller := _controller()
-	if controller is OrcController:
-		return controller
-	return null
-
-func _get_orc_dark_lord_strength_for_battle(source: Settlement, target: Settlement) -> Dictionary:
+func _get_orc_dark_lord_strength_for_battle(source: Settlement, target: Settlement, bring_dark_lord: bool) -> Dictionary:
 	var attacker_strength := 0
 	var defender_strength := 0
 
-	if source.faction == Faction.Type.ORC and source.has_orc_dark_lord():
+	if bring_dark_lord and source.faction == Faction.Type.ORC and source.has_orc_dark_lord():
 		attacker_strength = TurnState.get_orc_dark_lord_strength()
 
 	if target.faction == Faction.Type.ORC and target.has_orc_dark_lord():
@@ -148,21 +145,6 @@ func _get_orc_dark_lord_strength_for_battle(source: Settlement, target: Settleme
 		"attacker_strength": attacker_strength,
 		"defender_strength": defender_strength
 	}
-
-func _handle_orc_dark_lord_death_after_battle(source: Settlement, target: Settlement, winning_faction: int) -> void:
-	# Orc attacker loses
-	if source.faction == Faction.Type.ORC and source.has_orc_dark_lord():
-		if winning_faction != Faction.Type.ORC:
-			print("The Orc Dark Lord has died in battle.")
-			source.set_orc_dark_lord_present(false)
-			TurnState.kill_orc_dark_lord()
-
-	# Orc defender loses settlement
-	if target.has_orc_dark_lord():
-		if winning_faction != Faction.Type.ORC:
-			print("The Orc Dark Lord has been slain as the settlement fell.")
-			target.set_orc_dark_lord_present(false)
-			TurnState.kill_orc_dark_lord()
 
 func _handle_orc_dark_lord_after_settlement_result(settlement: Settlement) -> void:
 	if not settlement.has_orc_dark_lord():
@@ -201,6 +183,10 @@ func _on_resources_changed() -> void:
 	if dwarf != null:
 		dwarf.on_resources_changed()
 
+# =========================
+# UI action routing
+# =========================
+
 func _on_trade_requested(receiver_faction: int, gold_amount: int, armor_amount: int) -> void:
 	var command := TradeCommand.new()
 	command.sender_faction = TurnState.current_turn
@@ -209,10 +195,6 @@ func _on_trade_requested(receiver_faction: int, gold_amount: int, armor_amount: 
 	command.armor_amount = armor_amount
 
 	_run_command(command)
-
-# =========================
-# UI action routing
-# =========================
 
 func _on_action_requested(action_id: String) -> void:
 	var controller := _controller()
@@ -334,17 +316,14 @@ func _deselect() -> void:
 func _on_settlement_clicked(settlement: Settlement) -> void:
 	var controller := _controller()
 
-	# 1. Special faction selection modes always take priority
 	if controller != null and controller.is_in_special_selection_mode():
 		_select(settlement)
 		return
 
-	# 2. If movement mode is NOT active, just select normally
 	if controller == null or not controller.is_in_movement_mode():
 		_select(settlement)
 		return
 
-	# 3. Movement mode is active: use click flow as movement flow
 	if selected == null:
 		_select(settlement)
 		return
@@ -388,6 +367,7 @@ func _can_start_move_from_selected() -> bool:
 		return false
 
 	return true
+
 # =========================
 # Move dialog
 # =========================
@@ -420,6 +400,10 @@ func _open_move_dialog(source: Settlement, target: Settlement) -> void:
 	defender_armor_label.visible = defender_has_armor
 	defender_armor_edit.visible = defender_has_armor
 
+	var can_bring_dark_lord := source.has_orc_dark_lord() and source.faction == Faction.Type.ORC
+	bring_dark_lord_checkbox.visible = can_bring_dark_lord
+	bring_dark_lord_checkbox.button_pressed = false
+
 	amount_edit.grab_focus()
 	move_dialog.popup_centered()
 
@@ -433,7 +417,6 @@ func _on_move_confirmed() -> void:
 
 	var source := selected
 	var target := pending_target
-
 	pending_target = null
 
 	var amount := int(amount_edit.text)
@@ -447,6 +430,10 @@ func _on_move_confirmed() -> void:
 
 	var attacker_armor := 0
 	var defender_armor := 0
+	var bring_dark_lord := false
+
+	if bring_dark_lord_checkbox.visible:
+		bring_dark_lord = bring_dark_lord_checkbox.button_pressed
 
 	if pending_is_attack:
 		attacker_armor = max(0, int(attacker_armor_edit.text))
@@ -462,13 +449,12 @@ func _on_move_confirmed() -> void:
 			print("Not enough defender armor.")
 			return
 
-	var arriving_amount := _apply_season_effect_to_movement(amount, source.faction)
-
 	var cmd := MoveCommand.new()
 	cmd.source = source
 	cmd.target = target
 	cmd.soldiers = amount
 	cmd.is_attack = pending_is_attack
+	cmd.bring_dark_lord = bring_dark_lord
 
 	if pending_is_attack:
 		cmd.attacker_armor = attacker_armor
@@ -478,11 +464,6 @@ func _on_move_confirmed() -> void:
 		return
 
 	_deselect()
-
-func open_dark_lord_move_dialog(source: Settlement, target: Settlement) -> void:
-	pending_dark_lord_source = source
-	pending_dark_lord_target = target
-	ui.open_dark_lord_move_dialog(source, target)
 
 func _on_move_half_requested() -> void:
 	if selected == null:
@@ -501,100 +482,12 @@ func _on_move_all_requested() -> void:
 # Move / combat resolution
 # =========================
 
-func resolve_dark_lord_attack(source: Settlement, target: Settlement, soldiers: int, armor: int) -> void:
-	if not source.has_orc_dark_lord():
-		return
-
-	if soldiers < 0 or soldiers > source.soldiers:
-		print("Invalid number of soldiers.")
-		return
-
-	if armor < 0 or armor > TurnState.get_armor(Faction.Type.ORC):
-		print("Not enough armor.")
-		return
-
-	source.set_soldiers(source.soldiers - soldiers)
-
-	if armor > 0:
-		TurnState.add_armor(Faction.Type.ORC, -armor)
-
-	var lord_strengths := _get_orc_dark_lord_strength_for_battle(source, target)
-	var precombat := _get_elf_precombat_damage(source, target)
-
-	var result := CombatResolver.resolve_battle(
-		source.faction,
-		target.faction,
-		soldiers,
-		target.soldiers,
-		armor,
-		0, # defender armor, if you later want dialog for that you can expand this
-		precombat["damage_to_attacker"],
-		precombat["damage_to_defender"],
-		lord_strengths["attacker_strength"],
-		lord_strengths["defender_strength"]
-	)
-
-	var winning_faction: int = result["winning_faction"]
-	var settlement_soldiers: int = result["settlement_soldiers"]
-
-	if winning_faction == Faction.Type.ORC:
-		target.set_garrison(Faction.Type.ORC, settlement_soldiers)
-		TurnState.place_orc_dark_lord_in_settlement(target)
-	else:
-		# Orcs lost, lord dies
-		source.set_orc_dark_lord_present(false)
-		TurnState.kill_orc_dark_lord()
-
-		if settlement_soldiers == 0:
-			target.set_soldiers(0)
-		else:
-			target.set_soldiers(settlement_soldiers)
-
-	_handle_orc_dark_lord_after_settlement_result(source)
-	_handle_orc_dark_lord_after_settlement_result(target)
-
-	var controller := _controller()
-	if controller != null:
-		controller.after_successful_move(source, target)
-
-	_deselect()
-
-func _on_dark_lord_move_requested(soldiers: int, armor: int) -> void:
-	print("BoardController received dark lord move request.")
-
-	if pending_dark_lord_source == null or pending_dark_lord_target == null:
-		print("Dark lord move failed: pending source or target is null.")
-		return
-
-	var orc := _controller()
-	if not (orc is OrcController):
-		print("Dark lord move failed: current controller is not OrcController.")
-		return
-
-	orc.resolve_dark_lord_move(pending_dark_lord_source, pending_dark_lord_target, soldiers, armor)
-
-	pending_dark_lord_source = null
-	pending_dark_lord_target = null
-
-func resolve_dark_lord_move(
-	source: Settlement,
-	target: Settlement,
-	soldiers: int,
-	armor: int) -> void:
-	var orc := _orc_controller()
-	if orc == null:
-		return
-
-	if not orc.spend_move_lord_action():
-		print("No Move Lord actions remaining.")
-		return
-
 func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
 	if moving_faction == Faction.Type.ELF:
 		return amount
 
 	if TurnState.current_season == TurnState.Season.WINTER:
-		var loss : int = min(rng.randi_range(1, 6), amount)
+		var loss: int = min(rng.randi_range(1, 6), amount)
 		print("Winter effect: lost %d soldiers to the cold." % loss)
 		return amount - loss
 
@@ -604,12 +497,10 @@ func _get_elf_precombat_damage(source: Settlement, target: Settlement) -> Dictio
 	var damage_to_attacker := 0
 	var damage_to_defender := 0
 
-	# Elf attacker attacking a settlement with infiltration
 	if source.faction == Faction.Type.ELF:
-		if target.has_infiltration():
+		if target.has_infiltration() and target.infiltration_faction == Faction.Type.ELF:
 			damage_to_defender += _roll_superiority_die()
 
-	# Elf defender defending in a Sacred Grove settlement
 	if target.faction == Faction.Type.ELF:
 		if _settlement_has_building(target, "Sacred Grove"):
 			damage_to_attacker += _roll_superiority_die()
@@ -622,6 +513,7 @@ func _get_elf_precombat_damage(source: Settlement, target: Settlement) -> Dictio
 func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
 	var source := cmd.source
 	var target := cmd.target
+	var bring_dark_lord: bool = cmd.bring_dark_lord
 
 	var original_amount := cmd.soldiers
 	var arriving_amount := _apply_season_effect_to_movement(original_amount, source.faction)
@@ -630,6 +522,9 @@ func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
 
 	if target.faction == source.faction:
 		target.set_soldiers(target.soldiers + arriving_amount)
+
+		if bring_dark_lord and source.has_orc_dark_lord() and source.faction == Faction.Type.ORC:
+			TurnState.place_orc_dark_lord_in_settlement(target)
 	else:
 		var result := target.soldiers - arriving_amount
 
@@ -640,12 +535,14 @@ func resolve_move_command(cmd: MoveCommand, _context: CommandContext) -> void:
 		else:
 			target.set_garrison(source.faction, -result)
 
+	_handle_orc_dark_lord_after_settlement_result(source)
 	_handle_orc_dark_lord_after_settlement_result(target)
 	_finish_successful_move(source, target)
 
 func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 	var source := cmd.source
 	var target := cmd.target
+	var bring_dark_lord: bool = cmd.bring_dark_lord
 
 	var original_amount := cmd.soldiers
 	var arriving_amount := _apply_season_effect_to_movement(original_amount, source.faction)
@@ -665,25 +562,35 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 		context.turn_state.add_armor(target.faction, -defender_armor)
 
 	var precombat := _get_elf_precombat_damage(source, target)
-	var lord_strengths := _get_orc_dark_lord_strength_for_battle(source, target)
-	var result := CombatResolver.resolve_battle(
-	source.faction,
-	target.faction,
-	arriving_amount,
-	target.soldiers,
-	attacker_armor,
-	defender_armor,
-	precombat["damage_to_attacker"],
-	precombat["damage_to_defender"],
-	lord_strengths["attacker_strength"],
-	lord_strengths["defender_strength"])
+	var lord_strengths := _get_orc_dark_lord_strength_for_battle(source, target, bring_dark_lord)
 
-	var winning_faction : int = result["winning_faction"]
-	var settlement_soldiers : int = result["settlement_soldiers"]
+	var result := CombatResolver.resolve_battle(
+		source.faction,
+		target.faction,
+		arriving_amount,
+		target.soldiers,
+		attacker_armor,
+		defender_armor,
+		precombat["damage_to_attacker"],
+		precombat["damage_to_defender"],
+		lord_strengths["attacker_strength"],
+		lord_strengths["defender_strength"]
+	)
+
+	var winning_faction: int = result["winning_faction"]
+	var settlement_soldiers: int = result["settlement_soldiers"]
 
 	if winning_faction == source.faction:
 		target.set_garrison(source.faction, settlement_soldiers)
+
+		if bring_dark_lord and source.has_orc_dark_lord() and source.faction == Faction.Type.ORC:
+			TurnState.place_orc_dark_lord_in_settlement(target)
 	else:
+		if bring_dark_lord and source.has_orc_dark_lord() and source.faction == Faction.Type.ORC:
+			print("The Orc Dark Lord has died in battle.")
+			source.set_orc_dark_lord_present(false)
+			TurnState.kill_orc_dark_lord()
+
 		if settlement_soldiers == 0:
 			target.set_soldiers(0)
 		else:
@@ -691,8 +598,8 @@ func resolve_attack_command(cmd: MoveCommand, context: CommandContext) -> void:
 
 	print("Attack resolved.")
 
-	_handle_orc_dark_lord_after_settlement_result(target)
 	_handle_orc_dark_lord_after_settlement_result(source)
+	_handle_orc_dark_lord_after_settlement_result(target)
 	_finish_successful_move(source, target)
 
 func _finish_successful_move(source: Settlement, target: Settlement) -> void:

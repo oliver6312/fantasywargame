@@ -10,6 +10,8 @@ var defender_armor: int = 0
 
 var is_attack: bool = false
 
+var bring_dark_lord: bool = false
+
 func validate(context: CommandContext) -> bool:
 	if source == null or target == null:
 		return false
@@ -37,7 +39,6 @@ func validate(context: CommandContext) -> bool:
 
 	return true
 
-
 func get_error(context: CommandContext) -> String:
 	if source == null or target == null:
 		return "Invalid move."
@@ -63,7 +64,6 @@ func get_error(context: CommandContext) -> String:
 				return "Not enough defender armor."
 
 	return "Move failed."
-
 
 func execute(context: CommandContext) -> void:
 	if is_attack:

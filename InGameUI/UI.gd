@@ -43,6 +43,8 @@ signal move_all_requested()
 @onready var defender_armor_label: Label = %DefenderArmorLabel
 @onready var defender_armor_edit: LineEdit = %DefenderArmorEdit
 
+@onready var bring_dark_lord_checkbox: CheckBox = %BringDarkLordCheckBox
+
 @onready var dark_lord_move_dialog: AcceptDialog = %DarkLordMoveDialog
 @onready var dark_lord_move_prompt_label: Label = %DarkLordMovePromptLabel
 @onready var dark_lord_move_soldiers_edit: LineEdit = %DarkLordMoveSoldiersEdit

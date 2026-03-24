@@ -2,7 +2,8 @@ extends GameCommand
 class_name SmithCommand
 
 var faction: int
-var amount: int
+var amount = 4
+var building_name: String = "Armor Smith"
 
 func validate(context: CommandContext) -> bool:
 	return faction == context.current_faction and amount >= 0

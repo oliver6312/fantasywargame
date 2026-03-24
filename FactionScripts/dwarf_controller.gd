@@ -305,7 +305,7 @@ func _action_smith() -> void:
 		print("No Smith actions remaining.")
 		return
 
-	var command := TrainCommand.new()
+	var command := SmithCommand.new()
 	command.faction = DWARF_FACTION
 	command.building_name = BUILDING_TRAINING_GROUNDS
 
@@ -321,7 +321,7 @@ func _action_train() -> void:
 
 	for settlement in _get_owned_settlements():
 		if _settlement_has_building(settlement, BUILDING_TRAINING_GROUNDS):
-			settlement.set_soldiers(settlement.soldiers + 1)
+			settlement.set_soldiers(settlement.soldiers + 2)
 
 	print("Dwarves trained soldiers")
 	_refresh_ui()
