@@ -117,6 +117,7 @@ position = Vector2(1892, 951)
 settlement_name = "Queens Mark"
 soldiers = 12
 building_slot_count = 3
+is_orc_war_promise = true
 
 [node name="Tributary" parent="." unique_id=1918958883 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(2739, 781)

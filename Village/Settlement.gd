@@ -47,7 +47,7 @@ var mercenaries_hired_this_turn: bool = false
 
 var infiltration_faction: int = Faction.Type.NEUTRAL
 var has_orc_dark_lord_token: bool = false
-var is_orc_war_promise: bool = false
+@export var is_orc_war_promise: bool = false : set = set_orc_war_promise
 
 func _ready() -> void:
 	add_to_group("settlements")
