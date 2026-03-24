@@ -18,7 +18,7 @@ const MODE_PICK_WAR_PROMISE := "pick_war_promise"
 
 const BUILDING_GRUESOME_EFFIGY := "Gruesome Effigy"
 
-var actions_remaining: int = 4
+var actions_remaining: int = 3
 var mode: String = MODE_NONE
 var in_war_meeting: bool = true
 
@@ -31,7 +31,7 @@ var rng := RandomNumberGenerator.new()
 func start_turn() -> void:
 	rng.randomize()
 
-	actions_remaining = 4 + TurnState.count_orc_owned_war_promises()
+	actions_remaining = 3 + TurnState.count_orc_owned_war_promises()
 	mode = MODE_NONE
 	in_war_meeting = true
 	pending_dark_lord_pick = TurnState.ORC_LORD_NONE
@@ -55,7 +55,7 @@ func end_turn() -> void:
 	if TurnState.get_orc_dark_lord() == TurnState.ORC_LORD_DRAGON:
 		var lord_settlement := TurnState.find_orc_dark_lord_settlement()
 		if lord_settlement != null and lord_settlement.faction == ORC_FACTION:
-			var eaten: int = min(rng.randi_range(1, 6), lord_settlement.soldiers)
+			var eaten: int = min(1, lord_settlement.soldiers)
 			lord_settlement.set_soldiers(lord_settlement.soldiers - eaten)
 			print("The Dragon devoured %d Orcs." % eaten)
 
@@ -299,8 +299,8 @@ func _get_top_3_enemy_settlements_by_soldiers() -> Array:
 
 	enemies.sort_custom(func(a, b): return a.soldiers > b.soldiers)
 
-	if enemies.size() > 3:
-		enemies = enemies.slice(0, 3)
+	if enemies.size() > 2:
+		enemies = enemies.slice(0, 2)
 
 	return enemies
 

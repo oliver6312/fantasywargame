@@ -102,7 +102,8 @@ building_slot_count = 3
 [node name="Wolf Wood" parent="." unique_id=986927980 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(1704, 449)
 settlement_name = "Wolf Wood"
-soldiers = 4
+faction = 2
+soldiers = 8
 neighbors = [NodePath("../Umber Hill"), NodePath("../Skar")]
 
 [node name="Runt" parent="." unique_id=889847606 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
@@ -153,6 +154,7 @@ faction = 3
 soldiers = 16
 neighbors = [NodePath("../Steel Gate"), NodePath("../Cold Pass")]
 building_slot_count = 2
+building_slots = Array[String](["Gold Mine", "Gold Mine"])
 
 [node name="Irondeep" parent="." unique_id=1876696750 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(2130, 1301)
@@ -171,13 +173,12 @@ position = Vector2(2243, 1601)
 settlement_name = "Freshet"
 soldiers = 8
 neighbors = [NodePath("../Cold Pass"), NodePath("../Irondeep"), NodePath("../Gold Field")]
-building_slot_count = 2
 
 [node name="Gold Field" parent="." unique_id=1445636770 instance=ExtResource("5_qpi8o")]
 position = Vector2(1748, 1681)
 settlement_name = "Gold Field"
 soldiers = 8
-building_slot_count = 2
+building_slot_count = 3
 
 [node name="BoardController" type="Node2D" parent="." unique_id=426453066]
 visible = false

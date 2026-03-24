@@ -74,7 +74,7 @@ var season_extended_this_round: bool = false
 # Resources
 # =========================
 
-var elf_serenity: int = 1
+var elf_serenity: int = 4
 var elf_magic: int = 0
 var gold := {}
 var armor := {}
@@ -305,18 +305,16 @@ func kill_orc_dark_lord() -> void:
 	orc_current_dark_lord = ORC_LORD_NONE
 	clear_all_orc_war_promises()
 
-
-
 func get_orc_dark_lord_strength() -> int:
 	match orc_current_dark_lord:
 		ORC_LORD_DRAGON:
-			return 8
+			return 4
 		ORC_LORD_WRAITH:
-			return 2
+			return 1
 		ORC_LORD_SORCERER:
-			return 3
+			return 2
 		ORC_LORD_BLACKSMITH:
-			return 5
+			return 2
 		_:
 			return 0
 
