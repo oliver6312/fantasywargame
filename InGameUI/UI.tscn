@@ -425,6 +425,16 @@ text = "Defenders Armor"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="MoveAllButton" type="Button" parent="MoveDialog/VBoxContainer" unique_id=851954033]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Move All"
+
+[node name="MoveHalfButton" type="Button" parent="MoveDialog/VBoxContainer" unique_id=1141537664]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Move Half"
+
 [node name="SettingsDialog" type="AcceptDialog" parent="." unique_id=1231288899]
 unique_name_in_owner = true
 title = "Settings"

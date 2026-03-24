@@ -33,6 +33,11 @@ signal infiltration_remove_requested()
 @onready var prompt_label: Label = %PromptLabel
 @onready var deselect_button: Button = %DeselectButton
 
+@onready var move_all_button: Button = %MoveAllButton
+@onready var move_half_button: Button = %MoveHalfButton
+signal move_half_requested()
+signal move_all_requested()
+
 @onready var attacker_armor_label: Label = %AttackerArmorLabel
 @onready var attacker_armor_edit: LineEdit = %AttackerArmorEdit
 @onready var defender_armor_label: Label = %DefenderArmorLabel
@@ -157,6 +162,8 @@ func _connect_button_signals() -> void:
 		building_slot_buttons[i].pressed.connect(func(): _on_building_slot_button_pressed(slot_index))
 	delete_building_button.pressed.connect(_on_delete_building_button_pressed)
 	remove_infiltration_button.pressed.connect(func(): infiltration_remove_requested.emit())
+	move_half_button.pressed.connect(func(): move_half_requested.emit())
+	move_all_button.pressed.connect(func(): move_all_requested.emit())
 
 	# Dwarf build buttons
 	armor_smith_button.pressed.connect(func(): dwarf_build_requested.emit("Armor Smith"))

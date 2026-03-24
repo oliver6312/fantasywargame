@@ -57,7 +57,7 @@ func _ready() -> void:
 	_resize_building_slots()
 	_make_neighbors_two_way()
 
-	if faction == Faction.Type.NEUTRAL:
+	if faction == Faction.Type.NEUTRAL and building_slot_count >=2:
 		var empty_index := _get_first_empty_building_slot()
 		if empty_index != -1 and not _has_any_building():
 			building_slots[empty_index] = BUILDING_FARM

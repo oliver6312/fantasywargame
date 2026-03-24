@@ -425,11 +425,11 @@ func delete_building(settlement: Settlement, slot_index: int) -> void:
 		print("That slot is already empty.")
 		return
 
-	if normal_actions_remaining <= 0:
-		print("No actions remaining.")
-		return
+#	if normal_actions_remaining <= 0:
+#		print("No actions remaining.")
+#		return
 
-	normal_actions_remaining -= 1
+#	normal_actions_remaining -= 1
 	settlement.set_building_in_slot(slot_index, "")
 	print("Deleted building from slot %d" % slot_index)
 

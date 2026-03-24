@@ -56,6 +56,8 @@ func _connect_ui_signals() -> void:
 	ui.dark_lord_move_requested.connect(_on_dark_lord_move_requested)
 	ui.orc_war_promise_chosen.connect(_on_orc_war_promise_chosen)
 	ui.infiltration_remove_requested.connect(_on_infiltration_remove_requested)
+	ui.move_half_requested.connect(_on_move_half_requested)
+	ui.move_all_requested.connect(_on_move_all_requested)
 
 func _connect_game_signals() -> void:
 	TurnState.turn_changed.connect(_on_turn_changed)
@@ -481,6 +483,19 @@ func open_dark_lord_move_dialog(source: Settlement, target: Settlement) -> void:
 	pending_dark_lord_source = source
 	pending_dark_lord_target = target
 	ui.open_dark_lord_move_dialog(source, target)
+
+func _on_move_half_requested() -> void:
+	if selected == null:
+		return
+
+	var half := int(selected.soldiers / 2)
+	amount_edit.text = str(max(1, half))
+
+func _on_move_all_requested() -> void:
+	if selected == null:
+		return
+
+	amount_edit.text = str(selected.soldiers)
 
 # =========================
 # Move / combat resolution
