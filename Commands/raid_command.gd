@@ -40,6 +40,6 @@ func execute(context: CommandContext) -> void:
 	context.turn_state.add_gold(raiding_faction, 8)
 
 	if blacksmith_bonus:
-		context.turn_state.add_armor(raiding_faction, 8)
+		context.turn_state.add_armor(raiding_faction, 4)
 
 	print("Raided building.")

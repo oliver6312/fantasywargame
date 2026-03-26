@@ -127,7 +127,7 @@ func _settlement_has_building(settlement: Settlement, building_name: String) -> 
 	return false
 
 func _roll_superiority_die() -> int:
-	var roll := rng.randi_range(1, 6)
+	var roll := rng.randi_range(1, 4)
 	print("Superiority Die rolled: %d" % roll)
 	return roll
 
@@ -492,7 +492,7 @@ func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
 		return amount
 
 	if TurnState.current_season == TurnState.Season.WINTER:
-		var loss: int = min(rng.randi_range(1, 6), amount)
+		var loss: int = min(rng.randi_range(1, 4), amount)
 		print("Winter effect: lost %d soldiers to the cold." % loss)
 		return amount - loss
 
