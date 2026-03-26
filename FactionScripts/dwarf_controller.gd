@@ -256,17 +256,14 @@ func finish_build(building_name: String) -> void:
 # =========================
 
 func _start_march() -> void:
-	var stables := _count_buildings(BUILDING_GOAT_STABLE)
-	if stables <= 0:
-		print("No Goat Stables, so no March moves available.")
-		return
-
 	if not _spend_action(ACTION_MARCH):
 		print("No March actions remaining.")
 		return
 
+	var stables := _count_buildings(BUILDING_GOAT_STABLE)
+
 	mode = MODE_MARCH
-	march_moves_remaining = stables
+	march_moves_remaining = 1 + stables
 	march_source = null
 
 	print("March started. You may make %d moves." % march_moves_remaining)
@@ -289,15 +286,11 @@ func _action_mine() -> void:
 		return
 
 	var mines := _count_buildings(BUILDING_GOLD_MINE)
-	var gain := mines * 20
+	var gain := (1 + mines) * 20
 
-	var command := MineCommand.new()
-	command.faction = DWARF_FACTION
-	command.amount = gain
+	TurnState.add_gold(DWARF_FACTION, gain)
 
-	if not board._run_command(command):
-		return
-
+	print("Dwarves mined %d gold" % gain)
 	_refresh_ui()
 
 func _action_smith() -> void:
@@ -305,13 +298,12 @@ func _action_smith() -> void:
 		print("No Smith actions remaining.")
 		return
 
-	var command := SmithCommand.new()
-	command.faction = DWARF_FACTION
-	command.building_name = BUILDING_TRAINING_GROUNDS
+	var smiths := _count_buildings(BUILDING_ARMOR_SMITH)
+	var gain := (1 + smiths) * 2
 
-	if not board._run_command(command):
-		return
+	TurnState.add_armor(DWARF_FACTION, gain)
 
+	print("Dwarves forged %d armor" % gain)
 	_refresh_ui()
 
 func _action_train() -> void:
@@ -447,6 +439,11 @@ func _make_action(id: String, label: String) -> ActionDefinition:
 func _refresh_ui() -> void:
 	ui.show_faction_actions(get_action_list())
 	ui.update_dwarf_hoard_panel(self)
+
+	if mode == MODE_MARCH and march_moves_remaining > 0:
+		ui.show_dwarf_march_status(march_moves_remaining)
+	else:
+		ui.hide_dwarf_march_status()
 
 	if board.selected != null:
 		ui.show_settlement_details(board.selected)

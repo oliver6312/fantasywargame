@@ -17,7 +17,7 @@ signal infiltration_remove_requested()
 @onready var remove_infiltration_button: Button = %RemoveInfiltrationButton
 
 # =========================
-# Right Panel UI
+# Left Panel UI
 # =========================
 @onready var next_turn_button: Button = %NextTurnButton
 @onready var turn_label: Label = %TurnLabel
@@ -90,6 +90,7 @@ var armor_labels: Dictionary = {}
 # Faction action panel
 # =========================
 @onready var faction_actions_container: VBoxContainer = %FactionActionsContainer
+@onready var dwarf_march_label: Label = %DwarfMarchLabel
 
 # =========================
 # Dwarf build UI
@@ -185,6 +186,7 @@ func _initialize_ui() -> void:
 	settlement_panel.visible = false
 	dwarf_building_menu.visible = false
 	delete_building_button.visible = false
+	dwarf_march_label.visible = false
 
 # =========================
 # General helpers
@@ -234,6 +236,13 @@ func show_orc_war_promise_picker(settlements: Array) -> void:
 
 	add_child(dialog)
 	dialog.popup_centered()
+
+func show_dwarf_march_status(moves_remaining: int) -> void:
+	dwarf_march_label.visible = true
+	dwarf_march_label.text = "March: %d moves remaining" % moves_remaining
+
+func hide_dwarf_march_status() -> void:
+	dwarf_march_label.visible = false
 
 # =========================
 # Turn / round / season UI / phases

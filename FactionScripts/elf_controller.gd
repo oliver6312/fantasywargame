@@ -180,20 +180,14 @@ func convert_gold_to_magic(gold_amount: int) -> void:
 	_refresh_ui()
 
 func _do_extend_season() -> void:
-	var season_change_magic_cost = -1
-
 	if not in_war_meeting:
 		return
-	if not TurnState.get_elf_magic():
-		return
-	TurnState.add_elf_magic(season_change_magic_cost)
 
-	if extend_season_used_this_turn:
-		print("Extend Season has already been used this turn.")
+	if not TurnState.can_elves_extend_season():
+		print("Elves may only extend the season once per season.")
 		return
 
 	TurnState.set_season_extended_this_round(true)
-	extend_season_used_this_turn = true
 	print("Elves will prevent the season from advancing this round.")
 	_refresh_ui()
 

@@ -69,6 +69,7 @@ const SEASON_ORDER := [
 var season_index: int = 0
 var current_season: int = SEASON_ORDER[0]
 var season_extended_this_round: bool = false
+var elves_extended_season_this_season: bool = false
 
 # =========================
 # Resources
@@ -151,8 +152,13 @@ func _emit_turn() -> void:
 	turn_changed.emit(current_turn)
 
 func _handle_end_of_round() -> void:
-	elf_serenity *= 2
+	var serenity_gain := 4
+	if season_extended_this_round:
+		serenity_gain = 8
+	elf_serenity += serenity_gain
+
 	_spawn_orcs_from_gruesome_effigies()
+
 	resources_changed.emit()
 
 func _spawn_orcs_from_gruesome_effigies() -> void:
@@ -177,6 +183,7 @@ func _spawn_orcs_from_gruesome_effigies() -> void:
 func _advance_season() -> void:
 	season_index = (season_index + 1) % SEASON_ORDER.size()
 	current_season = SEASON_ORDER[season_index]
+	elves_extended_season_this_season = false
 	season_changed.emit(current_season)
 
 	if current_season == Season.AUTUMN:
@@ -189,9 +196,6 @@ func get_season_name(season: int = current_season) -> String:
 		Season.AUTUMN: return "Autumn"
 		Season.WINTER: return "Winter"
 		_: return "Unknown"
-
-func set_season_extended_this_round(value: bool) -> void:
-	season_extended_this_round = value
 
 func _deploy_elf_serenity() -> void:
 	for settlement in get_tree().get_nodes_in_group("settlements"):
@@ -206,6 +210,14 @@ func _deploy_elf_serenity() -> void:
 	print("Elf Serenity deployed.")
 	elf_serenity = 1
 	resources_changed.emit()
+
+func can_elves_extend_season() -> bool:
+	return not elves_extended_season_this_season
+
+func set_season_extended_this_round(value: bool) -> void:
+	season_extended_this_round = value
+	if value:
+		elves_extended_season_this_season = true
 
 # =========================
 # Resource system
