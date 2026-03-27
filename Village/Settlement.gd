@@ -74,7 +74,7 @@ func _ready() -> void:
 
 	selection_circle.visible = false
 	available_circle.visible = false
-	name_label.visible = false
+
 
 func get_display_name() -> String:
 	return settlement_name if settlement_name != "" else name
@@ -124,7 +124,6 @@ func _refresh_building_icons() -> void:
 
 func set_selected(is_selected: bool) -> void:
 	selection_circle.visible = is_selected
-	name_label.visible = is_selected
 	if is_selected:
 		name_label.text = get_display_name()
 

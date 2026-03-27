@@ -36,10 +36,10 @@ func get_error(context: CommandContext) -> String:
 
 func execute(context: CommandContext) -> void:
 	settlement.set_building_in_slot(slot_index, "")
-	settlement.set_soldiers(settlement.soldiers + 8)
-	context.turn_state.add_gold(raiding_faction, 8)
+	settlement.set_soldiers(settlement.soldiers + 6)
+	context.turn_state.add_gold(raiding_faction, 6)
 
 	if blacksmith_bonus:
-		context.turn_state.add_armor(raiding_faction, 4)
+		context.turn_state.add_armor(raiding_faction, 3)
 
 	print("Raided building.")

@@ -75,7 +75,7 @@ var elves_extended_season_this_season: bool = false
 # Resources
 # =========================
 
-var elf_serenity: int = 4
+var elf_serenity: int = 2
 var elf_magic: int = 0
 var gold := {}
 var armor := {}
@@ -152,9 +152,9 @@ func _emit_turn() -> void:
 	turn_changed.emit(current_turn)
 
 func _handle_end_of_round() -> void:
-	var serenity_gain := 4
+	var serenity_gain := 2
 	if season_extended_this_round:
-		serenity_gain = 8
+		serenity_gain = 4
 	elf_serenity += serenity_gain
 
 	_spawn_orcs_from_gruesome_effigies()

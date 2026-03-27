@@ -127,6 +127,9 @@ func delete_building(settlement: Settlement, slot_index: int) -> void:
 	if settlement == null:
 		return
 
+	if _settlement_has_building(settlement, BUILDING_SACRED_GROVE):
+		return
+
 	if settlement.faction != ELF_FACTION:
 		print("You can only delete buildings in elven settlements.")
 		return
