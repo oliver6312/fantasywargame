@@ -27,6 +27,7 @@ script = ExtResource("4_uuge4")
 [node name="Astbury" parent="." unique_id=167798052 instance=ExtResource("5_qpi8o")]
 position = Vector2(1223, 1063)
 settlement_name = "Astbury"
+faction = 1
 soldiers = 8
 building_slot_count = 2
 
