@@ -8,6 +8,8 @@ const CombatResolver = preload("res://Systems/combat_resolver.gd")
 @onready var amount_edit: LineEdit = ui.amount_edit
 @onready var prompt_label: Label = ui.prompt_label
 @onready var deselect_button: Button = ui.deselect_button
+@onready var draft_label: Label = ui.draft_label
+@onready var right_panel: Panel = ui.right_panel
 
 @onready var attacker_armor_edit: LineEdit = ui.attacker_armor_edit
 @onready var defender_armor_edit: LineEdit = ui.defender_armor_edit
@@ -21,11 +23,25 @@ var pending_is_attack: bool = false
 
 var rng := RandomNumberGenerator.new()
 
+enum DraftPhase {
+	ELF,
+	DWARF,
+	ORC,
+	DONE
+}
+
+var draft_mode: bool = true
+var draft_phase: DraftPhase = DraftPhase.ELF
+var draft_picks_remaining: int = 0
+
+
+
 func _ready() -> void:
 	rng.randomize()
 	_connect_settlement_signals()
 	_connect_ui_signals()
 	_connect_game_signals()
+	start_draft()
 
 	_show_deselect_button(false)
 	_on_turn_changed(TurnState.current_turn)
@@ -67,6 +83,13 @@ func _make_command_context() -> CommandContext:
 	context.turn_state = TurnState
 	context.current_faction = TurnState.current_turn
 	return context
+
+func start_draft():
+	draft_mode = true
+	draft_phase = DraftPhase.ELF
+	draft_picks_remaining = 3
+	
+	update_draft_label()
 
 # =========================
 # Controller helpers
@@ -154,6 +177,70 @@ func _handle_orc_dark_lord_after_settlement_result(settlement: Settlement) -> vo
 		print("The Orc Dark Lord has been slain.")
 		settlement.set_orc_dark_lord_present(false)
 		TurnState.kill_orc_dark_lord()
+
+# =========================
+# Draft
+# =========================
+
+func update_draft_label():
+	draft_label.visible = true
+	right_panel.visible = false
+	match draft_phase:
+		DraftPhase.ELF:
+			draft_label.text = "Elves are drafting, pick 3 settlements"
+		DraftPhase.DWARF:
+			draft_label.text = "Dwarves are drafting, pick 2 settlements"
+		DraftPhase.ORC:
+			draft_label.text = "Orcs are drafting, pick 1 settlement"
+		DraftPhase.DONE:
+			draft_label.text = ""
+
+func end_draft():
+	draft_label.visible = false
+	right_panel.visible = true
+	draft_mode = false
+	draft_phase = DraftPhase.DONE
+	draft_label.text = ""
+	draft_label.hide()
+
+func handle_draft_settlement_clicked(settlement):
+	if settlement.faction != Faction.Type.NEUTRAL:
+		return
+
+	print("survived draft checks")
+
+	match draft_phase:
+		DraftPhase.ELF:
+			settlement.set_faction(Faction.Type.ELF)
+			settlement.set_soldiers(8)
+			settlement.clear_buildings()
+		DraftPhase.DWARF:
+			settlement.set_faction(Faction.Type.DWARF)
+			settlement.set_soldiers(12)
+			settlement.clear_buildings()
+			settlement.add_building("Gold Mine")
+		DraftPhase.ORC:
+			settlement.set_faction(Faction.Type.ORC)
+			settlement.set_soldiers(24)
+			settlement.clear_buildings()
+	
+	draft_picks_remaining -= 1
+	
+	if draft_picks_remaining <= 0:
+		advance_draft_phase()
+
+func advance_draft_phase():
+	match draft_phase:
+		DraftPhase.ELF:
+			draft_phase = DraftPhase.DWARF
+			draft_picks_remaining = 2
+			update_draft_label()
+		DraftPhase.DWARF:
+			draft_phase = DraftPhase.ORC
+			draft_picks_remaining = 1
+			update_draft_label()
+		DraftPhase.ORC:
+			end_draft()
 
 # =========================
 # Turn / resource updates
@@ -320,6 +407,11 @@ func _deselect() -> void:
 
 func _on_settlement_clicked(settlement: Settlement) -> void:
 	var controller := _controller()
+
+	if draft_mode:
+		handle_draft_settlement_clicked(settlement)
+		print("clicked in draft phase")
+
 
 	if controller != null and controller.is_in_special_selection_mode():
 		_select(settlement)

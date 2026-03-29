@@ -68,13 +68,10 @@ func _ready() -> void:
 	_refresh_dark_lord_token_visuals()
 	_refresh_war_promise_visuals()
 	_validate_neighbors()
-
-	_refresh_building_slot_visuals()
 	_refresh_building_icons()
 
 	selection_circle.visible = false
 	available_circle.visible = false
-
 
 func get_display_name() -> String:
 	return settlement_name if settlement_name != "" else name
@@ -209,6 +206,23 @@ func _get_first_empty_building_slot() -> int:
 func _has_any_building() -> bool:
 	for building in building_slots:
 		if building != "":
+			return true
+	return false
+
+func clear_buildings():
+	_resize_building_slots()
+	
+	for i in range(building_slots.size()):
+		building_slots[i] = ""
+	print(building_slots)
+	_refresh_building_icons()
+
+func add_building(building_name: String) -> bool:
+	_resize_building_slots()
+	for i in range(building_slots.size()):
+		if building_slots[i] == "":
+			building_slots[i] = building_name
+			_refresh_building_icons()
 			return true
 	return false
 

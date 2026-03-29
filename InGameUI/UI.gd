@@ -15,6 +15,8 @@ signal orc_war_promise_chosen(settlement: Settlement)
 signal infiltration_remove_requested()
 
 @onready var remove_infiltration_button: Button = %RemoveInfiltrationButton
+@onready var draft_label: Label = %DraftLabel
+@onready var right_panel: Panel = %RightPanel
 
 # =========================
 # Left Panel UI

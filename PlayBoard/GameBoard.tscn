@@ -24,11 +24,11 @@ centered = false
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
 script = ExtResource("4_uuge4")
 
-[node name="Astbury" parent="." unique_id=167798052 instance=ExtResource("5_qpi8o")]
+[node name="Astbury" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
 position = Vector2(1223, 1063)
 settlement_name = "Astbury"
-faction = 1
 soldiers = 8
+neighbors = [NodePath("../Area2D2"), NodePath("../Area2D28"), NodePath("../Area2D29"), NodePath("../Area2D22")]
 building_slot_count = 2
 
 [node name="Area2D2" parent="." unique_id=1658002749 instance=ExtResource("5_qpi8o")]
