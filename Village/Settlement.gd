@@ -15,6 +15,7 @@ const BUILDING_FARM := "Farm"
 @export_range(1, 3, 1) var building_slot_count: int = 1 : set = set_building_slot_count
 @export var building_slots: Array[String] = []
 
+@onready var faction_symbol: Sprite2D = %FactionSymbol
 @onready var selection_circle: Sprite2D = $SelectionCircle
 @onready var available_circle: Sprite2D = $AvailableCircle
 @onready var name_label: Label = $NameLabel
@@ -137,6 +138,12 @@ func _input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
 
 func set_faction(value: Faction.Type) -> void:
 	faction = value
+	if faction == Faction.Type.DWARF:
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/DwarfSymbolColor.png")
+	if faction == Faction.Type.ORC:
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/OrcSymbolColor.png")
+	if faction == Faction.Type.ELF:
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/ElfSymbolColor.png")
 	_refresh_visuals()
 
 func set_soldiers(value: int) -> void:

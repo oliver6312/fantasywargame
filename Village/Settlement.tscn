@@ -46,6 +46,10 @@ texture = ExtResource("2_5erx4")
 position = Vector2(4.7683716e-07, 1.1920929e-07)
 texture = ExtResource("4_u8w44")
 
+[node name="FactionSymbol" type="Sprite2D" parent="." unique_id=2044521403]
+unique_name_in_owner = true
+position = Vector2(128, 0)
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
 shape = SubResource("CircleShape2D_hx6cv")
 
@@ -136,7 +140,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 64
 horizontal_alignment = 1
 vertical_alignment = 1
 

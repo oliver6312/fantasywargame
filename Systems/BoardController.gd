@@ -206,6 +206,9 @@ func end_draft():
 func handle_draft_settlement_clicked(settlement):
 	if settlement.faction != Faction.Type.NEUTRAL:
 		return
+	if settlement.is_orc_war_promise:
+		return
+	
 
 	print("survived draft checks")
 

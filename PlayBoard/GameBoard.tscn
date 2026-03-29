@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
 [ext_resource type="Script" uid="uid://c51s4b4na5btf" path="res://PlayBoard/camera_2d.gd" id="1_y7hph"]
-[ext_resource type="Texture2D" uid="uid://dlum0pofump1v" path="res://MapIdea2.png" id="2_y7hph"]
+[ext_resource type="Texture2D" uid="uid://b5ktwwk1o5fyx" path="res://PlayBoard/Bridge1.3.3.png" id="2_y7hph"]
 [ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://InGameUI/UI.tscn" id="3_8mygu"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://PlayBoard/connection_drawer.gd" id="4_uuge4"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village/Settlement.tscn" id="5_qpi8o"]
@@ -95,6 +95,7 @@ building_slot_count = 2
 position = Vector2(1865, 1247)
 soldiers = 8
 building_slot_count = 2
+is_orc_war_promise = true
 
 [node name="Area2D15" parent="." unique_id=1133521257 instance=ExtResource("5_qpi8o")]
 position = Vector2(2621, 810)
