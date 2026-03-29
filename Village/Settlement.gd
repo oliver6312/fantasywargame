@@ -139,11 +139,11 @@ func _input_event(_viewport, event: InputEvent, _shape_idx: int) -> void:
 func set_faction(value: Faction.Type) -> void:
 	faction = value
 	if faction == Faction.Type.DWARF:
-		faction_symbol.texture = preload("res://Village/SettlementGraphics/DwarfSymbolColor.png")
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/DwarfSymbolCrest2.png")
 	if faction == Faction.Type.ORC:
-		faction_symbol.texture = preload("res://Village/SettlementGraphics/OrcSymbolColor.png")
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/OrcSymbolCrest6.png")
 	if faction == Faction.Type.ELF:
-		faction_symbol.texture = preload("res://Village/SettlementGraphics/ElfSymbolColor.png")
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/ElfSymbolCrest3.png")
 	_refresh_visuals()
 
 func set_soldiers(value: int) -> void:
