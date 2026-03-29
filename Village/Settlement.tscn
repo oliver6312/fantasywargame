@@ -48,7 +48,6 @@ texture = ExtResource("4_u8w44")
 
 [node name="FactionSymbol" type="Sprite2D" parent="." unique_id=2044521403]
 unique_name_in_owner = true
-modulate = Color(1, 1, 1, 0.5019608)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=53887238]
 shape = SubResource("CircleShape2D_hx6cv")
