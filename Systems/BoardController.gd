@@ -327,6 +327,8 @@ func _on_building_delete_requested(slot_index: int) -> void:
 
 func _on_next_turn_requested() -> void:
 	var controller := _controller()
+	if draft_mode == true:
+		return
 	if controller != null:
 		controller.end_turn()
 

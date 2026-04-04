@@ -210,7 +210,7 @@ func _deploy_elf_serenity() -> void:
 				break
 
 	print("Elf Serenity deployed.")
-	elf_serenity = 1
+	elf_serenity = 0
 	resources_changed.emit()
 
 func can_elves_extend_season() -> bool:
