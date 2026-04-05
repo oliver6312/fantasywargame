@@ -143,7 +143,7 @@ func set_faction(value: Faction.Type) -> void:
 	if faction == Faction.Type.ORC:
 		faction_symbol.texture = preload("res://Village/SettlementGraphics/OrcSymbolCrest6.png")
 	if faction == Faction.Type.ELF:
-		faction_symbol.texture = preload("res://Village/SettlementGraphics/ElfSymbolCrest3.png")
+		faction_symbol.texture = preload("res://Village/SettlementGraphics/ElfSymbolCrest4.png")
 	_refresh_visuals()
 
 func set_soldiers(value: int) -> void:

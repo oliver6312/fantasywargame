@@ -77,19 +77,19 @@ texture = ExtResource("5_bykt4")
 unique_name_in_owner = true
 visible = false
 position = Vector2(0, 64)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.8, 1.8)
 
 [node name="BuildingIcon2" type="Sprite2D" parent="." unique_id=515484887]
 unique_name_in_owner = true
 visible = false
 position = Vector2(-55.43, 32)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.8, 1.8)
 
 [node name="BuildingIcon3" type="Sprite2D" parent="." unique_id=482245813]
 unique_name_in_owner = true
 visible = false
 position = Vector2(55.43, 32)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(1.8, 1.8)
 
 [node name="InfiltrationToken" type="Sprite2D" parent="." unique_id=190414953]
 unique_name_in_owner = true
