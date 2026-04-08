@@ -295,7 +295,8 @@ func _on_war_meeting_finished() -> void:
 	var controller := _controller()
 	if controller != null:
 		controller.finish_war_meeting()
-		ui.hide_war_meeting_button()
+		
+		
 
 func _on_dwarf_build_requested(building_name: String) -> void:
 	var dwarf := _dwarf_controller()
@@ -589,7 +590,7 @@ func _apply_season_effect_to_movement(amount: int, moving_faction: int) -> int:
 		return amount
 
 	if TurnState.current_season == TurnState.Season.WINTER:
-		var loss: int = min(rng.randi_range(1, 4), amount)
+		var loss: int = 1
 		print("Winter effect: lost %d soldiers to the cold." % loss)
 		return amount - loss
 

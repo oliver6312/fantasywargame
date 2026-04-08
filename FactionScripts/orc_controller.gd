@@ -80,6 +80,7 @@ func finish_war_meeting() -> void:
 	in_war_meeting = false
 	mode = MODE_NONE
 	print("Orc War Meeting ended.")
+	ui.hide_war_meeting_button()
 	_refresh_ui()
 
 func is_in_special_selection_mode() -> bool:
@@ -503,7 +504,6 @@ func delete_building(settlement: Settlement, slot_index: int) -> void:
 	print("Deleted building from slot %d" % slot_index)
 
 	_refresh_ui()
-
 
 func _refresh_ui() -> void:
 	ui.show_faction_actions(get_action_list())

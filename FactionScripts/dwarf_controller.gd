@@ -78,6 +78,7 @@ func is_in_war_meeting() -> bool:
 func finish_war_meeting() -> void:
 	in_war_meeting = false
 	print("Dwarf War Meeting ended")
+	ui.hide_war_meeting_button()
 	_refresh_ui()
 
 # =========================

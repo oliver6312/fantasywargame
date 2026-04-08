@@ -15,6 +15,8 @@ var shadow_source_settlement: Settlement = null
 
 var extend_season_used_this_turn: bool = false
 
+var elf_magic 
+
 func start_turn() -> void:
 	in_war_meeting = true
 	mode = MODE_NONE
@@ -44,6 +46,7 @@ func finish_war_meeting() -> void:
 	in_war_meeting = false
 	mode = MODE_NONE
 	print("Elf War Meeting ended")
+	ui.hide_war_meeting_button()
 	_refresh_ui()
 
 func cancel_current_mode() -> void:
@@ -183,14 +186,17 @@ func convert_gold_to_magic(gold_amount: int) -> void:
 	_refresh_ui()
 
 func _do_extend_season() -> void:
-	if not in_war_meeting:
+	if TurnState.elf_magic == 0:
 		return
 
 	if not TurnState.can_elves_extend_season():
 		print("Elves may only extend the season once per season.")
 		return
 
+	TurnState.elf_magic -= 1
+
 	TurnState.set_season_extended_this_round(true)
+
 	print("Elves will prevent the season from advancing this round.")
 	_refresh_ui()
 
