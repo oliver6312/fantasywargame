@@ -114,13 +114,13 @@ func _initialize_resources() -> void:
 		gold[faction] = 0
 		armor[faction] = 0
 
-	set_gold(Faction.Type.ORC, 10)
-	set_gold(Faction.Type.ELF, 10)
+	set_gold(Faction.Type.ORC, 16)
+	set_gold(Faction.Type.ELF, 12)
 	set_gold(Faction.Type.DWARF, 20)
 
-	set_armor(Faction.Type.ORC, 5)
-	set_armor(Faction.Type.ELF, 5)
-	set_armor(Faction.Type.DWARF, 10)
+	set_armor(Faction.Type.ORC, 4)
+	set_armor(Faction.Type.ELF, 8)
+	set_armor(Faction.Type.DWARF, 12)
 
 func _initialize_dwarf_data() -> void:
 	for threshold in DWARF_HOARD_THRESHOLDS:

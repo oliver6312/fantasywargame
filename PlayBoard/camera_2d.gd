@@ -13,19 +13,16 @@ var _dragging := false
 var _last_mouse := Vector2.ZERO
 
 func _ready() -> void:
-	# Make sure we use the camera bounds in world space consistently
 	make_current()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Mouse wheel zoom
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			_set_zoom(zoom - Vector2.ONE * zoom_step, get_global_mouse_position())
 		elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			_set_zoom(zoom + Vector2.ONE * zoom_step, get_global_mouse_position())
 
-	# Middle-mouse (or right-mouse) drag pan
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_MIDDLE:
 			_dragging = event.pressed
@@ -36,12 +33,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		var delta := mpos - _last_mouse
 		_last_mouse = mpos
 
-		# Move opposite the drag direction; scale by zoom so drag feels consistent
 		global_position -= delta * zoom.x * drag_pan_speed
 
 
 func _process(delta: float) -> void:
-	# Optional keyboard pan (WASD / arrows)
 	var dir := Vector2(
 		Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left"),
 		Input.get_action_strength("ui_down") - Input.get_action_strength("ui_up")
@@ -52,17 +47,14 @@ func _process(delta: float) -> void:
 
 
 func _set_zoom(new_zoom: Vector2, zoom_anchor_world: Vector2) -> void:
-	# Clamp zoom
 	new_zoom.x = clamp(new_zoom.x, min_zoom, max_zoom)
 	new_zoom.y = new_zoom.x
 
-	# Zoom towards mouse cursor (anchor)
 	var before := zoom_anchor_world
 	var old_zoom := zoom
 	zoom = new_zoom
-	var after := before  # same world point; camera moved so screen stays anchored
+	var after := before  
 
-	# Adjust camera so the anchor point stays under the cursor
 	var mouse_screen := get_viewport().get_mouse_position()
 	var anchor_screen_before := (before - global_position) / old_zoom + get_viewport_rect().size * 0.5
 	var anchor_screen_after := (before - global_position) / zoom + get_viewport_rect().size * 0.5
