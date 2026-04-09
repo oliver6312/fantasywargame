@@ -39,7 +39,4 @@ func execute(context: CommandContext) -> void:
 	settlement.set_soldiers(settlement.soldiers + 6)
 	context.turn_state.add_gold(raiding_faction, 6)
 
-	if blacksmith_bonus:
-		context.turn_state.add_armor(raiding_faction, 3)
-
 	print("Raided building.")

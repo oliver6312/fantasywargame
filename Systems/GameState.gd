@@ -162,10 +162,13 @@ func _handle_end_of_round() -> void:
 	resources_changed.emit()
 
 func _spawn_orcs_from_gruesome_effigies() -> void:
-	var spawn_amount := 2
+	var spawn_amount := 3
 
 	if get_orc_dark_lord() == ORC_LORD_SORCERER:
-		spawn_amount = 4
+		spawn_amount = 6
+
+	if get_orc_dark_lord() == ORC_LORD_BLACKSMITH:
+		add_armor(Faction.Type.ORC, 1)
 
 	for settlement in get_tree().get_nodes_in_group("settlements"):
 		if settlement.faction != Faction.Type.ORC:
@@ -188,8 +191,6 @@ func _advance_season() -> void:
 
 	if current_season == Season.AUTUMN:
 		_deploy_elf_serenity()
-	if current_season == Season.SPRING:
-		war_promise_must_control_all()
 
 func get_season_name(season: int = current_season) -> String:
 	match season:
@@ -350,14 +351,14 @@ func clear_all_orc_war_promises() -> void:
 	for settlement in get_tree().get_nodes_in_group("settlements"):
 		settlement.set_orc_war_promise(false)
 
-func war_promise_must_control_all() -> void:
-	if are_all_war_promises_orc_owned():
-		return
-	var biggest_settlement = get_orc_settlement_with_most_soldiers()
-	if biggest_settlement == null:
-		return
-	
-	biggest_settlement.soldiers = int(biggest_settlement.soldiers / 2)
+#func war_promise_must_control_all() -> void:
+#	if are_all_war_promises_orc_owned():
+#		return
+#	var biggest_settlement = get_orc_settlement_with_most_soldiers()
+#	if biggest_settlement == null:
+#		return
+#	
+#	biggest_settlement.soldiers = int(biggest_settlement.soldiers / 2)
 
 func get_orc_settlement_with_most_soldiers() -> Object:
 	var best_settlement = null
