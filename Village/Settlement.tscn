@@ -11,11 +11,11 @@
 [ext_resource type="Texture2D" uid="uid://dr4q7r2wvkdyf" path="res://Village/SettlementGraphics/GS.png" id="5_ijw05"]
 [ext_resource type="Texture2D" uid="uid://dm1vwp7e162a6" path="res://Village/SettlementGraphics/EI.png" id="6_b32a8"]
 [ext_resource type="Texture2D" uid="uid://cbugtv74b00ot" path="res://Village/SettlementGraphics/TG.png" id="6_frrbt"]
-[ext_resource type="Texture2D" uid="uid://347s110326qi" path="res://Village/SettlementGraphics/SG.png" id="7_fpruv"]
 [ext_resource type="Texture2D" uid="uid://dkvldq3yu20un" path="res://Village/SettlementGraphics/DL.png" id="7_gi5vt"]
+[ext_resource type="Texture2D" uid="uid://347s110326qi" path="res://Village/SettlementGraphics/SG.png" id="7_ijw05"]
+[ext_resource type="Texture2D" uid="uid://whdwq3q81oc0" path="res://Village/SettlementGraphics/GF.png" id="8_frrbt"]
 [ext_resource type="Texture2D" uid="uid://bnbs7oqkypkfl" path="res://Village/SettlementGraphics/WP.png" id="8_oj6me"]
 [ext_resource type="Texture2D" uid="uid://dorngc6n4on6h" path="res://Village/SettlementGraphics/WL.png" id="8_vpbmy"]
-[ext_resource type="Texture2D" uid="uid://whdwq3q81oc0" path="res://Village/SettlementGraphics/GF.png" id="8_x8puq"]
 [ext_resource type="Texture2D" uid="uid://crdkf2y0dboc1" path="res://Village/SettlementGraphics/BL.png" id="9_iemt1"]
 [ext_resource type="Texture2D" uid="uid://dbr4m2v3ays73" path="res://Village/SettlementGraphics/SL.png" id="10_tiqj1"]
 
@@ -29,8 +29,8 @@ gold_mine_texture = ExtResource("3_x8puq")
 armor_smith_texture = ExtResource("4_yqtt7")
 goat_stable_texture = ExtResource("5_ijw05")
 training_grounds_texture = ExtResource("6_frrbt")
-sacred_grove_texture = ExtResource("7_fpruv")
-gruesome_effigy_texture = ExtResource("8_x8puq")
+sacred_grove_texture = ExtResource("7_ijw05")
+gruesome_effigy_texture = ExtResource("8_frrbt")
 
 [node name="AvailableCircle" type="Sprite2D" parent="." unique_id=1837975081]
 visible = false
@@ -77,19 +77,16 @@ texture = ExtResource("5_bykt4")
 unique_name_in_owner = true
 visible = false
 position = Vector2(0, 64)
-scale = Vector2(1.8, 1.8)
 
 [node name="BuildingIcon2" type="Sprite2D" parent="." unique_id=515484887]
 unique_name_in_owner = true
 visible = false
 position = Vector2(-55.43, 32)
-scale = Vector2(1.8, 1.8)
 
 [node name="BuildingIcon3" type="Sprite2D" parent="." unique_id=482245813]
 unique_name_in_owner = true
 visible = false
 position = Vector2(55.43, 32)
-scale = Vector2(1.8, 1.8)
 
 [node name="InfiltrationToken" type="Sprite2D" parent="." unique_id=190414953]
 unique_name_in_owner = true
