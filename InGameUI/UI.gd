@@ -128,6 +128,7 @@ func _ready() -> void:
 # Setup
 # =========================
 
+
 func _setup_resource_label_maps() -> void:
 	gold_labels = {
 		Faction.Type.ORC: %OrcGoldLabel,
@@ -146,6 +147,7 @@ func _connect_global_signals() -> void:
 	TurnState.round_changed.connect(_on_round_changed)
 	TurnState.resources_changed.connect(_on_resources_changed)
 	TurnState.season_changed.connect(_on_season_changed)
+	SignalBus.has_traded.connect(_on_trade_executed)
 
 func _connect_button_signals() -> void:
 	next_turn_button.pressed.connect(_on_next_turn_pressed)
@@ -256,6 +258,7 @@ func _on_next_turn_pressed() -> void:
 
 func _on_turn_changed(new_turn: Faction.Type) -> void:
 	turn_label.text = "%s turn" % _faction_name(new_turn)
+	trade_button.visible = true
 
 	# Show dwarf hoard only during dwarf turn
 	dwarf_hoard_panel.visible = (new_turn == Faction.Type.DWARF)
@@ -299,6 +302,9 @@ func _on_resources_changed() -> void:
 
 	if current_settlement != null:
 		show_settlement_details(current_settlement)
+
+func _on_trade_executed():
+	trade_button.visible = false
 
 func _update_resource_labels() -> void:
 	for faction in gold_labels.keys():

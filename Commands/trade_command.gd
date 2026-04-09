@@ -16,6 +16,9 @@ func validate(context: CommandContext) -> bool:
 	if gold_amount < 0 or armor_amount < 0:
 		return false
 
+	if gold_amount > 40 or armor_amount > 40:
+		return false
+
 	if gold_amount > context.turn_state.get_gold(sender_faction):
 		return false
 
@@ -43,6 +46,8 @@ func execute(context: CommandContext) -> void:
 
 	context.turn_state.add_armor(sender_faction, -armor_amount)
 	context.turn_state.add_armor(receiver_faction, armor_amount)
+
+	SignalBus.emit_signal("has_traded")
 
 	print("%s sent %d gold and %d armor to %s." % [
 		context.turn_state.get_faction_name(sender_faction),

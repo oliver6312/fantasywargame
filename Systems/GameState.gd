@@ -16,8 +16,8 @@ signal season_changed(new_season: int)
 
 const FACTIONS := [
 	Faction.Type.ORC,
-	Faction.Type.ELF,
-	Faction.Type.DWARF
+	Faction.Type.DWARF,
+	Faction.Type.ELF
 ]
 
 const TURN_ORDER := FACTIONS
@@ -76,7 +76,7 @@ var elves_extended_season_this_season: bool = false
 # =========================
 
 var elf_serenity: int = 2
-var elf_magic: int = 0
+var elf_magic: int = 8
 var gold := {}
 var armor := {}
 
