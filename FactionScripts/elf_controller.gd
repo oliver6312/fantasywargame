@@ -154,30 +154,21 @@ func delete_building(settlement: Settlement, slot_index: int) -> void:
 # =========================
 
 func _start_root_of_all_evil() -> void:
-	# For now, convert as much gold as possible in chunks of 10.
-	# Later this should open a UI prompt.
 	var available_gold := TurnState.get_gold(ELF_FACTION)
-	var spendable_gold := available_gold - (available_gold % 10)
+	var spendable_gold := available_gold - (available_gold % 12)
 
-	if spendable_gold < 10:
+	if spendable_gold < 12:
 		print("Not enough gold to convert.")
 		return
 
 	convert_gold_to_magic(spendable_gold)
 
 func convert_gold_to_magic(gold_amount: int) -> void:
-	if not in_war_meeting:
-		return
-
-	if gold_amount < 10:
-		print("Need at least 10 gold.")
-		return
-
 	if gold_amount > TurnState.get_gold(ELF_FACTION):
 		print("Not enough gold.")
 		return
 
-	var magic_gain := int(gold_amount / 10)
+	var magic_gain := int(gold_amount / 6)
 
 	TurnState.add_gold(ELF_FACTION, -gold_amount)
 	TurnState.add_elf_magic(magic_gain)
@@ -193,7 +184,8 @@ func _do_extend_season() -> void:
 		print("Elves may only extend the season once per season.")
 		return
 
-	TurnState.elf_magic -= 1
+	TurnState.elf_magic -= 4
+	TurnState.resources_changed.emit()
 
 	TurnState.set_season_extended_this_round(true)
 
@@ -201,12 +193,12 @@ func _do_extend_season() -> void:
 	_refresh_ui()
 
 func _start_shadow_ritual() -> void:
-	if not in_war_meeting:
+	if TurnState.elf_magic < 8:
 		return
 
 	mode = MODE_SHADOW_SOURCE
 	shadow_source_settlement = null
-	print("Select an elven settlement with at least 5 soldiers.")
+	print("Select an elven settlement with at least 1 soldier.")
 	_refresh_ui()
 
 func _handle_shadow_source_selected(settlement: Settlement) -> void:
@@ -214,7 +206,7 @@ func _handle_shadow_source_selected(settlement: Settlement) -> void:
 		print("Must choose an elven settlement.")
 		return
 
-	if settlement.soldiers < 5:
+	if settlement.soldiers < 1:
 		print("Need at least 5 soldiers.")
 		return
 
@@ -232,13 +224,15 @@ func _handle_shadow_target_selected(settlement: Settlement) -> void:
 		print("That settlement already has an infiltration.")
 		return
 
-	shadow_source_settlement.set_soldiers(shadow_source_settlement.soldiers - 5)
+	shadow_source_settlement.set_soldiers(shadow_source_settlement.soldiers - 1)
+	TurnState.elf_magic -= 8
 	settlement.set_infiltration(ELF_FACTION)
 
 	mode = MODE_NONE
 	shadow_source_settlement = null
 
 	print("Infiltration placed.")
+	TurnState.resources_changed.emit()
 	_refresh_ui()
 
 # =========================
