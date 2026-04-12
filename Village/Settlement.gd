@@ -116,6 +116,9 @@ func _refresh_building_icons() -> void:
 		icon.texture = _get_building_texture(building_name)
 		icon.visible = icon.texture != null
 
+func has_minimum_soldiers(amount: int) -> bool:
+	return soldiers >= amount
+
 # =========================
 # Selection / click
 # =========================

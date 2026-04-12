@@ -3,6 +3,8 @@ class_name DwarfController
 
 const DWARF_FACTION := Faction.Type.DWARF
 
+
+
 # =========================
 # Mode
 # =========================
@@ -312,7 +314,12 @@ func _action_train() -> void:
 		print("No Train actions remaining.")
 		return
 
-	for settlement in _get_owned_settlements():
+	for settlement: Settlement in _get_owned_settlements():
+		if settlement.has_minimum_soldiers(12):
+			print("Too many soldiers, no training happened")
+			_refresh_ui()
+			return 
+
 		if _settlement_has_building(settlement, BUILDING_TRAINING_GROUNDS):
 			settlement.set_soldiers(settlement.soldiers + 3)
 
