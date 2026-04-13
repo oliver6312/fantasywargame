@@ -250,10 +250,10 @@ func can_hire_mercenaries() -> bool:
 	return true
 
 func get_mercenary_gold_cost() -> int:
-	return 5 * building_slot_count
+	return 8 * building_slot_count
 
 func get_mercenary_soldier_gain() -> int:
-	return 2 * building_slot_count
+	return 4 * building_slot_count
 
 func hire_mercenaries() -> bool:
 	if not can_hire_mercenaries():

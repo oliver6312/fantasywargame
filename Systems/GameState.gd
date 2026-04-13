@@ -173,6 +173,8 @@ func _spawn_orcs_from_gruesome_effigies() -> void:
 	for settlement in get_tree().get_nodes_in_group("settlements"):
 		if settlement.faction != Faction.Type.ORC:
 			continue
+		if settlement.has_minimum_soldiers(16):
+			continue
 
 		for slot in settlement.building_slots:
 			if slot == "Gruesome Effigy":
