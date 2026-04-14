@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
-[ext_resource type="Texture2D" uid="uid://d01m85daohjqw" path="res://PlayBoard/Split1.1.2.png" id="2_y7hph"]
+[ext_resource type="Texture2D" uid="uid://6qev8kw42vwp" path="res://PlayBoard/Split1.2.3.png" id="1_y68ma"]
 [ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://InGameUI/UI.tscn" id="3_8mygu"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://PlayBoard/connection_drawer.gd" id="4_uuge4"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village/Settlement.tscn" id="5_qpi8o"]
@@ -9,7 +9,13 @@
 [node name="Board" type="Node2D" unique_id=1598262314]
 
 [node name="Map" type="Sprite2D" parent="." unique_id=1727819468]
-texture = ExtResource("2_y7hph")
+texture = ExtResource("1_y68ma")
+centered = false
+
+[node name="WinterOverLay" type="Sprite2D" parent="." unique_id=1560917691]
+modulate = Color(1, 1, 1, 0.42745098)
+position = Vector2(0, -100)
+scale = Vector2(2, 2)
 centered = false
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=374990783]
@@ -19,6 +25,7 @@ zoom = Vector2(0.422, 0.422)
 [node name="UI" parent="." unique_id=1769323019 instance=ExtResource("3_8mygu")]
 
 [node name="ConnectionDrawer" type="Node2D" parent="." unique_id=658416451]
+visible = false
 script = ExtResource("4_uuge4")
 
 [node name="Astbury" parent="." unique_id=167798052 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
@@ -29,28 +36,28 @@ neighbors = [NodePath("../Hilldun"), NodePath("../Wynlora"), NodePath("../Vorgri
 building_slot_count = 2
 
 [node name="Hilldun" parent="." unique_id=1658002749 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1420, 676)
+position = Vector2(1420, 741)
 settlement_name = "Hilldun"
 soldiers = 8
 neighbors = [NodePath("../Mosswyn"), NodePath("../Wynlora"), NodePath("../Holt")]
 building_slot_count = 2
 
 [node name="Holt" parent="." unique_id=1890439252 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1982, 646)
+position = Vector2(1910, 893)
 settlement_name = "Holt"
 soldiers = 8
 neighbors = [NodePath("../Grendhal"), NodePath("../Brinefall")]
 building_slot_count = 2
 
 [node name="Grendhal" parent="." unique_id=1653964175 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1944, 361)
+position = Vector2(1923, 449)
 settlement_name = "Grendhal"
 soldiers = 8
 neighbors = [NodePath("../Mosswyn"), NodePath("../Stonvar")]
 building_slot_count = 2
 
 [node name="Mosswyn" parent="." unique_id=342480900 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1329, 179)
+position = Vector2(1415, 417)
 settlement_name = "Mosswyn"
 soldiers = 8
 neighbors = [NodePath("../Gorthak")]
@@ -197,7 +204,7 @@ settlement_name = "Elmsareth"
 soldiers = 4
 
 [node name="Wynlora" parent="." unique_id=1146920038 instance=ExtResource("5_qpi8o")]
-position = Vector2(824, 604)
+position = Vector2(763, 623)
 settlement_name = "Wynlora"
 soldiers = 12
 building_slot_count = 3
