@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
 [ext_resource type="Texture2D" uid="uid://6qev8kw42vwp" path="res://PlayBoard/Split1.2.3.png" id="1_y68ma"]
+[ext_resource type="Texture2D" uid="uid://ccda02sxftnyg" path="res://InGameUI/BrownPanelGraphic.png" id="2_y7hph"]
 [ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://InGameUI/UI.tscn" id="3_8mygu"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://PlayBoard/connection_drawer.gd" id="4_uuge4"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village/Settlement.tscn" id="5_qpi8o"]
@@ -12,9 +13,13 @@
 texture = ExtResource("1_y68ma")
 centered = false
 
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1040361056]
+position = Vector2(-260, 1200)
+texture = ExtResource("2_y7hph")
+
 [node name="WinterOverLay" type="Sprite2D" parent="." unique_id=1560917691]
 modulate = Color(1, 1, 1, 0.42745098)
-position = Vector2(0, -100)
+position = Vector2(2, -78)
 scale = Vector2(2, 2)
 centered = false
 

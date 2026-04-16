@@ -142,6 +142,7 @@ unique_name_in_owner = true
 layout_mode = 2
 
 [node name="LeftPanel" type="Panel" parent="." unique_id=1982825963]
+self_modulate = Color(1, 1, 1, 0)
 anchors_preset = 9
 anchor_bottom = 1.0
 offset_right = 220.0
