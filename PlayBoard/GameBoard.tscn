@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
-[ext_resource type="Texture2D" uid="uid://6qev8kw42vwp" path="res://PlayBoard/Split1.2.3.png" id="1_y68ma"]
-[ext_resource type="Texture2D" uid="uid://d4kt8lpy7wkiw" path="res://InGameUI/NeutralPanelCombinationWithFaction.png" id="2_y7hph"]
+[ext_resource type="Texture2D" uid="uid://dgw1igd67ayer" path="res://PlayBoard/Split1.2.4.png" id="1_y7hph"]
+[ext_resource type="Texture2D" uid="uid://orap53np3074" path="res://InGameUI/PaperCombination.png" id="2_pusjj"]
 [ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://InGameUI/UI.tscn" id="3_8mygu"]
+[ext_resource type="Texture2D" uid="uid://15fvjvb1ulas" path="res://InGameUI/RightPanelFactionElf.png" id="3_pusjj"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://PlayBoard/connection_drawer.gd" id="4_uuge4"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village/Settlement.tscn" id="5_qpi8o"]
 [ext_resource type="Script" uid="uid://cqv0tts3e8xlb" path="res://Systems/BoardController.gd" id="6_lcnh3"]
@@ -10,17 +11,18 @@
 [node name="Board" type="Node2D" unique_id=1598262314]
 
 [node name="Map" type="Sprite2D" parent="." unique_id=1727819468]
-texture = ExtResource("1_y68ma")
+texture = ExtResource("1_y7hph")
 centered = false
 
-[node name="Left Panel" type="Sprite2D" parent="." unique_id=1040361056]
+[node name="Neutral Panel" type="Sprite2D" parent="." unique_id=1040361056]
 position = Vector2(1754, 1200)
-texture = ExtResource("2_y7hph")
+texture = ExtResource("2_pusjj")
 
 [node name="WinterOverLay" type="Sprite2D" parent="." unique_id=1560917691]
-modulate = Color(1, 1, 1, 0.42745098)
-position = Vector2(2, -78)
+visible = false
+position = Vector2(3508, -78)
 scale = Vector2(2, 2)
+texture = ExtResource("3_pusjj")
 centered = false
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=374990783]
@@ -154,7 +156,7 @@ neighbors = [NodePath("../Stonvar")]
 building_slot_count = 2
 
 [node name="Stonvar" parent="." unique_id=97939347 instance=ExtResource("5_qpi8o")]
-position = Vector2(2514, 179)
+position = Vector2(2648, 325)
 settlement_name = "Stonvar"
 soldiers = 4
 

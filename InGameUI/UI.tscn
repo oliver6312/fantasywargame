@@ -7,6 +7,7 @@ script = ExtResource("1_b3bc3")
 
 [node name="RightPanel" type="Panel" parent="." unique_id=1334037232]
 unique_name_in_owner = true
+self_modulate = Color(1, 1, 1, 0)
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
