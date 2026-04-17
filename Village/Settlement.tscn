@@ -56,21 +56,21 @@ shape = SubResource("CircleShape2D_hx6cv")
 unique_name_in_owner = true
 visible = false
 position = Vector2(0, 64)
-scale = Vector2(1.5, 1.5)
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("5_bykt4")
 
 [node name="BuildingSlot2" type="Sprite2D" parent="." unique_id=5456342]
 unique_name_in_owner = true
 visible = false
-position = Vector2(-55.43, 32)
-scale = Vector2(1.5, 1.5)
+position = Vector2(-64, 32)
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("5_bykt4")
 
 [node name="BuildingSlot3" type="Sprite2D" parent="." unique_id=1546745769]
 unique_name_in_owner = true
 visible = false
-position = Vector2(55.43, 32)
-scale = Vector2(1.5, 1.5)
+position = Vector2(64, 32)
+scale = Vector2(0.8, 0.8)
 texture = ExtResource("5_bykt4")
 
 [node name="BuildingIcon1" type="Sprite2D" parent="." unique_id=1523096974]
@@ -81,12 +81,12 @@ position = Vector2(0, 64)
 [node name="BuildingIcon2" type="Sprite2D" parent="." unique_id=515484887]
 unique_name_in_owner = true
 visible = false
-position = Vector2(-55.43, 32)
+position = Vector2(-64, 32)
 
 [node name="BuildingIcon3" type="Sprite2D" parent="." unique_id=482245813]
 unique_name_in_owner = true
 visible = false
-position = Vector2(55.43, 32)
+position = Vector2(64, 32)
 
 [node name="InfiltrationToken" type="Sprite2D" parent="." unique_id=190414953]
 unique_name_in_owner = true

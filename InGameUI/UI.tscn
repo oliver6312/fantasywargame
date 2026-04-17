@@ -278,6 +278,7 @@ layout_mode = 2
 text = "Remove Infiltration"
 
 [node name="TopPanel" type="Panel" parent="." unique_id=2128614229]
+self_modulate = Color(1, 1, 1, 0)
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
