@@ -12,7 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://dm1vwp7e162a6" path="res://Village/SettlementGraphics/EI.png" id="6_b32a8"]
 [ext_resource type="Texture2D" uid="uid://bgb4nr722scxu" path="res://Village/SettlementGraphics/TGAxe.png" id="6_x8puq"]
 [ext_resource type="Texture2D" uid="uid://dkvldq3yu20un" path="res://Village/SettlementGraphics/DL.png" id="7_gi5vt"]
-[ext_resource type="Texture2D" uid="uid://562fv6a4heu5" path="res://Village/SettlementGraphics/SGPines.png" id="7_x8puq"]
+[ext_resource type="Texture2D" uid="uid://dkqfv1ln4fqci" path="res://Village/SettlementGraphics/SGOak.png" id="7_x8puq"]
 [ext_resource type="Texture2D" uid="uid://bnbs7oqkypkfl" path="res://Village/SettlementGraphics/WP.png" id="8_oj6me"]
 [ext_resource type="Texture2D" uid="uid://dorngc6n4on6h" path="res://Village/SettlementGraphics/WL.png" id="8_vpbmy"]
 [ext_resource type="Texture2D" uid="uid://cdhmba2eumtj5" path="res://Village/SettlementGraphics/GFSkull.png" id="8_x8puq"]
