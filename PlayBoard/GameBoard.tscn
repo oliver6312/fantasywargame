@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://bo7a0o02dfy61"]
 
 [ext_resource type="Texture2D" uid="uid://dgw1igd67ayer" path="res://PlayBoard/Split1.2.4.png" id="1_y7hph"]
-[ext_resource type="Texture2D" uid="uid://orap53np3074" path="res://InGameUI/PaperCombination.png" id="2_pusjj"]
+[ext_resource type="Texture2D" uid="uid://orap53np3074" path="res://InGameUI/Graphics/Panels/PaperCombination.png" id="2_pusjj"]
 [ext_resource type="PackedScene" uid="uid://cdaw4wd7ieqhm" path="res://InGameUI/UI.tscn" id="3_8mygu"]
-[ext_resource type="Texture2D" uid="uid://15fvjvb1ulas" path="res://InGameUI/RightPanelFactionElf.png" id="3_pusjj"]
+[ext_resource type="Texture2D" uid="uid://15fvjvb1ulas" path="res://InGameUI/Graphics/Panels/RightPanelFactionElf.png" id="3_pusjj"]
 [ext_resource type="Script" uid="uid://fdg1fx7uxpx7" path="res://PlayBoard/connection_drawer.gd" id="4_uuge4"]
 [ext_resource type="PackedScene" uid="uid://djgorxnh2gemb" path="res://Village/Settlement.tscn" id="5_qpi8o"]
 [ext_resource type="Script" uid="uid://cqv0tts3e8xlb" path="res://Systems/BoardController.gd" id="6_lcnh3"]

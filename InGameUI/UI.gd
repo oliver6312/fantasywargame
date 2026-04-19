@@ -48,7 +48,7 @@ signal move_all_requested()
 @onready var bring_dark_lord_checkbox: CheckBox = %BringDarkLordCheckBox
 # Settings
 # =========================
-@onready var settings_button: Button = %SettingsButton
+@onready var settings_button: TextureButton = %SettingsButton
 @onready var settings_dialog: Window = %SettingsDialog
 @onready var quit_button: Button = %QuitButton
 
