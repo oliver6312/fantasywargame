@@ -57,7 +57,7 @@ neighbors = [NodePath("../Grendhal"), NodePath("../Brinefall")]
 building_slot_count = 2
 
 [node name="Grendhal" parent="." unique_id=1653964175 node_paths=PackedStringArray("neighbors") instance=ExtResource("5_qpi8o")]
-position = Vector2(1923, 449)
+position = Vector2(1942, 446)
 settlement_name = "Grendhal"
 soldiers = 8
 neighbors = [NodePath("../Mosswyn"), NodePath("../Stonvar")]
